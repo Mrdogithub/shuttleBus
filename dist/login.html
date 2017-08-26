@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" type="text/css" href="css/all.css"/>
+	<style type="text/css">
+		body{
+			background-color:#e9f0f7;
+		}
+		ul{
+			margin: 0;
+			padding: 0;
+		}
+		li{
+			list-style: none;
+		}
+		.header{
+			width:100%;
+			height: 60px;
+			border-top:5px solid #154e80;
+			background-color: #ffffff;
+		}
+		.header h1{
+			padding: 0px;
+			margin: 0px;
+			margin-left: 29px;
+			font-size: 18px;
+			line-height: 60px;
+			color:#999;
+		}
+
+		.login-wrapper{
+			width:290px;
+			height:422px;
+			box-sizing: content-box;
+			padding:0px 20px 0px 20px;
+			background: #fff;
+			position: absolute;
+			top:95px;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			margin: 0 auto;
+		}
+		.login-wrapper .title-wrapper{
+			padding-top: 55px;
+			width: 100%;
+			height: 94px;
+		}
+		.login-wrapper .title-wrapper h1{
+			width: 100%;
+			margin:0px;
+			text-align: center;
+			color: #333;
+			letter-spacing:8px;
+		}
+		
+		.content-wrapper{
+			width: 100%;
+			height: 230px;
+			position: relative;
+			bottom: -35px;
+		}
+		.content-wrapper .message{
+			font-size: 14px;
+			color: #999;
+		}
+		.content-wrapper .form-input-common-wrapper{
+			position: relative;
+		}
+		.content-wrapper .form-input-common-wrapper .code{
+			position: absolute;
+		    right: 0px;
+		    top:14px;
+		    font-size: 16px;
+		    color:#338ca5;
+		}
+		.content-wrapper .form-input-common-wrapper .status{
+			position: absolute;
+		    right: 0px;
+		    top:14px;
+		}
+		.content-wrapper .form-input-common-wrapper .status img{
+			width: 19px;
+		}
+		.login-wrapper .submit-wrapper{
+			width: 100%;
+			height: 98px;
+			position: relative;
+		}
+
+		.login-wrapper .submit-wrapper .submit-btn{
+			position: absolute;
+			top:0px;
+			width: 100%;
+			height: 44px;
+			background-color: #338ca5;
+			border:0px;
+			text-align: center;
+			color: #fff;
+			font-size: 16px;
+			border-radius:40px;
+
+		}
+		
+		.form-input-common{
+			height: 44px;
+			width: 100%;
+			padding: 0;
+			-webkit-box-shadow: none;
+    		box-shadow: none;
+			border-radius: 0;
+    		border:0;
+			border-bottom: 1px solid #ccc;
+    		font-size: 16px;
+		}
+		.form-input-phonenumber{
+			position: absolute;
+			top:95px;
+		}
+
+		.form-control:focus{
+			outline: 0;
+			box-shadow: none;
+			-webkit-box-shadow: none;
+		}
+		.eye-close{
+			display: none;
+		}
+		input:focus { outline: none; } 
+
+
+
+
+
+
+
+	.main-wrapper{
+		width: 100%;
+		padding: 25px;
+
+	}
+	.main-content{
+		background: #fff;
+		display: flex;
+	}
+	.main-wrapper .left-side{
+		width: 161px;
+		padding-top: 20px;
+		min-height: 450px;
+		background: #338ca5;
+		letter-spacing: 2px;
+		text-align: center;
+		color: #fff;
+	}
+	.main-wrapper .title-wrapper{
+		position: relative;
+		height: 35px;
+		margin-bottom: 4px;
+
+	}
+	.main-wrapper .title-wrapper h1{
+		font-size: 14px;
+	}
+	.main-wrapper .menu-list ul li{
+		position: relative;
+		height: 30px;
+		line-height: 30px;
+		margin-bottom: 4px;
+		cursor: pointer;
+	}
+
+	.main-wrapper .menu-list ul li:hover{
+		background: #047190;
+	}
+
+
+	.main-wrapper .right-side{
+		width: 100%;
+		padding-right: 37px;
+	    padding-left: 37px;
+	    box-sizing: content-box;
+	}
+	.main-wrapper .right-side .title-wrapper{
+		height: 45px;
+	    margin-bottom: 21px;
+	    font-size: 16px;
+	    line-height: 45px;
+	}
+
+	.main-wrapper .right-side .subTitle-wrapper{
+	    position: relative;
+	    margin-bottom: 14px;
+	}
+
+	.main-wrapper .right-side .subTitle-wrapper .subTitle-content{
+	    position: absolute;
+	    left: 0px;
+	}
+	.main-wrapper .right-side .subTitle-wrapper .subTitle-content p{
+		font-size: 18px;
+		color:#666;
+	}
+	.main-wrapper .right-side .subTitle-wrapper .subTitle-operate{
+	    position: absolute;
+	    right: 0px;
+	}
+	.main-wrapper .right-side .subTitle-wrapper .subTitle-operate a{
+		color: #154e81;
+	}
+	/*****/
+	.right-content-wrapper{
+		min-height: 400px;
+	}
+	.right-content-wrapper .inner-content{
+		width: 100%;
+		padding: 20px;
+	}
+	.right-content-wrapper .inner-content .info-wrapper {
+		margin-bottom: 20px;
+	}
+	.right-content-wrapper .inner-content .info-wrapper  .title{
+		position: relative;
+		height: 40px;
+		background: #f9f9f9;
+	}
+
+	.right-content-wrapper .inner-content .info-wrapper  .content{
+		margin-left: 20px;
+	}
+	.right-content-wrapper .inner-content .info-wrapper  .content .content-inline{
+		display: flex;
+		margin-top: 14px;
+	}
+	.right-content-wrapper .inner-content .info-wrapper  .content .content-inline .content-inline-item{
+		width: 328px;
+
+	}
+	.right-content-wrapper .inner-content .info-wrapper  .content .content-inline .content-inline-item input{
+		width: 149px;
+		height: 23px;
+	}
+	.right-content-wrapper .inner-content .info-wrapper  .content .content-inline .content-inline-item label{
+		width: 70px;
+		color: #666;
+	}
+	.right-content-wrapper .inner-content .info-wrapper  .content .content-inline .content-inline-item p{
+		color: #666;
+		font-weight: 500;
+	}
+	.right-content-wrapper .inner-content .info-wrapper  .content .content-inline .content-inline-item label.largeSpace{
+		width: 100px;
+	}
+	.right-content-wrapper .inner-content .info-wrapper  .title h1{
+		position: absolute;
+	    left: 20px;
+	    /* line-height: 40px; */
+	    font-size: 16px;
+	    font-weight: 500;
+	    color: #666;
+	    margin: 0;
+	    top: 13px;
+	    letter-spacing: 2px;
+	    padding: 0;
+	}
+	.right-content-wrapper .inner-content .info-wrapper  .title a{
+		position: absolute;
+	    right: 20px;
+	    top: 13px;
+	    letter-spacing: 2px;
+	}
+	.breadcrumb-wrapper{
+		color: #154e81;
+		font-size: 16px;
+	}
+	.breadcrumb-wrapper a{
+		color: #999;
+	}
+	</style>
+</head>
+<body>
+
+<div class="header">
+	<h1>福特 - 班车管理平台</h1>
+</div>
+
+
+
+<!-- <div class="login-wrapper">
+	<div class="title-wrapper">
+		<h1>激活</h1>
+	</div>
+	<div class="content-wrapper">
+		<p class="message">验证码已发送至 15940885590</p>
+		<div class="form-input-common-wrapper">
+			<input type="text" class="form-control form-input-common" placeholder="验证码">
+			<div class="code"><a href="###">获取验证码</a></div>
+		</div>
+		<div class="form-input-common-wrapper">
+			<input type="text" class="form-control form-input-common" placeholder="输入密码">
+			<div class="status">
+				<a href="###" class = "eye-close"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAbpJREFUOBHtkc9LAkEUx2dm1T0oqLnakgYRnYKgolM/ibr6X9SlS3RI6NwhPFTQKaK/wFshEQQdizrUQTpFh4J2VwVXBfNHzExvttZMFKm81YNl3nzfe5837y1OJBIS6qKRLrIs1D/w9xu1dpjJFCO6nts2TVP+CTKdLszAty5qLaDTSUuc42ilgo4B6vkO1DDMBUp5kvN3lgX0+/2mLLNZgAbKZXyZTufGOkGhMdH1/BrUHGGMNlTVG6+/UDiBQMAgBJ1jzIcoxVfPz+a+phWUVmDDyM/DNDcQ20SI1xDCF3aew3agWwyevexw8DnGiBt8SGaPoJ9BwS0UFqFZP+iLUBMhhOxI0utetSrtYsxOM5n8VCjke6gDGeMDkoSjoVDP9UeTaU3LHYK/ACAMUA9j+AXAw5JEBnt7vU8iLxgMLqVS93FKkZjmExgO+1dEQqNhTEZgPweq6tsSutgbjKpTyibgagGz2SyHeMyus36KfWk8DaPmhvs4dE7aOvw8xhg6gV1P2lrzWR+5OaCqrpKmlUfDYe9dY0yW6arL5YIVtLa2QJHe1/cVJjRFUYribGdtR25X0En/g8A3mxenAWB/hIcAAAAASUVORK5CYII="></a>
+				<a href="###" class = "eye-open"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAAMCAYAAACA0IaCAAAAAXNSR0IArs4c6QAAAlNJREFUKBV1Uk1oE0EYndnE3VINtYgmoDkU8S6KBw+CePAQ9aIS0IASyGabJruRHkQPvVTBgghmk7Zu0jR2bRHSo3gSQQ+KB0Gox6JYL0WDtlJrNr/j+xo2NIV+sDvzve9v3pvhbBcrl8ueSmX9RLPJhiSJ+zhn3xWFLamq+mOXEsZ3BizLGqjV+F3GREgI9pExvsw5r8IP4jsLv4KaB4YRf7uztqeZac5cEqI9jpOYfv+AHQ6HW8Vi0ec4PpFMhv9ScSZTOMm5eITtiqKIhKZp/9ym3WaZTH4UVM5LkhJJpW7+mp62D9XrTgnY8U6y+OD17ouNjETWyM9mrTvtNr8qy32hROLGT8Ik+pmmlcK0M4HA/gvUiLBOI/4GdA7runoE9D41m5tPKEam69oEGDxG3iuShjApmy2cQ+IVn0++RrQIJGrQ55hhqA/Jh2YCTe9je6pUKvURRoYh81ie1WpsgXxJCKEREI1GHQLISCMstS2n99fY2PBTrGte7555IfhpsDsqQcQkTnErl8tfdDM6YvNv0OW6iyGZhi4ZRqg7pFAo+Fut+mvQvW0Y2petC5icnA22Wo2XEPsetFikBqY5e5Cx5gy2ATwRD5iu9Pd71Fgs9pvikGcIrF4gZqXT8Sxh3dukYiEaz9Hws8czOOY+Bdu291arVbH9CZhmPoLaCQwYdYf3NCOHXv3q6noatOOSxJ5i6qKux7/SBUxLQw2GpuQQiQxcE2WZWN4OLpMda51T+YCtOZycwfabQfT+WVQCaKZDPgP9u+AzYHW++357v4/kjv6Mh/1BwgAAAAASUVORK5CYII="></a>
+
+			</div>
+		</div>
+		<div class="form-input-common-wrapper">
+			<input type="text" class="form-control form-input-common" placeholder="确认密码">
+			<div class="status">
+				<a href="###" class = "eye-close"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAbpJREFUOBHtkc9LAkEUx2dm1T0oqLnakgYRnYKgolM/ibr6X9SlS3RI6NwhPFTQKaK/wFshEQQdizrUQTpFh4J2VwVXBfNHzExvttZMFKm81YNl3nzfe5837y1OJBIS6qKRLrIs1D/w9xu1dpjJFCO6nts2TVP+CTKdLszAty5qLaDTSUuc42ilgo4B6vkO1DDMBUp5kvN3lgX0+/2mLLNZgAbKZXyZTufGOkGhMdH1/BrUHGGMNlTVG6+/UDiBQMAgBJ1jzIcoxVfPz+a+phWUVmDDyM/DNDcQ20SI1xDCF3aew3agWwyevexw8DnGiBt8SGaPoJ9BwS0UFqFZP+iLUBMhhOxI0utetSrtYsxOM5n8VCjke6gDGeMDkoSjoVDP9UeTaU3LHYK/ACAMUA9j+AXAw5JEBnt7vU8iLxgMLqVS93FKkZjmExgO+1dEQqNhTEZgPweq6tsSutgbjKpTyibgagGz2SyHeMyus36KfWk8DaPmhvs4dE7aOvw8xhg6gV1P2lrzWR+5OaCqrpKmlUfDYe9dY0yW6arL5YIVtLa2QJHe1/cVJjRFUYribGdtR25X0En/g8A3mxenAWB/hIcAAAAASUVORK5CYII="></a>
+				<a href="###" class = "eye-open"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAAMCAYAAACA0IaCAAAAAXNSR0IArs4c6QAAAlNJREFUKBV1Uk1oE0EYndnE3VINtYgmoDkU8S6KBw+CePAQ9aIS0IASyGabJruRHkQPvVTBgghmk7Zu0jR2bRHSo3gSQQ+KB0Gox6JYL0WDtlJrNr/j+xo2NIV+sDvzve9v3pvhbBcrl8ueSmX9RLPJhiSJ+zhn3xWFLamq+mOXEsZ3BizLGqjV+F3GREgI9pExvsw5r8IP4jsLv4KaB4YRf7uztqeZac5cEqI9jpOYfv+AHQ6HW8Vi0ec4PpFMhv9ScSZTOMm5eITtiqKIhKZp/9ym3WaZTH4UVM5LkhJJpW7+mp62D9XrTgnY8U6y+OD17ouNjETWyM9mrTvtNr8qy32hROLGT8Ik+pmmlcK0M4HA/gvUiLBOI/4GdA7runoE9D41m5tPKEam69oEGDxG3iuShjApmy2cQ+IVn0++RrQIJGrQ55hhqA/Jh2YCTe9je6pUKvURRoYh81ie1WpsgXxJCKEREI1GHQLISCMstS2n99fY2PBTrGte7555IfhpsDsqQcQkTnErl8tfdDM6YvNv0OW6iyGZhi4ZRqg7pFAo+Fut+mvQvW0Y2petC5icnA22Wo2XEPsetFikBqY5e5Cx5gy2ATwRD5iu9Pd71Fgs9pvikGcIrF4gZqXT8Sxh3dukYiEaz9Hws8czOOY+Bdu291arVbH9CZhmPoLaCQwYdYf3NCOHXv3q6noatOOSxJ5i6qKux7/SBUxNLQw2GpuQQiQxcE2WZWN4OLpMda51T+YCtOZycwfabQfT+WVQCaKZDPgP9u+AzYHW++357v4/kjv6Mh/1BwgAAAAASUVORK5CYII="></a>
+
+			</div>
+		</div>
+	</div>
+	<div class="submit-wrapper">
+		<button type="submit" class="form-control submit-btn">下一步</button>
+	</div>
+</div> -->
+
+<div class="main-wrapper">
+	<div class="main-content">
+		<div class="left-side">
+			<div class="title-wrapper">
+				<span>班车安排</span>
+			</div>
+			<div class="menu-list">
+				<ul>
+					<li>线路管理</li>
+					<li>站点管理</li>
+					<li>车辆管理</li>
+					<li>排管管理</li>
+				</ul>
+			</div>
+		</div>
+		<div class="right-side">
+			<div class="title-wrapper breadcrumb-wrapper">
+				<a class="">司机管理</a> /司机详情
+			</div>
+			<div class="subTitle-wrapper">
+			 	<div class="subTitle-content">
+			 		<p>赵青川</p>
+			 	</div>
+			 	<div class="subTitle-operate">
+					<a>删除司机</a>
+			 	</div>
+			</div>
+			<div class="right-content-wrapper container-shadow-border">
+				<div class="inner-content">
+					<div class="info-wrapper">
+						<div class="title">
+							<h1>基础信息</h1>
+							<a>编辑</a>
+						</div>
+						<div class="content">
+							<div class="content-inline">
+								<div class="content-inline-item">
+									<label for="dirverName">司机名称:</label>
+									<input type="text" name="name" id="dirverName">
+								</div>
+								<div class="content-inline-item">
+									<label class="largeSpace" for="phonenumber">手机号码：</label>
+									<input type="text" id="phonenumber">
+								</div>
+							</div>
+							<div class="content-inline">
+								<div class="content-inline-item">
+									<label for="busCompany">巴士公司:</label>
+									<input type="text" id="busCompany">
+								</div>
+							</div>
+							<div class="content-inline">
+								<div class="content-inline-item">
+									<label for="license">驾照信息:</label>
+									<input type="text" id="license" >
+								</div>
+								<div class="content-inline-item">
+									<label class="largeSpace" for="licenseDate">驾照到期时间:</label>
+									<input type="text" name="name" id="licenseDate">
+								</div>								
+							</div>								
+						</div>
+					</div>
+
+					<div class="info-wrapper">
+						<div class="title">
+							<h1>更多信息</h1>
+						</div>
+						<div class="content">
+							<div class="content-inline">
+								<div class="content-inline-item">
+									<p>公司名称：JNPDG</p>
+								</div>
+								<div class="content-inline-item">
+									<p>二级公司名称：JNPDG</p>
+								</div>
+							</div>						
+						</div>
+					</div>
+
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+</body>
+</html>

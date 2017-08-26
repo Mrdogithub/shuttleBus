@@ -1,0 +1,56 @@
+<style type="text/css">
+	.pagination-wrapper{
+		width: 100%;
+		position: relative;
+		height: 30px;
+		font-size: 12px;
+		color: #999;
+		cursor: pointer;
+	}
+	.pagination-wrapper .pagination-num{
+		position: absolute;
+		top:0px;
+		right: 300px;
+	}
+	.pagination-wrapper .pagination-operate{
+		list-style-type: none;
+		position: absolute;
+		display: flex;
+		padding: 0;
+		margin: 0;
+
+	}
+	.pagination-wrapper .pagination-operate li,
+	.pagination-wrapper .pagination-num select{
+		border:1px solid #999;
+		margin: 2px;
+		padding: 2px;
+	}
+</style>
+
+<div class="pagination-wrapper">
+	<div class="pagination-num">
+		<select ng-model="currentItemNumber"
+				ng-options="s for s in [20,40,60,80,100]"
+				ng-change="itemNumChange(currentItemNumber)"></select>
+		<span><label>222条</label>每页</span>
+		<!--
+			<span>共{{pageTotal.length}页,<label>{{total}}</label>条</span>
+		-->
+	</div>
+
+	<ul class="pagination-operate">
+	<!-- 	<li ng-class="{no_active:pageListFlag.pre == false}"
+			ng-click="goToFirstOrLast(1)">首页</li> -->
+		<li ng-class="{no_active:pageListFlag.pre == false}"
+			ng-click="prevPageList()">上一页</li>
+		<li ng-repeat="i in pageList"
+			class="page_num {{i == currentPageIndex?'active':''}}"
+			ng-click="changePage(i)">
+			<!--{{i}}-->12</li>
+		<li ng-class="{no_active:pageListFlag.next == false}"
+			ng-click="nextPageList()">下一页</li>
+	<!-- 	<li ng-class="{no_active:pageListFlag.next == false}"
+			ng-click="goToFirstOrLast(pageTotal.length)"></li> -->
+	</ul>
+</div>
