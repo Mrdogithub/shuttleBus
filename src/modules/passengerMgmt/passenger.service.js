@@ -78,9 +78,32 @@ angular.module('passengerHttpServiceModule',['ngResource']).factory('passengerHt
 				 //  }
 			}
 		};
-		console.log('passenger service');
-		console.log(1,paramsData.paramsList)
 		return  $http({ method: 'DELETE',url:paramsData.apiPath,params:paramsData.paramsList});
+	};
+
+
+	passengerHttp.addPassenger = function(paramsObj){
+		var paramsData = {
+			"apiPath":passengerAccount+"passenger",
+			paramsList:{
+				 "accountDTO": {
+				    "phoneNumber": paramsObj.phoneNumber,
+				    "roleType": paramsObj.roleType
+				  },
+				  "baseProfileDTO": {
+				    "accountId": paramsObj.accountId,
+				    "name": paramsObj.name
+				  },
+				  "passengerProfileDTO": {
+				    "accountId": paramsObj.accountId,
+				    "employeeId": paramsObj.employeeId,
+				    "hrUuid": paramsObj.hrUuid,
+				    "passengerUuid": paramsObj.passengerUuid,
+				    "secondCompanyId":paramsObj.secondCompanyId
+				  }
+			}
+		};
+		return  $http({ method: 'POST',url:paramsData.apiPath,params:paramsData.paramsList});
 	};
 
 	return passengerHttp;

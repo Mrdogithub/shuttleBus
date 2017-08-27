@@ -14,16 +14,19 @@
 </div>
 <div class="subTitle-wrapper">
 	<div class="subTitle-content">
-
 	 	<a style="margin-left: 20px;margin-right: 30px;" ng-click="selectAll()">全选</a>
 	 	<a ng-click="trick()">删除</a>
 	</div>
 	<div class="subTitle-operate">
-		<a style="margin-right: 30px;">新建乘客</a>
+		<a ng-click="addPassenger()">新建乘客</a>
 		<a>导入乘客</a>
 	</div>	 	
 </div>
+
 <div class="right-content-wrapper container-shadow-border">
 	<table-component table-config = "tableConfig" table-data="pageConfigs.list"></table-component>
+</div>
+
+<div class="pagination-wrapper">
 	<pagination-component page-configs= "pageConfigs"></pagination-component>
 </div>

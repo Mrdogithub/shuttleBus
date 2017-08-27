@@ -30,6 +30,10 @@ angular.module('listControllerModule',[]).controller('listController',function(p
 
 	}
 
+	$scope.addPassenger = function(){
+		$state.go('passenger.add',{
+			'passengerUuid':'111','hrUuid':'111'})
+	};
 
 	$scope.tableConfig={
 		stableFlag:{
@@ -55,8 +59,6 @@ angular.module('listControllerModule',[]).controller('listController',function(p
 						'passengerName':item.baseProfileInDTO.name,
 					}
 
-					console.log('----- list ----------')
-					console.log(1,_params)
 					$state.go('passenger.detail',{
 						'status':_params.status,
 						'passengerUuid':_params.passengerUuid,

@@ -43,6 +43,19 @@ angular.module('app',['injectModules'])
 	.state('passenger.list',{
 		url:'/list',
 		templateUrl:'modules/passengerMgmt/list.html',
+		params:{
+			'status':null,
+			'passengerUuid':null,
+			'roleType':null,
+			'hrUuid':null,
+			'secondCompanyId':null,
+			'accountId':null,
+			'routeName':null,
+			'stationName':null,
+			'phoneNumber':null,
+			'employeeId':null,
+			'passengerName':null
+		},
 		controller:'listController'
 	})
 	.state('passenger.feedback',{
@@ -54,6 +67,15 @@ angular.module('app',['injectModules'])
 		url:'/report',
 		templateUrl:'modules/passengerMgmt/report.html',
 		controller:'reportController'
+	})
+	.state('passenger.add',{
+		url:'/add',
+		params:{
+			'passengerUuid':null,
+			'hrUuid':null
+		},
+		templateUrl:'modules/passengerMgmt/passenger.add.html',
+		controller:'passengerAddController'
 	})
 	.state('passenger.detail',{
 		url:'/detail',
@@ -71,7 +93,7 @@ angular.module('app',['injectModules'])
 			'passengerName':null
 		},
 		templateUrl:'modules/passengerMgmt/passenger.detail.html',
-		controller:'detailController'
+		controller:'passengerDetailController'
 	})
 	.state('scheduler',{
 		url:"/scheduler",

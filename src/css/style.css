@@ -1,10 +1,10 @@
-
-
-
-body{font-family:"Microsoft YaHei","Helvetica Neue",Helvetica,Arial,"Hiragino Sans GB","Hiragino Sans GB W3","WenQuanYi Micro Hei",sans-serif}.h1,.h2,.h3,.h4,.lead,h1,h2,h3,h4{font-family:"Helvetica Neue",Helvetica,Arial,"Hiragino Sans GB","Hiragino Sans GB W3","Microsoft YaHei UI","Microsoft YaHei","WenQuanYi Micro Hei",sans-serif}
+html,body{margin:0;height:100%;}
 body{
 	background-color:#e9f0f7;
-}
+	font-family:"Microsoft YaHei","Helvetica Neue",Helvetica,Arial,"Hiragino Sans GB","Hiragino Sans GB W3","WenQuanYi Micro Hei",sans-serif}
+.h1,.h2,.h3,.h4,.lead,h1,h2,h3,h4{
+	font-family:"Helvetica Neue",Helvetica,Arial,"Hiragino Sans GB","Hiragino Sans GB W3","Microsoft YaHei UI","Microsoft YaHei","WenQuanYi Micro Hei",sans-serif}
+
 ul{
 	margin: 0;
 	padding: 0;
@@ -203,10 +203,15 @@ input:focus { outline: none; }
     .selected{
     	background: #047190;
     }
+    .main-wrapper,.main-content{
+    	height: 94%;
+    }
 	.main-wrapper{
 		width: 100%;
-		padding: 25px;
-
+		padding: 0px 25px 0px 25px;
+		position:absolute;
+		top:75px;
+		bottom:0;
 	}
 	.main-content{
 		background: #fff;
@@ -307,6 +312,29 @@ input:focus { outline: none; }
 	margin-right: 15px;
 	border: 1px solid #338ca5;
 }
+
 a.btn-confirm:hover{
 	color: #fff;
+}
+
+
+/***reset bootstrap**/
+.form-control{
+	border-radius: 0px;
+	display: inline-block;
+	height: 23px;
+}
+
+.form-control-feedback {
+    height: 23px;
+    line-height: 24px;
+}
+.control-label {
+	text-align: left;
+}
+@media (min-width: 768px)
+.form-horizontal .control-label {
+    padding-top: 3px;
+    margin-bottom: 0;
+    text-align: right;
 }

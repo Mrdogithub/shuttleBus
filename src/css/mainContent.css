@@ -97,7 +97,7 @@
 	}
 	.right-content-wrapper .inner-content .info-wrapper  .content .content-inline .content-inline-item label{
 		width: 70px;
-		color: #666;
+		-color: #666;
 	}
 	.right-content-wrapper .inner-content .info-wrapper  .content .content-inline .content-inline-item p{
 		color: #666;

@@ -13,6 +13,7 @@ angular.module('injectModules',[
 	'loginControllerModule',
 	'activeControllerModule',
 	'smsCodeModule',
+	'breadcrumbModule',
 	'passengerControllerModule',
 	'listControllerModule',
 	'reportControllerModule',
@@ -27,6 +28,7 @@ angular.module('injectModules',[
 	'tableComponentModule',
 	'paginationModule',
 	'passengerHttpServiceModule',
+	'passengerAddControllerModule',
 	'passengerDetailControllerModule',
 	'httpInterceptorModule'
 ])

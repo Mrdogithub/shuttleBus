@@ -1,4 +1,45 @@
 'use strict'
+
+/**
+ * @description
+ * goback component works in html files
+ *
+ * invoke in html file by:<go-back goPath="entry.login" params="pathParamsForGoBack"></go-back>
+ * @goPath={string}:refer to module/config/route.js file,and get target place string in state('params')
+ * @params={josn}:define json obj as params for the goPath
+ *
+ */
+angular.module('breadcrumbModule',[]).directive('breadcrumbComponent',function($state){
+	return {
+		restrict:"EA",
+		template: '<a class="breadcrumb-link">{{breadcrumbText.lv1}}'
+					+'<img style="margin-left: 5px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAANCAYAAABlyXS1AAAAAXNSR0IArs4c6QAAAIZJREFUGBljmDlz5om5c+eaMGABTCwsLDl///5dhU0BI0gDSAKkgJmZOSw5OfkMzBCwJC4FcElsClAk0RVgSIIUAH0QCqQ6MCTnzZun9Pv3721MTExZKJJAHcpAHVtBEqmpqfvgkugSIOPBktgkwJIgCUZGxm1AnAkyCiQIA0xAwcnYJEAKACT1SIbDa5BdAAAAAElFTkSuQmCC"/>'
+					+'</a>'
+					+'<span>{{breadcrumbText.lv2}}</span>',
+		scope:{
+			gopath:'@',
+			breadcrumbParams:'=',
+			breadcrumbText:'='
+		},
+		link:function(scope,elements,attrs){
+			console.log('breadcrumbText')
+			console.log(scope.breadcrumbText)
+			elements.bind('click',function(){
+				if(scope.gopath){
+					$state.go(scope.gopath,scope.breadcrumbParams)	
+				}else{
+					window.history.go(-1)
+				}
+				
+			});
+		}
+	}
+})	
+
+
+
+	
+'use strict'
 /**
  * @description
  * md5 password service. 
@@ -956,6 +997,7 @@ angular.module('injectModules',[
 	'loginControllerModule',
 	'activeControllerModule',
 	'smsCodeModule',
+	'breadcrumbModule',
 	'passengerControllerModule',
 	'listControllerModule',
 	'reportControllerModule',
@@ -970,6 +1012,7 @@ angular.module('injectModules',[
 	'tableComponentModule',
 	'paginationModule',
 	'passengerHttpServiceModule',
+	'passengerAddControllerModule',
 	'passengerDetailControllerModule',
 	'httpInterceptorModule'
 ])
@@ -1018,6 +1061,19 @@ angular.module('app',['injectModules'])
 	.state('passenger.list',{
 		url:'/list',
 		templateUrl:'modules/passengerMgmt/list.html',
+		params:{
+			'status':null,
+			'passengerUuid':null,
+			'roleType':null,
+			'hrUuid':null,
+			'secondCompanyId':null,
+			'accountId':null,
+			'routeName':null,
+			'stationName':null,
+			'phoneNumber':null,
+			'employeeId':null,
+			'passengerName':null
+		},
 		controller:'listController'
 	})
 	.state('passenger.feedback',{
@@ -1029,6 +1085,15 @@ angular.module('app',['injectModules'])
 		url:'/report',
 		templateUrl:'modules/passengerMgmt/report.html',
 		controller:'reportController'
+	})
+	.state('passenger.add',{
+		url:'/add',
+		params:{
+			'passengerUuid':null,
+			'hrUuid':null
+		},
+		templateUrl:'modules/passengerMgmt/passenger.add.html',
+		controller:'passengerAddController'
 	})
 	.state('passenger.detail',{
 		url:'/detail',
@@ -1046,7 +1111,7 @@ angular.module('app',['injectModules'])
 			'passengerName':null
 		},
 		templateUrl:'modules/passengerMgmt/passenger.detail.html',
-		controller:'detailController'
+		controller:'passengerDetailController'
 	})
 	.state('scheduler',{
 		url:"/scheduler",
@@ -1481,66 +1546,6 @@ angular.module('loginHttpServiceModule',[]).factory('loginHttpService',function(
 	return loginHttp;
 });
 'use strict'
-angular.module('passengerDetailControllerModule',[])
-.controller('detailController',function(passengerHttpService,$stateParams,$state,$scope){
-
-	if($stateParams.passengerUuid && $stateParams.hrUuid){
-		$scope.passengerUuid = $stateParams.passengerUuid;
-		$scope.params = {
-			'status':$stateParams.status == 0?'未激活':'已激活',
-			'passengerUuid':$stateParams.passengerUuid,
-			'roleType':$stateParams.roleType,
-			'hrUuid':$stateParams.hrUuid,
-			'secondCompanyId':$stateParams.secondCompanyId,
-			'accountId':$stateParams.accountId,
-			'routeName':$stateParams.routeName,
-			'stationName':$stateParams.stationName,
-			'phoneNumber':$stateParams.phoneNumber,
-			'employeeId':$stateParams.employeeId,
-			'passengerName':$stateParams.passengerName
-
-		};
-		$scope.active = false;
-	}else{
-		$state.go('passenger.list',{'hrUUID':'666','secondCompanyID':'666'})
-	}
-
-	$scope.editPassengerProfile = function(flag){
-		$scope.active = !flag;
-	};
-
-	$scope.submitPassengerProfile = function(){
-
-		var _params = {
-			'phoneNumber':$scope.params.phoneNumber,
-			'roleType':$scope.params.roleType,
-			'accountId':$scope.params.accountId,
-			'name':$scope.params.passengerName,
-			'employeeId':$scope.params.employeeId,
-			'hrUuid':$scope.params.hrUuid,
-			'passengerUuid':$scope.params.passengerUuid,
-			'secondCompanyId':$scope.params.secondCompanyId
-		}
-		passengerHttpService.updatePassengerByID(_params).then(function(result){
-			console.log('result')
-		},function(){})
-	};
-
-	$scope.deletePassenger = function(){
-		var _params = {
-			'roleType':$scope.params.roleType,
-			'hrUuid':$scope.params.hrUuid,
-			'passengerUuid':$scope.params.passengerUuid
-		}
-
-		console.log("--- del passenger ---")
-		console.log(1,_params)
-		passengerHttpService.deletePassengerByID(_params).then(function(result){
-			console.log(1,result)
-		},function(){})
-	};
-})
-'use strict'
 angular.module('feedbackControllerModule',[]).controller('feedbackController',function($scope){
 	
 })
@@ -1615,6 +1620,10 @@ angular.module('listControllerModule',[]).controller('listController',function(p
 
 	}
 
+	$scope.addPassenger = function(){
+		$state.go('passenger.add',{
+			'passengerUuid':'111','hrUuid':'111'})
+	};
 
 	$scope.tableConfig={
 		stableFlag:{
@@ -1640,8 +1649,6 @@ angular.module('listControllerModule',[]).controller('listController',function(p
 						'passengerName':item.baseProfileInDTO.name,
 					}
 
-					console.log('----- list ----------')
-					console.log(1,_params)
 					$state.go('passenger.detail',{
 						'status':_params.status,
 						'passengerUuid':_params.passengerUuid,
@@ -1708,6 +1715,80 @@ angular.module('listControllerModule',[]).controller('listController',function(p
 	});
 })
 'use strict'
+angular.module('passengerAddControllerModule',[])
+.controller('passengerAddController',function(passengerHttpService,$stateParams,$state,$scope){
+
+	//set default
+
+
+	if($stateParams.hrUuid){
+		$scope.passengerUuid = $stateParams.passengerUuid;
+
+		$scope.params = {
+			'status':1,
+			'passengerUuid':$stateParams.passengerUuid,
+			'roleType':$stateParams.roleType,
+			'hrUuid':$stateParams.hrUuid,
+			'secondCompanyId':$stateParams.secondCompanyId,
+			'accountId':$stateParams.accountId,
+			'routeName':$stateParams.routeName,
+			'stationName':$stateParams.stationName,
+			'phoneNumber':$stateParams.phoneNumber,
+			'employeeId':$stateParams.employeeId,
+			'passengerName':$stateParams.passengerName
+
+		};
+		$scope.active = true;
+		$scope.breadcrumbParams = {
+			'hrUuid':$stateParams.hrUuid,
+			'secondCompanyId':$stateParams.secondCompanyId	
+		}
+		$scope.breadcrumbText={
+			"lv1":"乘客列表",
+			"lv2":"乘客详情"
+		}
+	}else{
+		$state.go('passenger.list',{'hrUUID':'666','secondCompanyID':'666'})
+	}
+
+	$scope.editPassengerProfile = function(flag){
+		$scope.active = !flag;
+	};
+
+	$scope.addPassengerProfile = function(){
+		var _params = {
+			'phoneNumber':$scope.params.phoneNumber,
+			'roleType':$scope.params.roleType,
+			'accountId':$scope.params.accountId,
+			'name':$scope.params.passengerName,
+			'employeeId':$scope.params.employeeId,
+			'hrUuid':$scope.params.hrUuid,
+			'passengerUuid':$scope.params.passengerUuid,
+			'secondCompanyId':$scope.params.secondCompanyId
+		}
+
+		console.log(_params)
+		passengerHttpService.addPassenger(_params).then(function(result){
+			console.log('result')
+		},function(){})
+	}
+	
+
+	$scope.deletePassenger = function(){
+		var _params = {
+			'roleType':$scope.params.roleType,
+			'hrUuid':$scope.params.hrUuid,
+			'passengerUuid':$scope.params.passengerUuid
+		}
+
+		console.log("--- del passenger ---")
+		console.log(1,_params)
+		passengerHttpService.deletePassengerByID(_params).then(function(result){
+			console.log(1,result)
+		},function(){})
+	};
+})
+'use strict'
 angular.module('passengerControllerModule',[])
 .controller('passengerController',function($scope){
 
@@ -1720,6 +1801,76 @@ angular.module('passengerControllerModule',[])
 		{'name':'乘坐情况','class':'','permission':'','uiSref':'passenger.report'},
 	];
 
+})
+'use strict'
+angular.module('passengerDetailControllerModule',[])
+.controller('passengerDetailController',function(passengerHttpService,$stateParams,$state,$scope){
+
+	if($stateParams.passengerUuid && $stateParams.hrUuid){
+		$scope.passengerUuid = $stateParams.passengerUuid;
+		$scope.params = {
+			'status':$stateParams.status == 0?'未激活':'已激活',
+			'passengerUuid':$stateParams.passengerUuid,
+			'roleType':$stateParams.roleType,
+			'hrUuid':$stateParams.hrUuid,
+			'secondCompanyId':$stateParams.secondCompanyId,
+			'accountId':$stateParams.accountId,
+			'routeName':$stateParams.routeName,
+			'stationName':$stateParams.stationName,
+			'phoneNumber':$stateParams.phoneNumber,
+			'employeeId':$stateParams.employeeId,
+			'passengerName':$stateParams.passengerName
+
+		};
+		$scope.active = false;
+		$scope.breadcrumbParams = {
+			'hrUuid':$stateParams.hrUuid,
+			'secondCompanyId':$stateParams.secondCompanyId	
+		}
+		$scope.breadcrumbText={
+			"lv1":"乘客列表",
+			"lv2":"乘客详情"
+		}
+		console.log('xxx')
+		console.log($scope.breadcrumbText)
+	}else{
+		$state.go('passenger.list',{'hrUUID':'666','secondCompanyID':'666'})
+	}
+
+	$scope.editPassengerProfile = function(flag){
+		$scope.active = !flag;
+	};
+
+	$scope.submitPassengerProfile = function(){
+
+		var _params = {
+			'phoneNumber':$scope.params.phoneNumber,
+			'roleType':$scope.params.roleType,
+			'accountId':$scope.params.accountId,
+			'name':$scope.params.passengerName,
+			'employeeId':$scope.params.employeeId,
+			'hrUuid':$scope.params.hrUuid,
+			'passengerUuid':$scope.params.passengerUuid,
+			'secondCompanyId':$scope.params.secondCompanyId
+		}
+		passengerHttpService.updatePassengerByID(_params).then(function(result){
+			console.log('result')
+		},function(){})
+	};
+
+	$scope.deletePassenger = function(){
+		var _params = {
+			'roleType':$scope.params.roleType,
+			'hrUuid':$scope.params.hrUuid,
+			'passengerUuid':$scope.params.passengerUuid
+		}
+
+		console.log("--- del passenger ---")
+		console.log(1,_params)
+		passengerHttpService.deletePassengerByID(_params).then(function(result){
+			console.log(1,result)
+		},function(){})
+	};
 })
 'use strict'
 angular.module('passengerHttpServiceModule',['ngResource']).factory('passengerHttpService',function($http,APISERVICEPATH){
@@ -1801,9 +1952,32 @@ angular.module('passengerHttpServiceModule',['ngResource']).factory('passengerHt
 				 //  }
 			}
 		};
-		console.log('passenger service');
-		console.log(1,paramsData.paramsList)
 		return  $http({ method: 'DELETE',url:paramsData.apiPath,params:paramsData.paramsList});
+	};
+
+
+	passengerHttp.addPassenger = function(paramsObj){
+		var paramsData = {
+			"apiPath":passengerAccount+"passenger",
+			paramsList:{
+				 "accountDTO": {
+				    "phoneNumber": paramsObj.phoneNumber,
+				    "roleType": paramsObj.roleType
+				  },
+				  "baseProfileDTO": {
+				    "accountId": paramsObj.accountId,
+				    "name": paramsObj.name
+				  },
+				  "passengerProfileDTO": {
+				    "accountId": paramsObj.accountId,
+				    "employeeId": paramsObj.employeeId,
+				    "hrUuid": paramsObj.hrUuid,
+				    "passengerUuid": paramsObj.passengerUuid,
+				    "secondCompanyId":paramsObj.secondCompanyId
+				  }
+			}
+		};
+		return  $http({ method: 'POST',url:paramsData.apiPath,params:paramsData.paramsList});
 	};
 
 	return passengerHttp;

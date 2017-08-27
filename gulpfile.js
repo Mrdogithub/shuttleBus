@@ -41,6 +41,13 @@ gulp.task('css',function() {
 	.pipe($.connect.reload())
 });
 
+gulp.task('fonts',function(){
+	gulp.src(app.srcPath + 'fonts/**')
+	.pipe(gulp.dest(app.devPath + "fonts"))
+	.pipe(gulp.dest(app.prdPath + "fonts"))
+	.pipe($.connect.reload())
+})
+
 gulp.task('html', function () {
 	gulp.src(app.srcPath + '**/*.html')
 	.pipe(gulp.dest(app.devPath))
@@ -48,7 +55,7 @@ gulp.task('html', function () {
 	.pipe($.connect.reload());
 });
 
-gulp.task('reload-dev',['lib','css','js','html','data'],function() {
+gulp.task('reload-dev',['lib','css','js','html','data','fonts'],function() {
    return gulp.src(app.srcPath + '**/*.*')
      .pipe($.connect.reload());//服务器重启和各文件变化
 });
@@ -56,13 +63,13 @@ gulp.task('reload-dev',['lib','css','js','html','data'],function() {
 gulp.task('watch', function() {
      gulp.watch(app.srcPath + '**/*.*',['reload-dev']);
 })
-gulp.task('build',['lib','css','js','html','watch','data','reload-dev']);
+gulp.task('build',['lib','css','js','html','watch','data','fonts','reload-dev']);
 
 gulp.task('run',['build'],function(){
 	$.connect.server({
 		root:[app.devPath],
 		livereload:true,
-		port:1234
+		port:9898
 	});
 });
 
