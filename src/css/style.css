@@ -204,7 +204,7 @@ input:focus { outline: none; }
     	background: #047190;
     }
     .main-wrapper,.main-content{
-    	height: 94%;
+    	height:auto;
     }
 	.main-wrapper{
 		width: 100%;
@@ -323,6 +323,8 @@ a.btn-confirm:hover{
 	border-radius: 0px;
 	display: inline-block;
 	height: 23px;
+	box-shadow:none;
+	-webkit-box-shadow:none;
 }
 
 .form-control-feedback {

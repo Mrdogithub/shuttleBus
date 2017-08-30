@@ -14,9 +14,9 @@ angular.module('tableComponentModule',[]).directive('tableComponent',function(lo
 		restrict:"EA",
 		template:'	<div class="table-wrapper">'
 				+' 	    <div class="table-head">'
-				+'		 	<span class="first-operate"></span>'
+				+'		 	<span class="first-operate" ng-if="stableFlag.checkbox"></span>'
 				+'			<span ng-repeat="head in tableConfig.head">{{head["selfKey"]["value"]}}</span>'
-				+'			<span>操作</span>'
+				+'			<span ng-if="tableConfig.operateIfFlag">操作</span>'
 				+'		</div>'
 				+'		<ul class="table-body">'
 				+'			<li class="list-item" ng-repeat="item in tableData track by $index">'
@@ -31,7 +31,8 @@ angular.module('tableComponentModule',[]).directive('tableComponent',function(lo
 				+'				</span>'
 				+'			</li>'
 				+'		</ul>'
-				+'	</div>',
+				+'	</div>'
+				+'  <div ng-if="tableData == null" style="text-align: center;margin-top: 50px;">{{tableData.length}}暂无数据</div>',
 		scope:{
 			tableConfig:'=',
 			tableData:'='
@@ -79,6 +80,7 @@ angular.module('tableComponentModule',[]).directive('tableComponent',function(lo
 						}
 					},
 					checkIsAllSelect:function(flag){
+						console.log(flag+"::flag")
 						var _isAllSelectFlag = 0;
 						var _array = this.checkArray;
 						var _length = _array.length;

@@ -8,8 +8,10 @@ angular.module('schedulerControllerModule',[])
 	$scope.menuArray =[
 		{'name':'线路管理','class':'','permission':'','uiSref':'scheduler.route'},
 		{'name':'站点管理','class':'','permission':'','uiSref':'scheduler.site'},
-		{'name':'司机管理','class':'','permission':'','uiSref':'scheduler.dirver'},
+		{'name':'司机管理','class':'','permission':'','uiSref':'scheduler.driver'},
 		{'name':'车辆管理','class':'','permission':'','uiSref':'scheduler.bus'},
 		{'name':'排班管理','class':'','permission':'','uiSref':'scheduler.schedule'}
-	]
-})
+	];
+
+	
+});

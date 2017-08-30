@@ -14,9 +14,10 @@ angular.module('listControllerModule',[]).controller('listController',function(p
 			
 		},
 		dataSet:function(result){
-			var _result = result.data.value;
-			for(var i=0;i<_result.length;i++){
-				_result[i]['passengerProfileOutDTO']['status'] =_result[i]['passengerProfileOutDTO']['status'] == 0?'未激活':'已激活'
+			if(result.data.value != null){
+				for(var i=0;i<_result.length;i++){
+					_result[i]['passengerProfileOutDTO']['status'] =_result[i]['passengerProfileOutDTO']['status'] == 0?'未激活':'已激活'
+				}
 			}
 		}
 		//extendParams:function(){}
@@ -24,15 +25,22 @@ angular.module('listControllerModule',[]).controller('listController',function(p
 
 	$scope.selectAll = function(){
 		//$scope.tableConfig.checkbox.selectAll = true;
+		$.alert('正在建设中....')
 		var _selectAllStatus  = !$scope.selectAllStatus;
 		console.log(_selectAllStatus+':_selectAllStatus')
 		$scope.$broadcast('checkboxSelectAll',{'status':_selectAllStatus})
 
 	}
 
+	$scope.deletePassenger = function(){
+		$.alert('正在建设中....')
+	};
+
+	$scope.importPassenger = function(){
+		$.alert('正在建设中...')
+	}
 	$scope.addPassenger = function(){
-		$state.go('passenger.add',{
-			'passengerUuid':'111','hrUuid':'111'})
+		$state.go('passenger.add',{'passengerUuid':'111','hrUuid':'111'})
 	};
 
 	$scope.tableConfig={

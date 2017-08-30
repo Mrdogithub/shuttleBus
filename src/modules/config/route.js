@@ -107,18 +107,85 @@ angular.module('app',['injectModules'])
 	})
 	.state('scheduler.site',{
 		url:'/site',
-		templateUrl:'modules/schedulerMgmt/site.html',
-		controller:'siteController'
+		templateUrl:'modules/schedulerMgmt/scheduler.site.html',
+		controller:'schedulerSiteController'
 	})
-	.state('scheduler.dirver',{
-		url:'/dirver',
-		templateUrl:'modules/schedulerMgmt/dirver.html',
-		controller:'dirverController'
+	.state('scheduler.driver',{
+		url:'/driver',
+		params:{
+			'phoneNumber':null,
+			'roleType':null,
+			'name':null,
+			'accountId':null,
+			'driverUUID':null,
+			'schedulerUUID':null,
+			'secondCompanyId':null,
+			'shuttleCompanyId':null,
+			'licenseID':null,
+			'licenseExpirationDate':null,
+			'identityCard':null
+		},
+		templateUrl:'modules/schedulerMgmt/scheduler.driver.html',
+		controller:'schedulerDriverController'
+	})
+	.state('scheduler.driverDetail',{
+		url:'/detail',
+		params:{
+			'phoneNumber':null,
+			'roleType':null,
+			'name':null,
+			'accountId':null,
+			'driverUUID':null,
+			'schedulerUUID':null,
+			'secondCompanyId':null,
+			'shuttleCompanyId':null,
+			'licenseID':null,
+			'licenseExpirationDate':null,
+			'identityCard':null
+		},
+		templateUrl:'modules/schedulerMgmt/scheduler.driver.detail.html',
+		controller:'schedulerDriverDetailController'
+	})
+	.state('scheduler.addDriver',{
+		url:'/addDriver',
+		params:{
+			'phoneNumber':null,
+			'roleType':null,
+			'name':null,
+			'accountId':null,
+			'driverUUID':null,
+			'schedulerUUID':null,
+			'secondCompanyId':null,
+			'shuttleCompanyId':null,
+			'licenseID':null,
+			'licenseExpirationDate':null,
+			'identityCard':null
+		},
+		templateUrl:'modules/schedulerMgmt/scheduler.driver.add.html',
+		controller:'schedulerAddDriverController'
 	})
 	.state('scheduler.bus',{
 		url:'/bus',
-		templateUrl:'modules/schedulerMgmt/bus.html',
-		controller:'busController'
+		templateUrl:'modules/schedulerMgmt/scheduler.bus.html',
+		controller:'schedulerBusController'
+	})
+	.state('scheduler.addBus',{
+		url:'/addDriver',
+		params:{
+			'phoneNumber':null,
+			'roleType':null,
+			'name':null,
+			'accountId':null,
+			'driverUUID':null,
+			'schedulerUUID':null,
+			'secondCompanyId':null,
+			'shuttleCompanyId':null,
+			'licenseID':null,
+			'licenseExpirationDate':null,
+			'identityCard':null
+		},
+		templateUrl:'modules/schedulerMgmt/scheduler.add.bus.html',
+		controller:'schedulerAddBusController'
 	})
 	.state('scheduler.schedule',{
 		url:'/schedule',

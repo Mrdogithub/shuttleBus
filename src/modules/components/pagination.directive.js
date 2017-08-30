@@ -2,7 +2,7 @@ angular.module('paginationModule',[])
 .directive('paginationComponent',['$parse','$q',function($parse,$q){
 	return{
 		restrict:'E',
-		template:'<div class="pagination-wrapper">'
+		template:'<div class="pagination-wrapper" ng-if="pageConfigs.list">' 
 				+'	<div class="pagination-num">'
 				+'		<select ng-model="currentItemNumber" class="pagination-select" ng-options="s for s in [20,40,60,80,100]" ng-change="itemNumChange(currentItemNumber)"></select>'
 				+'		<span>条/页</span>'
@@ -57,15 +57,27 @@ angular.module('paginationModule',[])
 
 				scope.pageConfigs.getList(_params).then(function(data){
 					var _total;
+					var data = data.data;
 					if(scope.pageConfigs.dataSet){
 						scope.pageConfigs.dataSet(data)
 					}
 
-					if(data.data){
+					if(!data.data.list){
 						data = data.data;
+						scope.pageConfigs.list = data.value;						
+					}if(data.data){
+						data = data.data;
+						scope.pageConfigs.list = data.value.list;
 					}
-					scope.pageConfigs.list = data.result || data.value;
-					_total = scope.pageConfigs.list.length;
+					
+					if(data.value.totalNumber){
+						_total = data.value.totalNumber
+					}else if (data.value == undefined){
+						_total = data.value.length;
+					}
+
+					// console.log(data.value['passengerOutDTO'])
+					// _total = data.data.value.totalNumber;
 		
 
 					// if(data.total != undefined){

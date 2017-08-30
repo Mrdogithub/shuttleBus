@@ -1,6 +1,6 @@
 
 'use strict'
-angular.module('routeControllerModule',[])
+angular.module('schedulerRouteControllerModule',[])
 .controller('routeController',function($scope){
 
 

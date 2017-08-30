@@ -4,31 +4,43 @@ angular.module('injectModules',[
 	'ngAnimate',
 	'ngResource',
 	'headerModule',
+	'leftNavModule',
+	'constModule',
 	'md5ServiceModule',
+	'smsCodeModule',
+	'breadcrumbModule',
 	'checkControllerModule',
 	'gobackModule',
-	'constModule',
+	'tableComponentModule',
+	'paginationModule',
+
 	'loginHttpServiceModule',
 	'forgetControllerModule',
 	'loginControllerModule',
 	'activeControllerModule',
-	'smsCodeModule',
-	'breadcrumbModule',
+	
+	
 	'passengerControllerModule',
-	'listControllerModule',
-	'reportControllerModule',
-	'feedbackControllerModule',
-	'leftNavModule',
-	'schedulerControllerModule',
-	'routeControllerModule',
-	'busControllerModule',
-	'dirverControllerModule',
-	'siteControllerModule',
-	'scheduleControllerModule',
-	'tableComponentModule',
-	'paginationModule',
 	'passengerHttpServiceModule',
 	'passengerAddControllerModule',
 	'passengerDetailControllerModule',
+	'listControllerModule',
+	'reportControllerModule',
+	'feedbackControllerModule',
+	
+	'schedulerControllerModule',
+	'schedulerHttpServiceModule',
+	'schedulerDriverControllerModule',
+	'schedulerDriverDetailControllerModule',
+	'schedulerAddDriverControllerModule',
+	'schedulerRouteControllerModule',
+	'schedulerBusControllerModule',
+	'schedulerSiteControllerModule',
+	
+	'schedulerAddBusControllerModule',
+	
+		
+	
+
 	'httpInterceptorModule'
 ])

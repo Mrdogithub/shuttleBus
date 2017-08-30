@@ -1,11 +1,15 @@
 'use strict'
 angular.module('constModule',[])
 .constant('APISERVICEPATH',{
-	"dev":"http://f-shuttlebus-authentication-management.apps.cl-cn-north-preprod01.cf.ford.com/api/v1/",
-	"passengerDev":'./modules/data/',
-	"passengerAccount":"http://f-shuttlebus-accountandauthority-management.apps.cl-cn-north-preprod01.cf.ford.com/api/v1/passengerAccount/",
-	"passengerProfile":"http://f-shuttlebus-profile-management.apps.cl-cn-north-preprod01.cf.ford.com/api/v1/passengerProfile/",
-	"prd":"http://19.229.169.185:7072/api/v1/"
+	'dev':'http://f-shuttlebus-authentication-management.apps.cl-cn-north-preprod01.cf.ford.com/api/v1/',
+	'passengerDev':'./modules/data/',
+	'passengerTrip':'http://f-shuttlebus-route-management.apps.cl-cn-north-preprod01.cf.ford.com/api/v1/tripHistoryService/',
+	'passengerAccount':'http://f-shuttlebus-accountandauthority-management.apps.cl-cn-north-preprod01.cf.ford.com/api/v1/passengerAccount/',
+	'passengerProfile':'http://f-shuttlebus-profile-management.apps.cl-cn-north-preprod01.cf.ford.com/api/v1/passengerProfile/',
+	'vehicleService':'http://f-shuttlebus-shuttle-management.apps.cl-cn-north-preprod01.cf.ford.com/api/v1/vehicleService/',
+	'prd':'http://19.229.169.202:7071/api/v1/passengerAccount/',
+	'driverAccount':'http://f-shuttlebus-accountandauthority-management.apps.cl-cn-north-preprod01.cf.ford.com/api/v1/driverAccount/',
+	'stationService':'http://f-shuttlebus-route-management.apps.cl-cn-north-preprod01.cf.ford.com/api/v1/stationService/'
 })
 .constant('ERRORCODE',{
 	'activeProgress':'0100104',

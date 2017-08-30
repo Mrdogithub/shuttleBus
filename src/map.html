@@ -1,0 +1,164 @@
+<!doctype html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <style type="text/css">
+      body,html,#container{
+        height: 100%;
+        margin: 0px;
+      }
+
+
+      .map-search-wrapper{
+        display: flex;
+        padding: 5px;
+        position: absolute;
+        z-index: 99999;
+      }
+
+      .map-search-wrapper .searchPlace{
+        height: 25px;
+        padding: 16px;
+        box-sizing: border-box;
+      }
+      .map-search-wrapper .dropdown{
+
+        z-index: 99999;
+      }
+
+      .map-search-wrapper .dropdown{
+        position: absolute;
+        top: 49px;
+        left: 22px;
+        z-index: 999999999999999;
+        display:block;
+        float: left;
+        min-width: 160px;
+        padding: 10px;
+        margin: 2px 0 0;
+        font-size: 14px;
+        text-align: left;
+        list-style: none;
+        background-color: #fff;
+        -webkit-background-clip: padding-box;
+        background-clip: padding-box;
+        border: 1px solid #ccc;
+        border: 1px solid rgba(0,0,0,.15);
+        border-radius: 4px;
+        -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+        box-shadow: 0 6px 12px rgba(0,0,0,.175)
+      }
+      .dropdown-menu{
+        display: block;
+      }
+    </style>
+
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <title>快速入门</title>
+  </head>
+  <body>
+
+    <div id="container" tabindex="0">
+        <div class="map-search-wrapper">
+            <div class="col-lg-3">
+                <div class="input-group">
+                  <input type="text" class="form-control" placeholder="搜索站点地址" id="tip">
+                  <span class="input-group-btn">
+                    <button class="btn" style="background: #338ca5; color: #fff;" type="button" onclick="mapSearch()">搜索</button>
+                  </span>
+                </div><!-- /input-group -->
+              </div><!-- /.col-lg-6 -->
+            </div><!-- /.row -->
+            <div id="panel" class="dropdown"></div>
+        </div> 
+    </div>
+    <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=c72c128531b240087fe95ff8ca5e44a1"></script>
+<!--     <link rel="stylesheet" href="https://cache.amap.com/lbs/static/main.css"/> -->
+    <script
+  src="https://code.jquery.com/jquery-1.12.4.js"
+  integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU="
+  crossorigin="anonymous"></script>
+    <script src="//webapi.amap.com/ui/1.0/main.js"></script>
+    <script type="text/javascript">
+      var placeSearch;
+      var markers = [];  
+      var map = new AMap.Map('container',{
+          resizeEnable: true,
+          zoom: 10,
+          center: [121.339766,31.196099]
+      });
+      
+      AMap.service('AMap.PlaceSearch',function(){//回调函数
+      //实例化PlaceSearch
+        placeSearch= new AMap.PlaceSearch({
+          pageSize: 5,
+          pageIndex: 1,
+          city: "021", //城市
+          map: map,
+          panel: "result"
+        });
+      //TODO: 使用placeSearch对象调用关键字搜索的功能
+      })
+
+      function mapSearch(){
+         var searchVal = $("#tip").val(); 
+            console.log(searchVal+"zx")
+           placeSearch.search(searchVal,function(status, result){  
+           if (status === 'complete' && result.info === 'OK') {  
+               console.log(1,result)
+               var poiArr = result.poiList.pois;  
+               var str = "<ul class='dropdown-menu' aria-labelledby='dropdownMenu1' style='display:block;min-width: 309px;top: 36px;left: 20px;padding: 10px;'>";  
+               for(var i=0;i<poiArr.length;i++){  
+                    //在地图上创建标注点  
+                    marker = new AMap.Marker({  
+                        icon: "http://webapi.amap.com/theme/v1.3/markers/n/mark_b.png"  
+                    });  
+                    marker.setPosition(new AMap.LngLat(poiArr[i].location.lng,poiArr[i].location.lat));  
+                    marker.setMap(map);  
+                    marker.setLabel({//label默认蓝框白底左上角显示，样式className为：amap-marker-label  
+                        offset: new AMap.Pixel(3, 0),//修改label相对于maker的位置  
+                        content: String.fromCharCode(65+i)  
+                    });  
+                    marker.content = poiArr[i].name+"<br/>"+poiArr[i].address;  
+                    marker.on('click', markerClick);  
+                    markers.push(marker);  
+                    map.setFitView();  
+                       str+='<li>';  
+                        str+='<div class="res-data">';   
+                            str+='<div class="left res-address">';  
+                                str+='<div class="title">'+poiArr[i].name+' <span class="rout">'+poiArr[i].address+'</span></div>';
+                              //  str+='<div>坐标：经度<span class="point">'+poiArr[i].location.lng+",纬度,"+poiArr[i].location.lat+'</span></div>';  
+                            str+='</div>';  
+                        str+='</div>';  
+                    str+='</li>';  
+               }  
+                str+='</ul>';  
+                $("#panel").html(str);   
+           }else{  
+               new CAlert().toast_ERROR("未查询到相关地址");  
+            }  
+               });
+
+
+            function markerClick(e) {  
+        infoWindow.setContent(e.target.content);  
+        infoWindow.open(map, e.target.getPosition());  
+      } 
+
+
+       //点击标注  显示信息窗口及内容  
+ 
+    </script>
+
+<!--      <script type="text/javascript" src="https://webapi.amap.com/demos/js/liteToolbar.js"></script>
+ -->
+  </body>
+</html>
