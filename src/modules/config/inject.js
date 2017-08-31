@@ -13,7 +13,7 @@ angular.module('injectModules',[
 	'gobackModule',
 	'tableComponentModule',
 	'paginationModule',
-
+	'formValidateSerivceModule',
 	'loginHttpServiceModule',
 	'forgetControllerModule',
 	'loginControllerModule',

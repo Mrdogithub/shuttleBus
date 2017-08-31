@@ -16,6 +16,11 @@ a{
 	text-decoration: initial;
 	color: #338ca5;
 }
+.requireMark{
+	margin-left: 5px;
+	color: #CC3333;
+    vertical-align: -webkit-baseline-middle;
+}
 button{
     margin: 0;
     font: inherit;

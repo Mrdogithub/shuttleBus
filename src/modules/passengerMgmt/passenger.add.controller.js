@@ -1,6 +1,6 @@
 'use strict'
 angular.module('passengerAddControllerModule',[])
-.controller('passengerAddController',function(passengerHttpService,$stateParams,$state,$scope){
+.controller('passengerAddController',function(passengerHttpService,setDirty,$stateParams,$state,$scope){
 
 	if($stateParams.hrUuid){
 		$scope.passengerUuid = $stateParams.passengerUuid;
@@ -27,7 +27,7 @@ angular.module('passengerAddControllerModule',[])
 		}
 		$scope.breadcrumbText={
 			"lv1":"乘客列表",
-			"lv2":"乘客详情"
+			"lv2":"新增乘客"
 		}
 	}else{
 		$state.go('passenger.list',{'hrUUID':'666','secondCompanyID':'666'})
@@ -37,13 +37,16 @@ angular.module('passengerAddControllerModule',[])
 		$scope.active = !flag;
 	};
 
-	$scope.addPassengerProfile = function(){
+	$scope.addPassengerProfile = function(formValidate,formValidateObj){
+		console.log(1,formValidateObj)
+		console.log(1,$scope.formValidate)
+		if(!formValidate) return setDirty($scope.formValidate)
 		$.confirm('确认新增名为"'+$scope.params.passengerName+'"的这个乘客？',function(){
 			$scope.submitOnProgress = true;
 			$scope.submitStatusText = '正在创建中';
-			$scope.active = false;
 			var _params = {
 				'phoneNumber':$scope.params.phoneNumber,
+				'roleType':$scope.params.roleType,
 				'accountId':$scope.params.accountId,
 				'name':$scope.params.passengerName,
 				'employeeId':$scope.params.employeeId,

@@ -16,9 +16,8 @@ angular.module("loginControllerModule",[])
 		$scope.disabled = true;
 		if($scope.password){
 			$scope.loginText = "登录中...";
-			loginHttpService.login({'phoneNumber':$stateParams.phoneNumber,'password':md5Service.hex_md5($scope.password)})
+			loginHttpService.login({'phoneNumber':$stateParams.phoneNumber,'password':$scope.password})
 			.then(function(result){
-				console.log(1,result)
 				var responseData = result.data;
 				if(!responseData.error){
 					$.alert('登录成功！ 管理页面正在建设中...',function(){

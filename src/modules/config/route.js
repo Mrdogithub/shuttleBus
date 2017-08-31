@@ -170,7 +170,7 @@ angular.module('app',['injectModules'])
 		controller:'schedulerBusController'
 	})
 	.state('scheduler.addBus',{
-		url:'/addDriver',
+		url:'/addBusK',
 		params:{
 			'phoneNumber':null,
 			'roleType':null,
@@ -184,7 +184,7 @@ angular.module('app',['injectModules'])
 			'licenseExpirationDate':null,
 			'identityCard':null
 		},
-		templateUrl:'modules/schedulerMgmt/scheduler.add.bus.html',
+		templateUrl:'modules/schedulerMgmt/scheduler.bus.add.html',
 		controller:'schedulerAddBusController'
 	})
 	.state('scheduler.schedule',{

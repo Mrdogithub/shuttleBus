@@ -6,7 +6,7 @@
  		<p ng-if ="!active">{{params.name}}</p>
  	</div>
  	<div class="subTitle-operate">
-		<a ng-click="deletePassenger()">删除司机</a>
+<!-- 		<a ng-click="deletePassenger()">删除司机</a> -->
  	</div>
 </div>
 <div class="right-content-wrapper container-shadow-border">
@@ -107,36 +107,22 @@
 							<label class="control-label ">驾照信息:</label>
 							<input type="text" 
 								   class= "form-control"  
-								   required="" 
 								   name="licenseID" 
 								   id="busCompany" 
 								   ng-disabled="!active" 
 								   ng-class="{'edit':active,'preview':!active}" 
 								   ng-model="params.licenseID">
-							<div class="error"  ng-show="formValidate.licenseID.$dirty && formValidate.licenseID.$invalid">
-								<small class="control-label" 
-						            ng-show="formValidate.licenseID.$error.required">
-						            请输入驾照信息
-						        </small>
-						    </div>
 						</div>
 
 						<div class="content-inline-item" ng-class="{'has-error':formValidate.licenseExpirationDate.$dirty && formValidate.licenseExpirationDate.$invalid,'has-success':formValidate.licenseExpirationDate.$dirty && !formValidate.licenseExpirationDate.$invalid}">
 							<label class="control-label largeSpace">驾照到期时间:</label>
 							<input type="text" 
 								   class= "form-control"  
-								   required="" 
 								   name="licenseExpirationDate" 
 								   id="busCompany" 
 								   ng-disabled="!active" 
 								   ng-class="{'edit':active,'preview':!active}" 
 								   ng-model="params.licenseExpirationDate">
-							<div class="error"  ng-show="formValidate.licenseExpirationDate.$dirty && formValidate.licenseExpirationDate.$invalid">
-								<small class="control-label" 
-						            ng-show="formValidate.licenseExpirationDate.$error.required">
-						            请输入驾照到期时间
-						        </small>
-						    </div>
 						</div>
 					</div>
 				</form>				

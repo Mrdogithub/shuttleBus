@@ -49,7 +49,7 @@ angular.module("activeControllerModule",[])
 		if($scope.twicePassword == $scope.password){
 			$scope.activeText = "正在激活...";
 			$scope.disabled = true;
-			loginHttpService.smsCode({'phoneNumber':$scope.phoneNumber,'requestType':REQUESTTYPE.activeAccount,'smsCode':$scope.smsCode,'password':md5Service.hex_md5($scope.password)})
+			loginHttpService.smsCode({'phoneNumber':$scope.phoneNumber,'requestType':REQUESTTYPE.activeAccount,'smsCode':$scope.smsCode,'password':$scope.password})
 			.then(function(result){
 				var responseData = result.data;
 				if(!responseData.error){

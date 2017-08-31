@@ -22,6 +22,7 @@
 
 	.main-wrapper  .right-side  .title-wrapper .search-wrapper{
 		position: relative;
+		margin-left: 20px;
 	}
     .main-wrapper  .right-side  .title-wrapper .search-wrapper input{
     	height: 25px;
