@@ -5,6 +5,9 @@
  	<div class="subTitle-content">
  		<p ng-if ="!active">{{params.name}}</p>
  	</div>
+ 	<div class="subTitle-operate">
+		<a ng-click="deleteBus()">删车辆</a>
+ 	</div>
 </div>
 <div class="right-content-wrapper container-shadow-border">
 	<div class="inner-content">
@@ -18,39 +21,40 @@
 				<form name="formValidate" novalidate>
 					<div class="content-inline">
 						<div class="content-inline-item"  
-							 ng-class="{'has-error':formValidate.licensePlate.$dirty && formValidate.licensePlate.$invalid,'has-success':formValidate.licensePlate.$dirty && !formValidate.licensePlate.$invalid}">
-							<label for="licensePlate" class="control-label largeSpace" >牌照信息:</label>
+							 ng-class="{'has-error':formValidate.name.$dirty && formValidate.name.$invalid,'has-success':formValidate.name.$dirty && !formValidate.name.$invalid}">
+							<label for="name" class="control-label largeSpace" >牌照信息:</label>
 							<input type="text"  
 								   class= "form-control" 
-								   id="licensePlate" 
-								   name="licensePlate" 
+								   id="name" 
+								   name="name" 
 								   required="" 
 								   ng-disabled="!active" 
 								   ng-class="{'edit':active,'preview':!active}" 
-								   ng-model="params.licensePlate"/><sup class="requireMark">*</sup>
+								   ng-model="params.name"
+								   ng-pattern="/^[a-zA-Z\u4E00-\u9FA5]{1,10}$/"/>
 							<div class="error"  
-								 ng-show="formValidate.licensePlate.$dirty && formValidate.licensePlate.$invalid">
+								 ng-show="formValidate.name.$dirty && formValidate.name.$invalid">
 						        <small class="control-label" 
-						           	   ng-show="formValidate.licensePlate.$error.required">
-						            请输入牌照
+						           	   ng-show="formValidate.name.$error.required">
+						            请输入拍照
 						        </small>
 						      </div>
 						</div>
 
 						<div class="content-inline-item" 
-							 ng-class="{'has-error':formValidate.vehicleModel.$dirty && formValidate.vehicleModel.$invalid,'has-success':formValidate.vehicleModel.$dirty && !formValidate.vehicleModel.$invalid}">
-							<label class=" control-label" for="vehicleModel" >车辆类型</label>
+							 ng-class="{'has-error':formValidate.phoneNumber.$dirty && formValidate.phoneNumber.$invalid,'has-success':formValidate.phoneNumber.$dirty && !formValidate.phoneNumber.$invalid}">
+							<label class=" control-label" for="phoneNumber" >车辆类型</label>
 							<input type="text" 
-								   id="vehicleModel" 
+								   id="phoneNumber" 
 								   class= "form-control" 
 								   required=""  
-								   name="vehicleModel" 
+								   name="phoneNumber" 
 								   ng-disabled="!active" 
 								   ng-class="{'edit':active,'preview':!active}" 
-								   ng-model="params.vehicleModel"/><sup class="requireMark">*</sup>
-							<div class="error"  ng-show="formValidate.vehicleModel.$dirty && formValidate.vehicleModel.$invalid">
+								   ng-model="params.phoneNumber">
+							<div class="error"  ng-show="formValidate.phoneNumber.$dirty && formValidate.phoneNumber.$invalid">
 								<small class="control-label" 
-						            ng-show="formValidate.vehicleModel.$error.required">
+						            ng-show="formValidate.phoneNumber.$error.required">
 						            请输车辆类型
 						        </small>
 		
@@ -59,19 +63,19 @@
 
 					</div>
 					<div class="content-inline">
-						<div class="content-inline-item" ng-class="{'has-error':formValidate.vin.$dirty && formValidate.vin.$invalid,'has-success':formValidate.vin.$dirty && !formValidate.vin.$invalid}">
+						<div class="content-inline-item" ng-class="{'has-error':formValidate.shuttleCompanyId.$dirty && formValidate.shuttleCompanyId.$invalid,'has-success':formValidate.shuttleCompanyId.$dirty && !formValidate.shuttleCompanyId.$invalid}">
 							<label class="control-label largeSpace">车辆VIN号:</label>
 							<input type="text" 
 								   class= "form-control"  
 								   required="" 
-								   name="vin" 
+								   name="shuttleCompanyId" 
 								   id="busCompany" 
 								   ng-disabled="!active" 
 								   ng-class="{'edit':active,'preview':!active}" 
-								   ng-model="params.vin"/><sup class="requireMark">*</sup>
-							<div class="error"  ng-show="formValidate.vin.$dirty && formValidate.vin.$invalid">
+								   ng-model="params.shuttleCompanyId">
+							<div class="error"  ng-show="formValidate.shuttleCompanyId.$dirty && formValidate.shuttleCompanyId.$invalid">
 								<small class="control-label" 
-						            ng-show="formValidate.vin.$error.required">
+						            ng-show="formValidate.shuttleCompanyId.$error.required">
 						            请输入车辆VIN号
 						        </small>
 						    </div>
@@ -82,11 +86,11 @@
 							<input type="text" 
 								   class= "form-control"  
 								   required="" 
-								   name="engineNumber" 
+								   name="shuttleCompanyId" 
 								   id="busCompany" 
 								   ng-disabled="!active" 
 								   ng-class="{'edit':active,'preview':!active}" 
-								   ng-model="params.engineNumber">
+								   ng-model="params.shuttleCompanyId">
 						</div>
 					</div>
 
@@ -96,11 +100,11 @@
 							<input type="text" 
 								   class= "form-control"  
 								   required="" 
-								   name="vehicleLicense" 
+								   name="licenseID" 
 								   id="busCompany" 
 								   ng-disabled="!active" 
 								   ng-class="{'edit':active,'preview':!active}" 
-								   ng-model="params.vehicleLicense">
+								   ng-model="params.licenseID">
 						</div>
 
 						<div class="content-inline-item">
@@ -108,11 +112,11 @@
 							<input type="text" 
 								   class= "form-control"  
 								   required="" 
-								   name="availableSeats" 
+								   name="licenseExpirationDate" 
 								   id="busCompany" 
 								   ng-disabled="!active" 
 								   ng-class="{'edit':active,'preview':!active}" 
-								   ng-model="params.availableSeats">
+								   ng-model="params.licenseExpirationDate">
 						</div>
 					</div>
 
@@ -122,11 +126,11 @@
 							<input type="text" 
 								   class= "form-control"  
 								   required="" 
-								   name="annualInspectionExpiration" 
+								   name="licenseID" 
 								   id="busCompany" 
 								   ng-disabled="!active" 
 								   ng-class="{'edit':active,'preview':!active}" 
-								   ng-model="params.annualInspectionExpiration">
+								   ng-model="params.licenseID">
 						</div>
 
 						<div class="content-inline-item">
@@ -134,11 +138,11 @@
 							<input type="text" 
 								   class= "form-control"  
 								   required="" 
-								   name="insuranceExpiration" 
+								   name="licenseExpirationDate" 
 								   id="busCompany" 
 								   ng-disabled="!active" 
 								   ng-class="{'edit':active,'preview':!active}" 
-								   ng-model="params.insuranceExpiration">
+								   ng-model="params.licenseExpirationDate">
 						</div>
 					</div>
 
@@ -148,11 +152,11 @@
 							<input type="text" 
 								   class= "form-control"  
 								   required="" 
-								   name="shuttleCompanyId" 
+								   name="licenseID" 
 								   id="busCompany" 
 								   ng-disabled="!active" 
 								   ng-class="{'edit':active,'preview':!active}" 
-								   ng-model="params.shuttleCompanyId">
+								   ng-model="params.licenseID">
 						</div>
 					</div>
 				</form>				

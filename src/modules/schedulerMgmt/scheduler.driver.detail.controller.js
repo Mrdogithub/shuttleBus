@@ -64,12 +64,18 @@ angular.module('schedulerDriverDetailControllerModule',[])
 
 	$scope.deleteDriver = function(){
 		var _params = {
-			'driverUUID':$scope.params.driverUUID, //后端返回为null 无法删除
-			'schedulerUUID':$scope.params.schedulerUUID
+			'driverUUID':$scope.params.driverUUID,
+			'schedulerUUID':$scope.params.schedulerUUID,
 		}
-		schedulerHttpService.deleteDriverByID(_params).then(function(result){
-			console.log(1,result)
-		},function(){})
+		$.confirm('该司机仍有排版任务,如果继续删除,排班安排也将被情况！请查看排班，并替换司机。',function(){
+			$.alert('删除成功')
+			schedulerHttpService.deletePassengerByID(_params).then(function(result){
+				console.log(1,result)
+			},function(){
+				$.aleret('正在建设中...')
+			})
+		},function(){}).set('labels', {cancel:'查看排班',ok:'坚持删除'});
+
 	};
 
 

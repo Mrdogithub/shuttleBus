@@ -149,7 +149,6 @@ angular.module('schedulerHttpServiceModule',['ngResource']).factory('schedulerHt
 	};
 
 
-
 	schedulerHttp.getSiteList = function(paramsObj){
 		var paramsData = {
 			"apiPath":stationService+"stations/company/",
@@ -160,6 +159,51 @@ angular.module('schedulerHttpServiceModule',['ngResource']).factory('schedulerHt
 		};
 		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
 	}
+
+	schedulerHttp.getBusDetail = function(paramsObj){
+		var paramsData = {
+			"apiPath":vehicleService+"vehicle",
+			paramsList:{
+				"schedulerUUID":paramsObj.schedulerUUID,
+				"vehicleID":paramsObj.vehicleID
+			}
+		};
+
+		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
+	};
+
+   schedulerHttp.addBus = function(paramsObj){
+		var paramsData = {
+			"apiPath":vehicleService+"vehicle",
+			paramsList:{
+   				"annualInspectionExpiration":paramsObj.annualInspectionExpiration,
+				"availableSeats": paramsObj.availableSeats,
+				"engineNumber": paramsObj.engineNumber,
+				"insuranceExpiration": paramsObj.insuranceExpiration,
+				"licensePlate": paramsObj.licensePlate,
+				"schedulerUUID": paramsObj.schedulerUUID,
+				"secondCompanyId": paramsObj.secondCompanyId,
+				"shuttleCompanyId": paramsObj.shuttleCompanyId,
+				"vehicleLicense": paramsObj.vehicleLicense,
+				"vehicleModel": paramsObj.vehicleModel,
+				"vin": paramsObj.vin
+			}
+		};
+		
+		return  $http({ method: 'POST',url:paramsData.apiPath,headers:{'Content-type':'application/json'},data:paramsData.paramsList});
+   };
+
+	schedulerHttp.deleteBusByID = function(paramsObj){
+		var paramsData = {
+			"apiPath":vehicleService+"vehicle",
+			paramsList:{
+				"schedulerUUID":paramsObj.schedulerUUID,
+				"vehicleID":paramsObj.vehicleID
+			}
+		};
+		return  $http({ method: 'DELETE',url:paramsData.apiPath,params:paramsData.paramsList});
+	};
+
 
 	return schedulerHttp;
 });

@@ -38,7 +38,7 @@ angular.module('injectModules',[
 	'schedulerSiteControllerModule',
 	
 	'schedulerAddBusControllerModule',
-	
+	'schedulerBusDetailControllerModule',
 		
 	
 

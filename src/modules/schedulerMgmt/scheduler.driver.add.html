@@ -15,7 +15,7 @@
 			<div class="title">
 				<h1>基础信息</h1>
 				<a ng-click="editDriverProfile(false)" ng-if="!active">编辑</a>
-				<a ng-click="!submitOnProgress&&formValidate.$valid && submitDriverProfile()" ng-if="active">完成</a>
+				<a ng-click="!submitOnProgress&& submitDriverProfile(formValidate.$invalid)" ng-if="active">完成</a>
 			</div>
 			<div class="content">
 				<form name="formValidate" novalidate>
@@ -103,7 +103,7 @@
 					</div>
 
 					<div class="content-inline">
-						<div class="content-inline-item" ng-class="{'has-error':formValidate.licenseID.$dirty && formValidate.licenseID.$invalid,'has-success':formValidate.licenseID.$dirty && !formValidate.licenseID.$invalid}">
+						<div class="content-inline-item">
 							<label class="control-label ">驾照信息:</label>
 							<input type="text" 
 								   class= "form-control"  
@@ -114,7 +114,7 @@
 								   ng-model="params.licenseID">
 						</div>
 
-						<div class="content-inline-item" ng-class="{'has-error':formValidate.licenseExpirationDate.$dirty && formValidate.licenseExpirationDate.$invalid,'has-success':formValidate.licenseExpirationDate.$dirty && !formValidate.licenseExpirationDate.$invalid}">
+						<div class="content-inline-item">
 							<label class="control-label largeSpace">驾照到期时间:</label>
 							<input type="text" 
 								   class= "form-control"  

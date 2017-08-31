@@ -47,32 +47,14 @@ angular.module('schedulerBusControllerModule',[])
 				ngIf:function(){},
 				fun:function(item){
 					var _params = {
-						'phoneNumber':item.accountDTO.phoneNumber,
-						'roleType':item.accountDTO.roleType,
-						'name':item.baseProfileDTO.name,
-						'accountId':item.baseProfileDTO.accountId,
-						'driverUUID':item.driverProfileDTO.driverUUID,
-						'schedulerUUID':item.driverProfileDTO.schedulerUUID,
-						'secondCompanyId':item.driverProfileDTO.secondCompanyId,
-						'shuttleCompanyId':item.driverProfileDTO.shuttleCompanyId,
-						'licenseID':item.driverProfileDTO.licenseID,
-						'licenseExpirationDate':item.driverProfileDTO.licenseExpirationDate,
-						'identityCard':item.driverProfileDTO.identityCard,
+						'vehicleID':item.value.vehicleID,
+						'schedulerUUID':item.value.schedulerUUID
 					}
 
 					console.log(1,_params)
-					$state.go('scheduler.driverDetail',{
-						'phoneNumber':_params.phoneNumber,
-						'roleType':_params.roleType,
-						'name':_params.name,
-						'accountId':_params.accountId,
-						'driverUUID':_params.driverUUID,
-						'schedulerUUID':_params.schedulerUUID,
-						'secondCompanyId':_params.secondCompanyId,
-						'shuttleCompanyId':_params.shuttleCompanyId,
-						'licenseID':_params.licenseID,
-						'licenseExpirationDate':_params.licenseExpirationDate,
-						'identityCard':_params.identityCard
+					$state.go('scheduler.busDetail',{
+						'vehicleID':_params.phoneNumber,
+						'schedulerUUID':_params.schedulerUUID
 					});
 				}
 			}]

@@ -170,22 +170,22 @@ angular.module('app',['injectModules'])
 		controller:'schedulerBusController'
 	})
 	.state('scheduler.addBus',{
-		url:'/addBusK',
+		url:'/addBus',
 		params:{
-			'phoneNumber':null,
-			'roleType':null,
-			'name':null,
-			'accountId':null,
-			'driverUUID':null,
 			'schedulerUUID':null,
-			'secondCompanyId':null,
-			'shuttleCompanyId':null,
-			'licenseID':null,
-			'licenseExpirationDate':null,
-			'identityCard':null
+			'secondCompanyId':null
 		},
 		templateUrl:'modules/schedulerMgmt/scheduler.bus.add.html',
 		controller:'schedulerAddBusController'
+	})
+	.state('scheduler.busDetail',{
+		url:'/busDetail',
+		params:{
+			'vehicleID':null,
+			'schedulerUUID':null
+		},
+		templateUrl:'modules/schedulerMgmt/scheduler.bus.detail.html',
+		controller:'schedulerBusDetailController'
 	})
 	.state('scheduler.schedule',{
 		url:'/schedule',

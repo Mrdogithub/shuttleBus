@@ -6,22 +6,12 @@
     <!-- 原始地址：//webapi.amap.com/ui/1.0/ui/misc/MarkerList/examples/index.html -->
     <base href="//webapi.amap.com/ui/1.0/ui/misc/MarkerList/examples/" />
     <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <meta name="viewport" content="initial-scasle=1.0, user-scalable=no, width=device-width">
     <title>完整示例</title>
     <link rel="stylesheet" type="text/css" href="./index.css">
-        <script
-  src="https://code.jquery.com/jquery-1.12.4.js"
-  integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU="
-  crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
     <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-    <!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
-    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
-    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
     <style type="text/css">
     .map-search-wrapper{
         display: flex;
@@ -69,26 +59,32 @@
 </head>
 
 <body>
-      <div id="outer-box">
-        <div id="container" tabindex="0" style="height: 100%;">
+    <div style="height: 100%">
+        <div id="container" tabindex="0">
             <div class="map-search-wrapper">
                 <div class="col-lg-3">
                     <div class="input-group">
                       <input type="text" class="form-control" placeholder="搜索站点地址" id="tip">
                       <span class="input-group-btn">
-                        <button class="btn" style="background: #338ca5; color: #fff;" type="button" onclick="mapSearch()">搜索</button>
+                        <button id="mapSearch" class="btn" style="background: #338ca5; color: #fff;" type="button">搜索</button>
                       </span>
                     </div><!-- /input-group -->
                   </div><!-- /.col-lg-6 -->
                 </div><!-- /.row -->
-                <div id="panel" class="dropdown">
+                <div id="panel-wrapper" class="dropdown">
                     <ul id="myList"></ul>
                 </div>
-            </div>            
+            </div>
+
+
+
         </div>
-<!-- 
-        <ul id="btnList">
-            <li>
+<!--         <div id="panel" class="scrollbar1">
+            <ul id="myList">
+            </ul>
+        </div> -->
+       <!--  <ul id="btnList"> -->
+<!--             <li>
                 <input value="美食数据" type="button" data-path="//a.amap.com/amap-ui/static/data/restaurant.json" />
             </li>
             <li>
@@ -105,10 +101,10 @@
             </li>
             <li>
                 <input value="清除数据" type="button" data-enable='markerList.getData().length>0' data-eval='markerList.clearData()' />
-            </li>
-        </ul> -->
+            </li> -->
+   <!--      </ul> -->
     </div>
-    <script type="text/javascript" src='//webapi.amap.com/maps?v=1.3&key=8006c0c42222e06abd770a0860d13a8a'></script>
+    <script type="text/javascript" src='//webapi.amap.com/maps?v=1.3&key=c72c128531b240087fe95ff8ca5e44a1'></script>
     <!-- UI组件库 1.0 -->
     <script src="//webapi.amap.com/ui/1.0/main.js?v=1.0.10"></script>
     <script type="text/javascript">
@@ -117,7 +113,10 @@
         zoom: 9,
         center: [121.339766,31.196099]
     });
-
+    
+    function mapSearch (){
+        console.log('.....')
+    }
     AMapUI.loadUI(['misc/MarkerList', 'overlay/SimpleMarker', 'overlay/SimpleInfoWindow'],
         function(MarkerList, SimpleMarker, SimpleInfoWindow) {
 
@@ -126,7 +125,8 @@
 
             var defaultIconStyle = 'red', //默认的图标样式
                 hoverIconStyle = 'green', //鼠标hover时的样式
-                selectedIconStyle = 'purple'; //选中时的图标样式
+                selectedIconStyle = 'purple' //选中时的图标样式
+            ;
 
             var markerList = new MarkerList({
                 map: map,
@@ -220,9 +220,107 @@
 
             window.markerList = markerList;
 
+
+
+            AMap.plugin(["AMap.PlaceSearch"], function() {
+
+                var placeSearch = new AMap.PlaceSearch({ //构造地点查询类
+                    pageSize: 5,
+                    pageIndex: 1,
+                    extensions: 'all',
+                    city: "021" //城市
+                });
+
+               // var $pagination = $('#pagination-demo');
+
+                // function initPagination(page, totalPages) {
+
+                //     //初始化分页器
+                //     $pagination.twbsPagination({
+                //         totalPages: totalPages,
+                //         startPage: page,
+                //         prev: null,
+                //         first: '首页',
+                //         next: '下一页',
+                //         last: null,
+                //         initiateStartPageClick: false,
+                //         onPageClick: function(event, page) {
+                //             goPage(page);
+                //         }
+                //     });
+                // }
+
+                    var inited = false;
+
+                    function mapSearch(){
+                        console.log('search')
+                    }
+                    var $keywords = $('#tip');
+                    var $btn = $('#mapSearch')
+                    $btn.on('click', function(e) {
+                        if (e.which === 13) {
+                            inited = false;
+                            $pagination.twbsPagination('destroy');
+                            goPage(1);
+                        }
+
+
+                        goPage(1);
+                    });
+                    placeSearch.search($keywords.val(), function(status, result) {
+                        console.log(1,status)
+                        console.log(1,result)
+                        if (status !== 'complete') {
+                            alert('返回数据出错!');
+                        }
+
+                        //render当前页的数据
+                        markerList.render(result.poiList.pois);
+
+                        if (!inited) {
+                            inited = true;
+                            //首次初始化
+                            initPagination(page, Math.ceil(result.poiList.count / result.poiList.pageSize));
+                        }
+
+                    });
+
+                    function goPage(page) {
+
+                        //设置当前页
+                        placeSearch.setPageIndex(page);
+                        //关键字查询
+                        placeSearch.search($keywords.val(), function(status, result) {
+
+                            if (status !== 'complete') {
+                                alert('返回数据出错!');
+                            }
+
+                            //render当前页的数据
+                            markerList.render(result.poiList.pois);
+
+                            if (!inited) {
+                                inited = true;
+                                //首次初始化
+                                initPagination(page, Math.ceil(result.poiList.count / result.poiList.pageSize));
+                            }
+
+                        });
+                    }
+
+                // goPage(1);
+
+                // $keywords.on('keypress', function(e) {
+                //     if (e.which === 13) {
+                //         inited = false;
+                //         $pagination.twbsPagination('destroy');
+                //         goPage(1);
+                //     }
+                // });
+            });
             markerList.on('selectedChanged', function(event, info) {
 
-              //  checkBtnStats();
+                checkBtnStats();
 
                 if (info.selected) {
 
@@ -247,7 +345,7 @@
             });
 
             markerList.on('listElementMouseenter markerMouseover', function(event, record) {
-                console.log(1)
+
                 if (record && record.marker) {
 
                     forcusMarker(record.marker);
@@ -300,7 +398,7 @@
                 });
             }
 
-            //var $btns = $('#btnList input[data-path]');
+          //  var $btns = $('#btnList input[data-path]');
 
             /**
              * 检测各个button的状态
@@ -332,7 +430,7 @@
             //     checkBtnStats();
             // });
 
-           // loadData($btns.attr('data-path'));
+            //loadData($btns.attr('data-path'));
 
             function forcusMarker(marker) {
                 marker.setTop(true);
@@ -356,19 +454,19 @@
                 );
             }
 
-            function scrollListElementIntoView($listEle) {
+            // function scrollListElementIntoView($listEle) {
 
-                if (!isElementInViewport($listEle.get(0))) {
-                    $('#panel').scrollTop($listEle.offset().top - $listEle.parent().offset().top);
-                }
+            //     if (!isElementInViewport($listEle.get(0))) {
+            //         $('#panel').scrollTop($listEle.offset().top - $listEle.parent().offset().top);
+            //     }
 
-                //闪动一下
-                $listEle
-                    .one('webkitAnimationEnd oanimationend msAnimationEnd animationend',
-                        function(e) {
-                            $(this).removeClass('flash animated');
-                        }).addClass('flash animated');
-            }
+            //     //闪动一下
+            //     $listEle
+            //         .one('webkitAnimationEnd oanimationend msAnimationEnd animationend',
+            //             function(e) {
+            //                 $(this).removeClass('flash animated');
+            //             }).addClass('flash animated');
+            // }
 
 
         });

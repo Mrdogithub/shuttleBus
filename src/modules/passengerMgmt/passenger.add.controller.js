@@ -38,8 +38,6 @@ angular.module('passengerAddControllerModule',[])
 	};
 
 	$scope.addPassengerProfile = function(formValidate,formValidateObj){
-		console.log(1,formValidateObj)
-		console.log(1,$scope.formValidate)
 		if(!formValidate) return setDirty($scope.formValidate)
 		$.confirm('确认新增名为"'+$scope.params.passengerName+'"的这个乘客？',function(){
 			$scope.submitOnProgress = true;
@@ -80,16 +78,4 @@ angular.module('passengerAddControllerModule',[])
 			console.log('cancel')
 		})
 	}
-	
-
-	$scope.deletePassenger = function(){
-		var _params = {
-			'roleType':$scope.params.roleType,
-			'hrUuid':$scope.params.hrUuid,
-			'passengerUuid':$scope.params.passengerUuid
-		}
-		passengerHttpService.deletePassengerByID(_params).then(function(result){
-			$scope.submitOnProgress = false;
-		},function(){})
-	};
 })
