@@ -57,16 +57,19 @@ angular.module('paginationModule',[])
 
 				scope.pageConfigs.getList(_params).then(function(data){
 					var _total;
+					console.log('data')
+					console.log(1,data)
 					var data = data.data;
+					console.log('data.data')
+					console.log(1,data)
 					if(scope.pageConfigs.dataSet){
 						scope.pageConfigs.dataSet(data)
 					}
+                    
 
-					if(!data.data.list){
-						data = data.data;
+					if(!data.value.list){
 						scope.pageConfigs.list = data.value;						
-					}if(data.data){
-						data = data.data;
+					}if(data.value.list){
 						scope.pageConfigs.list = data.value.list;
 					}
 					

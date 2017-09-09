@@ -1,0 +1,71 @@
+<style type="text/css">
+.insertSite-into-Route-wrapper{
+    position: absolute;
+    z-index: 9;
+}
+</style>
+
+
+
+<div class="title-wrapper breadcrumb-wrapper">
+	<breadcrumb-component breadcrumb-params="breadcrumbParams" breadcrumb-text="breadcrumbText"></breadcrumb-component>
+</div>
+<div class="subTitle-wrapper">
+ 	<div class="subTitle-content">
+ 		<p ng-if ="!active">{{params.name}}</p>
+ 	</div>
+ 	<div class="subTitle-operate">
+<!-- 		<a ng-click="deletePassenger()">删除司机</a> -->
+ 	</div>
+</div>
+<div class="right-content-wrapper container-shadow-border" style="position: relative;height: 100%;">
+<!-- 
+<div id="mapContainer"  style=" min-height: 400px;"></div>
+<div id="tip">
+    <input type="text" id="keyword" name="keyword" value="请输入关键字：(选定后搜索)" onfocus='this.value=""'/>
+</div> -->
+ <!--        <div id="container" tabindex="0" style=" min-height: 400px;"></div> -->
+<!-- <div id="tip">
+    <input type="text" id="keyword" name="keywords" value="请输入关键字：(选定后搜索)" onfocus='this.value=""'/>
+</div> -->
+
+<!-- <div id="tip">
+    <input type="text" id="keywords" name="keywords" value="请输入关键字：(选定后搜索)" onfocus='this.value=""'/>
+</div>
+        -->  
+<!--         <div class="map-search-wrapper">
+            <div class="col-lg-3">
+                <div class="input-group">
+                  <input  id="keywords" name="keywords" type="text" onfocus='this.value=""'>
+                  <span class="input-group-btn">
+                    <button id="mapSearch" class="btn" style="background: #338ca5; color: #fff;border: none;padding: 1.5px 6px;" type="button">搜索</button>
+                  </span>
+                </div>
+            </div>
+        </div>
+
+        <div id="panel" style="height: auto;">
+            <ul id="myList"></ul>
+        </div> -->
+    <div id="container" class="map" tabindex="0" style="min-height: 400px;"></div>
+
+        <div class="map-search-wrapper">
+            <div class="col-lg-3">
+                <div class="input-group" style="width: 220px;">
+                  <input  id="pickerInput" name="keywords" style="height: 23px" type="text" onfocus='this.value=""'>
+                  <span class="input-group-btn">
+                    <button id="mapSearch" class="btn" style="background: #338ca5; color: #fff;border: none;padding: 1.5px 6px;" type="button">搜索</button>
+                  </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="insertSite-into-Route-wrapper container-shadow-border">
+<!--             <sortable-directive></sortable-directive> -->
+        </div>
+<!--     <div id="pickerBox">
+        <input id="pickerInput" placeholder="输入关键字选取地点" />
+        <div id="poiInfo"></div>
+    </div> -->
+</div>
+

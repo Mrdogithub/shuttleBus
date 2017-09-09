@@ -2,6 +2,7 @@
 angular.module('loginHttpServiceModule',[]).factory('loginHttpService',function($http,APISERVICEPATH){
 	var loginHttp = {};
 	var servicePath = APISERVICEPATH.dev;
+	// var servicePath_1 = APISERVICEPATH.dev_1;
 	// var loginAPI = APISERVICEPATH.login;
 
  
@@ -24,8 +25,8 @@ angular.module('loginHttpServiceModule',[]).factory('loginHttpService',function(
 
 	function randomNum(n){ 
 	 var t=''; 
-	 for(var i=0;i<n;i++){ 
-	 t+=Math.floor(Math.random()*10); 
+	 for(var i=0;i<n;i++){ 	
+		t+=Math.floor(Math.random()*10); 
 	 } 
 	 return t; 
 	} 
@@ -48,12 +49,13 @@ angular.module('loginHttpServiceModule',[]).factory('loginHttpService',function(
 			},
 			setHeader: {'ApplicationId':'BACKGROUND','Content-Type': 'application/x-www-form-urlencoded','X-Requested-With':'XMLHttpRequest'}
 		}
+
 		return $http({method: 'POST', url:paramsData.apiPath, params:paramsData.paramsList,headers:paramsData.setHeader});
 	}
 
 
 
-	loginHttp.accessToken = function(){
+	loginHttp.accessToken = function(paramsObj){
 		var paramsData = {
 			"apiPath":servicePath+'authService/accessToken',
 			paramsList:{
@@ -63,12 +65,15 @@ angular.module('loginHttpServiceModule',[]).factory('loginHttpService',function(
 				"redirect_uri":"http://f-shuttlebus-authentication-management.apps.cl-cn-north-preprod01.cf.ford.com/api/v1/",
 				"response_type":"token",
 				"grant_type":"authorization_code",
-				"code":""
+				"code":paramsObj.code
 			},
-			setHeader: {'Content-Type': 'application/x-www-form-urlencoded','X-Requested-With':'XMLHttpRequest'}
+			setHeader: {'ApplicationId':'BACKGROUND','Content-Type': 'application/x-www-form-urlencoded','X-Requested-With':'XMLHttpRequest'}
 		}
-		return $http({method: 'POST', url:paramsData.apiPath, data: paramsData.paramsList,headers:paramsData.setHeader});
+		return $http({method: 'POST', url:paramsData.apiPath, params: paramsData.paramsList,headers:paramsData.setHeader});
 	}
+
+
+
 	/**
 	 * @description
 	 * acitve.controller(modules/login/acitve.controller.js) will invoke this function,and store token from server side.
@@ -93,7 +98,7 @@ angular.module('loginHttpServiceModule',[]).factory('loginHttpService',function(
 			setHeader: {'ApplicationId':'BACKGROUND','Content-Type': 'application/x-www-form-urlencoded','X-Requested-With':'XMLHttpRequest'}
 		}
 
-		return  $http({ method: 'POST',url:paramsData.apiPath,params:paramsData.paramsList});
+		return  $http({ method: 'POST',url:paramsData.apiPath,params:paramsData.paramsList,headers:paramsData.setHeader});
 	}
 	return loginHttp;
 });

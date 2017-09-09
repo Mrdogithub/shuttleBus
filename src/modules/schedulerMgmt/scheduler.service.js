@@ -127,7 +127,8 @@ angular.module('schedulerHttpServiceModule',['ngResource']).factory('schedulerHt
 				    "licenseID": paramsObj.licenseID,
 				    "schedulerUUID": paramsObj.schedulerUUID,
 				    "secondCompanyId":  paramsObj.secondCompanyId,
-				    "shuttleCompanyId":  paramsObj.secondCompanyId//需要后端提供巴士名称
+				    "shuttleCompanyId":  paramsObj.secondCompanyId,//需要后端提供巴士名称
+				    "shuttleCompanyName": paramsObj.secondCompanyName
 				}			
 			}
 		};
@@ -151,14 +152,38 @@ angular.module('schedulerHttpServiceModule',['ngResource']).factory('schedulerHt
 
 	schedulerHttp.getSiteList = function(paramsObj){
 		var paramsData = {
-			"apiPath":stationService+"stations/company/",
+			"apiPath":stationService+"stations/company/"+paramsObj.secondCompanyID,
 			paramsList:{
-				"secondCompanyID":paramsObj.secondCompanyID,
 				"schedulerID":paramsObj.schedulerID
 			}
 		};
 		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
 	}
+
+	schedulerHttp.addSite = function(paramsObj){
+		var paramsData = {
+			"apiPath":stationService+"station",
+			paramsList:{
+	  			"gps": paramsObj.gps,
+	            "name": paramsObj.name,
+	            "address": paramsObj.address,
+	            "stationType": paramsObj.stationType,
+				"secondCompanyId":paramsObj.secondCompanyId,
+				"schedulerUUID":paramsObj.schedulerUUID
+			}
+		};
+		return  $http({ method: 'POST',url:paramsData.apiPath,headers:{'Content-type':'application/json'},data:paramsData.paramsList});
+	}
+
+	schedulerHttp.deleteSiteByID = function(paramsObj){
+		var paramsData = {
+			"apiPath":stationService+paramsObj.stationID,
+			paramsList:{
+	            "schedulerID":paramsObj.schedulerID
+			}
+		};
+		return  $http({ method: 'DELETE',url:paramsData.apiPath,params:paramsData.paramsList});
+	};
 
 	schedulerHttp.getBusDetail = function(paramsObj){
 		var paramsData = {

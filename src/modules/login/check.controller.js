@@ -1,16 +1,16 @@
-angular.module("checkControllerModule",[]).controller("checkController",function(loginHttpService,CHECK_ACCOUNT_STATUS,CHECK_ACCOUNT_ERROR,$scope,$state){
+angular.module("checkControllerModule",[]).controller("checkController",function(localStorageFactory,loginHttpService,CHECK_ACCOUNT_STATUS,CHECK_ACCOUNT_ERROR,$scope,$state){
 	$scope.btnMessage = "下一步";
 
-	$scope.$watch('phoneNumber',function(n,o){
-
-	})
+	if(localStorageFactory.getObject('token',null)){
+		$state.go('passenger.list',{})
+	}
 	$scope.checkNumber = function(e){
 		//var myreg = "^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8}$";
 		var myreg=/^[0-9][0,1,2,3,4,5,6,7,8,9][0-9]{9}$/; 
 		var phoneNumber = $scope.phoneNumber;
 
 		if(!phoneNumber){
-			$.alert('请输入手机号',function(){});
+			alertify.alert('请输入手机号',function(){});
 			return 
 		}
         if(phoneNumber && !phoneNumber.match(myreg)) {
@@ -34,7 +34,7 @@ angular.module("checkControllerModule",[]).controller("checkController",function
 					switch(responseData.error.statusCode){
 						case CHECK_ACCOUNT_ERROR.STATUS_CODE_401.code:errorMessageFn(CHECK_ACCOUNT_ERROR.STATUS_CODE_401.message,responseData)
 							break;
-						case CHECK_ACCOUNT_ERROR.STATUS_CODE_2.code:errorMessageFn(CHECK_ACCOUNT_ERROR.STATUS_CODE_2.message,responseData)
+						case CHECK_ACCOUNT_ERROR.STATUS_CODE_0100103.code:errorMessageFn(CHECK_ACCOUNT_ERROR.STATUS_CODE_0100103.message,responseData)
 							break;
 						case CHECK_ACCOUNT_ERROR.STATUS_CODE_0100101.code:errorMessageFn(CHECK_ACCOUNT_ERROR.STATUS_CODE_0100101.message,responseData)
 							break;
@@ -44,10 +44,21 @@ angular.module("checkControllerModule",[]).controller("checkController",function
 							break;
 						case CHECK_ACCOUNT_ERROR.STATUS_CODE_0100110.code:errorMessageFn( CHECK_ACCOUNT_ERROR.STATUS_CODE_0100110.message,responseData)
 							break;
+						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200108.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200108.message,responseData)
+							break;
+						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200109.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200109.message,responseData)
+							break;
+						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200110.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200110.message,responseData)
+							break;
+						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200111.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200111.message,responseData)
+							break;
+						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200112.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200112.message,responseData)
+							break;
+						default:errorMessageFn(responseData.error.message)
 					}
 
 					function errorMessageFn(errorMessageText,responseDataObj){
-						$.alert(errorMessageText,function(){
+						alertify.alert(errorMessageText,function(){
 							$scope.btnMessage = "下一步";
 							$scope.disabled=false;
 							$scope.$apply();
@@ -55,7 +66,7 @@ angular.module("checkControllerModule",[]).controller("checkController",function
 					}
 				}
 			},function(error){
-				$.alert('可能遇到问题，请稍候再试',function(){})
+				alertify.alert('可能遇到问题，请稍候再试',function(){})
 			});
         }	
 	}

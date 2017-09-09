@@ -1,5 +1,7 @@
 angular.module("loginControllerModule",[])
-.controller("loginController",function(loginHttpService,md5Service,LOGIN_ACCOUNT_ERROR,$scope,$state,$stateParams){
+.controller("loginController",function(loginHttpService,md5Service,LOGIN_ACCOUNT_ERROR,localStorageFactory,$scope,$state,$stateParams){
+
+
 
 	if($stateParams.phoneNumber){
 		$scope.phoneNumber = $stateParams.phoneNumber;	
@@ -12,7 +14,7 @@ angular.module("loginControllerModule",[])
 	$scope.passwordStatus = false;
 
 	$scope.login = function(){
-		// if($scope.)
+
 		$scope.disabled = true;
 		if($scope.password){
 			$scope.loginText = "登录中...";
@@ -20,11 +22,21 @@ angular.module("loginControllerModule",[])
 			.then(function(result){
 				var responseData = result.data;
 				if(!responseData.error){
-					$.alert('登录成功！ 管理页面正在建设中...',function(){
-						$scope.loginText = "登录";
-						$scope.disabled = false;
-						$scope.$apply();						
+					loginHttpService.accessToken({'code':responseData.value.authCode}).then(function(result){
+						var tokenObjList = result.data.value;
+						var token = {
+							'accessToken': tokenObjList.accessToken,
+							'refreshToken': tokenObjList.refreshToken
+						}
+						alertify.alert('登录成功！ 管理页面正在建设中...',function(){
+							localStorageFactory.remove('token');
+							localStorageFactory.setObject('token',token);
+							$scope.loginText = "登录";
+							$scope.disabled = false;
+							$scope.$apply();			
+						})
 					})
+
 				}else{
 
 					switch(responseData.error.statusCode){
@@ -36,11 +48,21 @@ angular.module("loginControllerModule",[])
 							break;
 						case LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200106.code:errorMessageFn(LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200106.message,responseData)
 							break;
-						default :$.alert(responseData.error.message)
+						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200108.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200108.message,responseData)
+							break;
+						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200109.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200109.message,responseData)
+							break;
+						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200110.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200110.message,responseData)
+							break;
+						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200111.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200111.message,responseData)
+							break;
+						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200112.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200112.message,responseData)
+							break;
+						default :alertify.alert(responseData.error.message)
 					}
 
 					function errorMessageFn(errorMessageText,responseDataObj){
-						$.alert(errorMessageText,function(){
+						alertify.alert(errorMessageText,function(){
 							$scope.loginText = "登录";
 							$scope.disabled = false;
 							$scope.$apply();
@@ -50,13 +72,13 @@ angular.module("loginControllerModule",[])
 
 			},function(errorResult){
 				var errorResponseData = errorResult.data.error;
-				$.alert(errorResponseData.message+":"+errorResponseData.statusCode,function(){
+				alertify.alert(errorResponseData.message+":"+errorResponseData.statusCode,function(){
 					$scope.loginText = "登录";
 					$scope.disabled = false;
 				})
 			});
 		}else{
-			$.alert('请输入密码',function(){
+			alertify.alert('请输入密码',function(){
 				$scope.loginText = "登录";
 				$scope.disabled = false;
 				$scope.$apply();

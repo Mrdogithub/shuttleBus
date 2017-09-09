@@ -1,0 +1,15 @@
+<div class="title-wrapper breadcrumb-wrapper">
+	<breadcrumb-component breadcrumb-params="breadcrumbParams" breadcrumb-text="breadcrumbText"></breadcrumb-component>
+</div>
+<div class="subTitle-wrapper">
+ 	<div class="subTitle-content">
+ 		<p ng-if ="!active">{{params.name}}</p>
+ 	</div>
+ 	<div class="subTitle-operate">
+		<a ng-click="deleteDriver()">删除司机</a>
+ 	</div>
+</div>
+<div class="right-content-wrapper container-shadow-border">
+	<div ui-calendar="uiConfig.calendar" class="span8 calendar" ng-model="eventSources"></div>
+<!-- 	<div id='calendar'></div>  -->
+</div>

@@ -9,7 +9,7 @@
     <meta name="viewport" content="initial-scasle=1.0, user-scalable=no, width=device-width">
     <title>完整示例</title>
     <link rel="stylesheet" type="text/css" href="./index.css">
-    <script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
+    <script src="../lib/jquery.min.js"></script>
     <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <style type="text/css">
@@ -72,7 +72,7 @@
                   </div><!-- /.col-lg-6 -->
                 </div><!-- /.row -->
                 <div id="panel-wrapper" class="dropdown">
-                    <ul id="myList"></ul>
+                    <ul id="my-ist"></ul>
                 </div>
             </div>
 
@@ -114,9 +114,7 @@
         center: [121.339766,31.196099]
     });
     
-    function mapSearch (){
-        console.log('.....')
-    }
+
     AMapUI.loadUI(['misc/MarkerList', 'overlay/SimpleMarker', 'overlay/SimpleInfoWindow'],
         function(MarkerList, SimpleMarker, SimpleInfoWindow) {
 
@@ -131,11 +129,13 @@
             var markerList = new MarkerList({
                 map: map,
                 //ListElement对应的父节点或者ID
-                listContainer: "myList", //document.getElementById("myList"),
+                listContainer: "my-ist", //document.getElementById("myList"),
                 //选中后显示
 
                 //从数据中读取位置, 返回lngLat
                 getPosition: function(item) {
+                    console.log('------ get')
+                    console.log(1,item)
                     return [item.longitude, item.latitude];
                 },
                 //数据ID，如果不提供，默认使用数组索引，即index
@@ -177,25 +177,34 @@
                 },
                 //构造列表元素，与getMarker类似，可以是函数，返回一个dom元素，或者模板 html string
                 getListElement: function(data, context, recycledListElement) {
-
+                    console.log('getListElement')
+                    console.log(1,data)
+                    console.log('context')
+                    console.log(1,context)
+                    console.log('recycledListElement')
+                    console.log(1,recycledListElement)
                     var label = String.fromCharCode('A'.charCodeAt(0) + context.index);
 
+                    var tpl = '<p><%- data.id %><p>';
+
                     //使用模板创建
-                    var innerHTML = MarkerList.utils.template('<div class="poi-imgbox">' +
-                        '    <span class="poi-img" style="background-image:url(<%- data.pic %>)"></span>' +
-                        '</div>' +
-                        '<div class="poi-info-left">' +
-                        '    <h3 class="poi-title">' +
-                        '        <%- label %>. <%- data.name %>' +
-                        '    </h3>' +
-                        '    <div class="poi-info">' +
-                        '        <span class="poi-price">' +
-                        '            <%= data.price %>' +
-                        '        </span>' +
-                        '        <p class="poi-addr"><%- data.address %></p>' +
-                        '    </div>' +
-                        '</div>' +
-                        '<div class="clear"></div>', {
+                    var innerHTML = MarkerList.utils.template(tpl
+                        // '<div class="poi-imgbox">' +
+                        // '    <span class="poi-img" style="background-image:url(<%- data.pic %>)"></span>' +
+                        // '</div>' +
+                        // '<div class="poi-info-left">' +
+                        // '    <h3 class="poi-title">' +
+                        // '        <%- label %>. <%- data.name %>' +
+                        // '    </h3>' +
+                        // '    <div class="poi-info">' +
+                        // '        <span class="poi-price">' +
+                        // '            <%= data.price %>' +
+                        // '        </span>' +
+                        // '        <p class="poi-addr"><%- data.address %></p>' +
+                        // '    </div>' +
+                        // '</div>' +
+                        // '<div class="clear"></div>'
+                        , {
                             data: data,
                             label: label
                         });
@@ -205,7 +214,7 @@
                         return recycledListElement;
                     }
 
-                    return '<li class="poibox">' +
+                    return '<li>' +
                         innerHTML +
                         '</li>';
                 },
@@ -250,45 +259,47 @@
                 //     });
                 // }
 
-                    var inited = false;
+                   // var inited = false;
 
-                    function mapSearch(){
-                        console.log('search')
-                    }
+     
                     var $keywords = $('#tip');
                     var $btn = $('#mapSearch')
                     $btn.on('click', function(e) {
                         if (e.which === 13) {
-                            inited = false;
-                            $pagination.twbsPagination('destroy');
-                            goPage(1);
+                         //   inited = false;
+                            //$pagination.twbsPagination('destroy');
+                            goPage();
                         }
 
 
-                        goPage(1);
+                        goPage();
                     });
+
+
                     placeSearch.search($keywords.val(), function(status, result) {
-                        console.log(1,status)
-                        console.log(1,result)
                         if (status !== 'complete') {
                             alert('返回数据出错!');
                         }
+                        console.log('--------- poiList -----')
+                        console.log(1,result.poiList)
+                        console.log('result.poiList.pois')
+                        console.log(1,result.poiList.pois)
 
                         //render当前页的数据
                         markerList.render(result.poiList.pois);
 
-                        if (!inited) {
-                            inited = true;
-                            //首次初始化
-                            initPagination(page, Math.ceil(result.poiList.count / result.poiList.pageSize));
-                        }
+                        // if (!inited) {
+                        //     inited = true;
+                        //     //首次初始化
+                        //     initPagination(page, Math.ceil(result.poiList.count / result.poiList.pageSize));
+                        // }
 
                     });
 
-                    function goPage(page) {
+                    function goPage() {
 
                         //设置当前页
-                        placeSearch.setPageIndex(page);
+                        //placeSearch.setPageIndex(page);
                         //关键字查询
                         placeSearch.search($keywords.val(), function(status, result) {
 
@@ -296,14 +307,30 @@
                                 alert('返回数据出错!');
                             }
 
+                            var  data = [{
+                id: 'A',
+                position: [116.020764, 39.904989],
+                title: '标题_1',
+                desc: '描述_1'
+            }, {
+                id: 'B',
+                position: [116.405285, 39.904989],
+                title: '标题_2',
+                desc: '描述_2'
+            }, {
+                id: 'C',
+                position: [116.789806, 39.904989],
+                title: '标题_3',
+                desc: '描述_3'
+            }]
                             //render当前页的数据
                             markerList.render(result.poiList.pois);
 
-                            if (!inited) {
-                                inited = true;
-                                //首次初始化
-                                initPagination(page, Math.ceil(result.poiList.count / result.poiList.pageSize));
-                            }
+                            // if (!inited) {
+                            //     inited = true;
+                            //     //首次初始化
+                            //     initPagination(page, Math.ceil(result.poiList.count / result.poiList.pageSize));
+                            // }
 
                         });
                     }

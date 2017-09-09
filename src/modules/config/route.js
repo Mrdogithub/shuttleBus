@@ -3,10 +3,8 @@
 angular.module('app',['injectModules'])
 .config(['$stateProvider', '$urlRouterProvider','$qProvider','$httpProvider',function ($stateProvider,$urlRouterProvider,$qProvider,$httpProvider) {
 
-	//$qProvider.errorOnUnhandledRejections(false);
-
 	$httpProvider.interceptors.push('httpInterceptor');
-	
+
 	$stateProvider
 	.state('entry',{
 		url:"/entry",
@@ -71,7 +69,7 @@ angular.module('app',['injectModules'])
 	.state('passenger.add',{
 		url:'/add',
 		params:{
-			'passengerUuid':null,
+			'secondCompanyId':null,
 			'hrUuid':null
 		},
 		templateUrl:'modules/passengerMgmt/passenger.add.html',
@@ -102,13 +100,31 @@ angular.module('app',['injectModules'])
 	})
 	.state('scheduler.route',{
 		url:'/route',
-		templateUrl:'modules/schedulerMgmt/route.html',
-		controller:'routeController'
+		templateUrl:'modules/schedulerMgmt/scheduler.route.html',
+		controller:'schedulerRouteController'
+	})
+	.state('scheduler.addRoute',{
+		url:'/addRoute',
+		params:{
+			'schedulerUUID':null,
+			'secondCompanyID':null
+		},
+		templateUrl:'modules/schedulerMgmt/scheduler.route.add.html',
+		controller:'schedulerAddRouteController'
 	})
 	.state('scheduler.site',{
 		url:'/site',
 		templateUrl:'modules/schedulerMgmt/scheduler.site.html',
 		controller:'schedulerSiteController'
+	})
+	.state('scheduler.addSite',{
+		url:'/addSite',
+		params:{
+			'secondCompanyId':null,
+			'schedulerUUID':null
+		},
+		templateUrl:'modules/schedulerMgmt/scheduler.site.add.html',
+		controller:'schedulerAddSiteController'
 	})
 	.state('scheduler.driver',{
 		url:'/driver',
@@ -187,10 +203,10 @@ angular.module('app',['injectModules'])
 		templateUrl:'modules/schedulerMgmt/scheduler.bus.detail.html',
 		controller:'schedulerBusDetailController'
 	})
-	.state('scheduler.schedule',{
-		url:'/schedule',
-		templateUrl:'modules/schedulerMgmt/schedule.html',
-		controller:'scheduleController'
+	.state('scheduler.calendar',{
+		url:'/calendar',
+		templateUrl:'modules/schedulerMgmt/scheduler.calendar.html',
+		controller:'schedulerCalendarController'
 	})
 	$urlRouterProvider.otherwise('entry/check')
 

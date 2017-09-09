@@ -1,0 +1,80 @@
+.list {
+	list-style: none outside none;
+	max-height: 300px;
+    overflow-y: auto;
+/*	margin: 10px 0 30px;*/
+}
+
+.item {
+	width: 100%;
+	padding:10px;
+	margin: 5px 0;
+/*	border-radius: 5px;
+	background-color: #EA8A8A;*/
+
+	font-size: 1.1em;
+	font-weight: bold;
+	text-align: left;
+	cursor: move;
+}
+
+.item:hover{
+	background: #d9dadc;
+}
+
+/***  Extra ***/
+
+.logList {
+	margin-top: 20px;
+	width: 250px;
+	min-height: 200px;
+	padding: 5px 15px;
+	border: 5px solid #000;
+	border-radius: 15px;
+}
+
+.logList:before {
+	content: 'log';
+	padding: 0 5px;
+	position: relative;
+	top: -1.1em;
+	background-color: #FFF;
+}
+
+.siteList-wrapper {
+	width: 240px;
+	background: #fff;
+	margin: auto;
+}
+
+.updateSiteItem-wrapper{
+	background: #338ca5;
+	height: 60px;
+	display: none;
+}
+.siteList-operate{
+	float: right;
+}
+.add-site-wrapper{
+	background: #fff;
+    height: 300px;
+    position: absolute;
+    width: 100%;
+    top: 41px;
+}
+.add-site-btn-wrapper a{
+    background: #338ca5;
+    color: #fff;
+    padding: 5px;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+}
+.add-site-title{
+    text-align: center;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+.clear {
+  clear: both;
+}

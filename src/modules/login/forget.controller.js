@@ -31,21 +31,21 @@ angular.module("forgetControllerModule",[])
 		var regex = new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,32}$/);
 
 		if(!$scope.smsCode){
-			$.alert('请输入验证码');
+			alertify.alert('请输入验证码');
 			return;
 		}
 
 		if(!$scope.password){
-			$.alert('请输入密码');
+			alertify.alert('请输入密码');
 			return;
 		}
 		if(!regex.test($scope.password)){
-			$.alert('请输入8-32位密码,必须由数字,字母以及至少包含一个大写字母组成。');
+			alertify.alert('请输入8-32位密码,必须由数字,字母以及至少包含一个大写字母组成。');
 			return;
 		}
 
 		if(!$scope.twicePassword){
-			$.alert('请输入确认密码')
+			alertify.alert('请输入确认密码')
 			return;
 		}
 		
@@ -53,20 +53,48 @@ angular.module("forgetControllerModule",[])
 			$scope.restText="正在重置...";
 			$scope.disabled=true;
 
-			loginHttpService.smsCode({'phoneNumber':$scope.phoneNumber,'requestType':REQUESTTYPE.forgetAccount,'smsCode':$scope.smsCode,'password':md5Service.hex_md5($scope.password)})
+			loginHttpService.smsCode({'phoneNumber':$scope.phoneNumber,'requestType':REQUESTTYPE.forgetAccount,'smsCode':$scope.smsCode,'password':$scope.password})
 			.then(function(result){
 				var responseData = result.data;
 				if(!responseData.error){
-					$.alert('密码重置成功,请重新登录',function(){
+					alertify.alert('密码重置成功,请重新登录',function(){
 						$state.go('entry.login',{"phoneNumber":$scope.phoneNumber})
 					})
 				}else{
-					$.alert('可能遇到问题，请稍候再试'+'ErrorCode :'+responseData.statusCode+" : "+responseData.message);
-					$scope.restText="重置密码";
-					$scope.disabled=false;
+					switch(responseData.statusCode){
+						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0100112.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0100112.message,responseData)
+							break;
+						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0100109.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0100109.message,responseData)
+							break;
+						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200107.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200107.message,responseData)
+							break;
+						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200106.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200106.message,responseData)
+							break;
+						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200104.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200104.message,responseData)
+							break;
+						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200108.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200108.message,responseData)
+							break;
+						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200109.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200109.message,responseData)
+							break;
+						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200110.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200110.message,responseData)
+							break;
+						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200111.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200111.message,responseData)
+							break;
+						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200112.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200112.message,responseData)
+							break;
+						default:errorMessageFn(responseData.error.message)
+					}
+
+					function errorMessageFn(errorMessageText,responseDataObj){
+						alertify.alert(errorMessageText,function(){
+							$scope.restText="重置密码";
+							$scope.disabled = false;
+						})
+					}
+
 				}
 			},function(error){
-					$.alert(error.data.message,function(){});
+					alertify.alert(error.data.message,function(){});
 					$scope.restText="重置密码";
 					$scope.disabled=false;
 			});	

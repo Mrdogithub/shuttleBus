@@ -2,6 +2,7 @@
 angular.module('passengerHttpServiceModule',['ngResource']).factory('passengerHttpService',function($http,APISERVICEPATH){
 	var passengerHttp = {};
 	var passengerAccount = APISERVICEPATH.passengerAccount;
+	//var passengerAccount = APISERVICEPATH.prd;
 	var passengerProfile = APISERVICEPATH.passengerProfile;
 	var passengerTrip    = APISERVICEPATH.passengerTrip;
 	

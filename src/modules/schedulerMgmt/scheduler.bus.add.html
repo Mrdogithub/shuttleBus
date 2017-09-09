@@ -11,59 +11,54 @@
 		<div class="info-wrapper">
 			<div class="title">
 				<h1>基础信息</h1>
-				<a ng-click="editDriverProfile(false)" ng-if="!active">编辑</a>
-				<a ng-click="!submitOnProgress && submitDriverProfile(formValidate.$invalid)" ng-if="active">完成</a>
 			</div>
 			<div class="content">
 				<form name="formValidate" novalidate>
 					<div class="content-inline">
 						<div class="content-inline-item"  
 							 ng-class="{'has-error':formValidate.licensePlate.$dirty && formValidate.licensePlate.$invalid,'has-success':formValidate.licensePlate.$dirty && !formValidate.licensePlate.$invalid}">
-							<label for="licensePlate" class="control-label largeSpace" >牌照信息:</label>
+							<label for="licensePlate" class="control-label" >车辆牌照:</label>
 							<input type="text"  
 								   class= "form-control" 
 								   id="licensePlate" 
 								   name="licensePlate" 
 								   required="" 
 								   ng-disabled="!active" 
+								   ng-pattern="/^[\u4E00-\u9FA5]/"
 								   ng-class="{'edit':active,'preview':!active}" 
 								   ng-model="params.licensePlate"/><sup class="requireMark">*</sup>
 							<div class="error"  
 								 ng-show="formValidate.licensePlate.$dirty && formValidate.licensePlate.$invalid">
 						        <small class="control-label" 
 						           	   ng-show="formValidate.licensePlate.$error.required">
-						            请输入牌照
+						            请输入车辆牌照
+						        </small>
+						        <small class="control-label" 
+						           	ng-show="formValidate.licensePlate.$error.pattern">
+						            车辆牌照格式错误，请重新输入
 						        </small>
 						      </div>
 						</div>
-
-						<div class="content-inline-item" 
-							 ng-class="{'has-error':formValidate.vehicleModel.$dirty && formValidate.vehicleModel.$invalid,'has-success':formValidate.vehicleModel.$dirty && !formValidate.vehicleModel.$invalid}">
-							<label class=" control-label" for="vehicleModel" >车辆类型</label>
+						<div class="content-inline-item">
+							<label class="control-label ">行驶证:</label>
 							<input type="text" 
-								   id="vehicleModel" 
-								   class= "form-control" 
-								   required=""  
-								   name="vehicleModel" 
+								   class= "form-control"  
+								   required="" 
+								   name="vehicleLicense" 
+								   id="busCompany" 
 								   ng-disabled="!active" 
 								   ng-class="{'edit':active,'preview':!active}" 
-								   ng-model="params.vehicleModel"/><sup class="requireMark">*</sup>
-							<div class="error"  ng-show="formValidate.vehicleModel.$dirty && formValidate.vehicleModel.$invalid">
-								<small class="control-label" 
-						            ng-show="formValidate.vehicleModel.$error.required">
-						            请输车辆类型
-						        </small>
-		
-						    </div>
+								   ng-model="params.vehicleLicense">
 						</div>
 
 					</div>
 					<div class="content-inline">
-						<div class="content-inline-item" ng-class="{'has-error':formValidate.vin.$dirty && formValidate.vin.$invalid,'has-success':formValidate.vin.$dirty && !formValidate.vin.$invalid}">
-							<label class="control-label largeSpace">车辆VIN号:</label>
+						<div class="content-inline-item"
+							 ng-class="{'has-error':formValidate.vin.$dirty && formValidate.vin.$invalid,'has-success':formValidate.vin.$dirty && !formValidate.vin.$invalid}">
+							<label class="control-label">车辆<small>VIN</small>号:</label>
 							<input type="text" 
-								   class= "form-control"  
-								   required="" 
+								   class= "form-control"
+								   required=""  
 								   name="vin" 
 								   id="busCompany" 
 								   ng-disabled="!active" 
@@ -91,60 +86,99 @@
 					</div>
 
 					<div class="content-inline">
-						<div class="content-inline-item">
-							<label class="control-label largeSpace">行驶证:</label>
+						<div class="content-inline-item" 
+							 ng-class="{'has-error':formValidate.vehicleModel.$dirty && formValidate.vehicleModel.$invalid,'has-success':formValidate.vehicleModel.$dirty && !formValidate.vehicleModel.$invalid}">
+							<label class=" control-label" for="vehicleModel" >车辆类型</label>
 							<input type="text" 
-								   class= "form-control"  
-								   required="" 
-								   name="vehicleLicense" 
-								   id="busCompany" 
+								   id="vehicleModel" 
+								   class= "form-control" 
+								   required=""  
+								   name="vehicleModel" 
 								   ng-disabled="!active" 
 								   ng-class="{'edit':active,'preview':!active}" 
-								   ng-model="params.vehicleLicense">
+								   ng-model="params.vehicleModel"/><sup class="requireMark">*</sup>
+							<div class="error"  ng-show="formValidate.vehicleModel.$dirty && formValidate.vehicleModel.$invalid">
+								<small class="control-label" 
+						            ng-show="formValidate.vehicleModel.$error.required">
+						            请输入车辆类型
+						        </small>
+						    </div>
 						</div>
 
 						<div class="content-inline-item">
+							<label class="control-label ">年审时间:</label>
+							<div class="input-group date datepicker" data-provide="datepicker">
+								<input type="text" 
+									   class= "form-control"  
+									   required="" 
+									   name="annualInspectionExpiration" 
+									   id="busCompany" 
+									   ng-disabled="!active" 
+									   ng-class="{'edit':active,'preview':!active}" 
+									   ng-model="params.annualInspectionExpiration">
+								<div class="input-group-addon">
+	        							<span class="glyphicon glyphicon-th"></span>
+	    						</div>
+	    					</div>
+						</div>
+
+						
+					</div>
+
+					<div class="content-inline">
+
+						<div class="content-inline-item"
+							 ng-class="{'has-error':formValidate.availableSeats.$dirty && formValidate.availableSeats.$invalid,'has-success':formValidate.availableSeats.$dirty && !formValidate.availableSeats.$invalid}">
 							<label class="control-label">座位数:</label>
-							<input type="text" 
+							<input type="number" 
 								   class= "form-control"  
 								   required="" 
 								   name="availableSeats" 
 								   id="busCompany" 
+								   ng-maxlength="100"
+								   ng-max="100"
+								   max="100"
+								   maxlength="100"
 								   ng-disabled="!active" 
 								   ng-class="{'edit':active,'preview':!active}" 
-								   ng-model="params.availableSeats">
+								   ng-model="params.availableSeats"><sup class="requireMark">*</sup>
+							<div class="error"  ng-show="formValidate.availableSeats.$dirty && formValidate.availableSeats.$invalid">
+								<small class="control-label" 
+						               ng-show="formValidate.availableSeats.$error.required">
+						            请输入座位数
+						        </small>
+								<small class="control-label" 
+						               ng-show="formValidate.availableSeats.$error.max">
+						            请输入100以内座位数
+						        </small>
+		
+						    </div>
 						</div>
-					</div>
 
-					<div class="content-inline">
-						<div class="content-inline-item">
-							<label class="control-label largeSpace">年审时间:</label>
-							<input type="text" 
-								   class= "form-control"  
-								   required="" 
-								   name="annualInspectionExpiration" 
-								   id="busCompany" 
-								   ng-disabled="!active" 
-								   ng-class="{'edit':active,'preview':!active}" 
-								   ng-model="params.annualInspectionExpiration">
-						</div>
+
+
 
 						<div class="content-inline-item">
 							<label class="control-label">过期时间:</label>
-							<input type="text" 
-								   class= "form-control"  
-								   required="" 
-								   name="insuranceExpiration" 
-								   id="busCompany" 
-								   ng-disabled="!active" 
-								   ng-class="{'edit':active,'preview':!active}" 
-								   ng-model="params.insuranceExpiration">
+							<div class="input-group date datepicker" data-provide="datepicker">
+    							<input type="text" 
+    								   class="form-control"
+									   name="insuranceExpiration" 
+									   id="busCompany" 
+									   ng-disabled="!active" 
+									   ng-class="{'edit':active,'preview':!active}" 
+									   ng-model="params.insuranceExpiration">
+    							<div class="input-group-addon">
+        							<span class="glyphicon glyphicon-th"></span>
+    							</div>
+							</div>
 						</div>
 					</div>
 
 					<div class="content-inline">
-						<div class="content-inline-item">
-							<label class="control-label largeSpace">巴士公司:</label>
+						<div class="content-inline-item" 
+							 ng-class="{'has-error':formValidate.shuttleCompanyId.$dirty && formValidate.shuttleCompanyId.$invalid,'has-success':formValidate.shuttleCompanyId.$dirty && !formValidate.shuttleCompanyId.$invalid}">
+							<label class="control-label">运营单位:</label>
 							<input type="text" 
 								   class= "form-control"  
 								   required="" 
@@ -152,7 +186,21 @@
 								   id="busCompany" 
 								   ng-disabled="!active" 
 								   ng-class="{'edit':active,'preview':!active}" 
-								   ng-model="params.shuttleCompanyId">
+								   ng-model="params.shuttleCompanyId"><sup class="requireMark">*</sup>
+							<div class="error"  ng-show="formValidate.shuttleCompanyId.$dirty && formValidate.shuttleCompanyId.$invalid">
+								<small class="control-label" 
+						            ng-show="formValidate.shuttleCompanyId.$error.required">
+						            请选择车辆运营单位名称
+						        </small>
+		
+						    </div>
+						</div>
+					</div>
+
+					<div class="content-inline">
+						<div class="btn-wrapper">
+							<a ng-click="close()"  class="submitBtn submit-cancel">取消</a>
+							<a ng-click="!submitOnProgress && submitDriverProfile(formValidate.$invalid)" class="submitBtn submit-ok">确认</a>
 						</div>
 					</div>
 				</form>				
