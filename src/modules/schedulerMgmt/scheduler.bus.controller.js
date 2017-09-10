@@ -26,14 +26,11 @@ angular.module('schedulerBusControllerModule',[])
 	$scope.selectAll = function(){
 		//$scope.tableConfig.checkbox.selectAll = true;
 		var _selectAllStatus  = !$scope.selectAllStatus;
-		console.log(_selectAllStatus+':_selectAllStatus')
 		$scope.$broadcast('checkboxSelectAll',{'status':_selectAllStatus})
-
 	}
 
 	$scope.addBus = function(){
-		$state.go('scheduler.addBus',{
-			'schedulerUUID':'18','secondCompanyId':'18'})
+		$state.go('scheduler.addBus',{'schedulerUUID':'18','secondCompanyId':'18'})
 	};
 
 	$scope.tableConfig={
@@ -75,7 +72,7 @@ angular.module('schedulerBusControllerModule',[])
 	    	selectOptions:[
 				{
 					'parentKey':'baseProfileDTO',
-					'selfKey':{'key':'vehicleLicense','value':'牌照信息'},
+					'selfKey':{'key':'vehicleLicense','value':'车辆牌照'},
 					'checkFlag':true
 				},
 				{
@@ -90,7 +87,7 @@ angular.module('schedulerBusControllerModule',[])
 				},
 				{
 					'parentKey':'driverProfileDTO',
-					'selfKey':{'key':'shuttleCompanyId','value':'巴士公司'},
+					'selfKey':{'key':'shuttleCompanyId','value':'运营单位'},
 					'checkFlag':true
 				}
 	    	]

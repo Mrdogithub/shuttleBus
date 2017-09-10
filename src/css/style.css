@@ -21,12 +21,50 @@ a{
 	color: #CC3333;
     vertical-align: -webkit-baseline-middle;
 }
+.operateBtnForTableList{
+	padding: 10px;
+}
 button{
     margin: 0;
     font: inherit;
     color: inherit;
     border: none;
     background: none;
+}
+.btn-wrapper{
+	padding-left: 187px;
+	margin-top: 40px;
+}
+.submitBtn{
+	background: #338ca5;
+    border-radius: 40px;
+    color: #fff;
+    border: 0;
+    margin: 4px;
+    min-width: 91px;
+    min-height: 28px;
+    font-size: 14px;
+    line-height: 28px;
+    text-align: center;
+    font-weight: normal;
+    text-transform: uppercase;
+    display: inline-block;
+}
+.submitBtn:hover{
+	color: #fff;
+}
+.submit-cancel:hover{
+	color: #666;
+}
+
+.submit-ok{
+	color: #fff;
+}
+
+.submit-cancel{
+	color: #666;
+    border: 1px solid #338ca5;
+    background: #fff;
 }
 .breadcrumb-link{
 	color: #999;
@@ -322,6 +360,27 @@ a.btn-confirm:hover{
 	color: #fff;
 }
 
+/*reset date*/
+.input-group{
+	width: 170px;
+	display: inline-flex;
+}
+.input-group-addon {
+    padding: 0px 12px;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1;
+    color: #555;
+    text-align: center;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    border-radius: 0px;
+}
+
+.glyphicon{
+	top: 3px;
+    right: 6px;
+}
 
 /***reset bootstrap**/
 .form-control{

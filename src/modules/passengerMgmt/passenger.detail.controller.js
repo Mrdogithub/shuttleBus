@@ -15,7 +15,6 @@ angular.module('passengerDetailControllerModule',[])
 			'phoneNumber':$stateParams.phoneNumber,
 			'employeeId':$stateParams.employeeId,
 			'passengerName':$stateParams.passengerName
-
 		};
 		$scope.active = false;
 		$scope.submitOnProgress = false;
@@ -168,9 +167,4 @@ angular.module('passengerDetailControllerModule',[])
 	$scope.$watch('$viewContentLoaded',function(event){ 
   		$scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1'});
 	});
-
-
-
-
-
 })

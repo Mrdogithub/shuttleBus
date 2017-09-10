@@ -18,7 +18,7 @@
 // 					return
 // 				}
 // 				if(state ==='building'){
-// 					$.alert('building')
+// 					alertify.alert('building')
 // 				}
 
 // 				$window.location.href=state;

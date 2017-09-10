@@ -43,17 +43,28 @@ angular.module('smsCodeModule',[]).directive('smsCodeComponent',function(loginHt
 								break;
 							case SMSCODE_ERROR.SMSCODE_ERROR_0100110.code:errorMessageFn(SMSCODE_ERROR.STATUS_CODE_0100108.message,responseData)
 								break;
+							case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200108.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200108.message,responseData)
+							break;
+							case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200109.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200109.message,responseData)
+								break;
+							case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200110.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200110.message,responseData)
+								break;
+							case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200111.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200111.message,responseData)
+								break;
+							case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200112.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200112.message,responseData)
+								break;
+							default:errorMessageFn(responseData.error.message)
 						}
 						
 						function errorMessageFn(errorMessageText,responseDataObj){
-							$.alert(errorMessageText,function(){
+							alertify.alert(errorMessageText,function(){
 								scope.activeText = "激活";
 								scope.disabled = false;
 							})
 						}
 					}
 				},function(error){
-					$.alert('可能遇到问题,请稍后再试。',function(){})
+					alertify.alert('可能遇到问题,请稍后再试。',function(){})
 					scope.activeText = "激活";
 					scope.disabled = false;
 				});

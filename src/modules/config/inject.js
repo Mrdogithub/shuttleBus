@@ -1,6 +1,8 @@
 'use strict'
 angular.module('injectModules',[
 	'ui.router',
+	'ui.sortable',
+	'ui.calendar',
 	'ngAnimate',
 	'ngResource',
 	'headerModule',
@@ -13,10 +15,13 @@ angular.module('injectModules',[
 	'gobackModule',
 	'tableComponentModule',
 	'paginationModule',
+	'sortableDirectiveModule',
 	'formValidateSerivceModule',
+	'localStorageFactoryModule',
 	'loginHttpServiceModule',
-	'forgetControllerModule',
 	'loginControllerModule',
+	'forgetControllerModule',
+	
 	'activeControllerModule',
 	
 	
@@ -33,13 +38,17 @@ angular.module('injectModules',[
 	'schedulerDriverControllerModule',
 	'schedulerDriverDetailControllerModule',
 	'schedulerAddDriverControllerModule',
-	'schedulerRouteControllerModule',
+	'schedulerCalendarControllerModule',
 	'schedulerBusControllerModule',
 	'schedulerSiteControllerModule',
 	
 	'schedulerAddBusControllerModule',
 	'schedulerBusDetailControllerModule',
-		
+	
+	'schedulerAddSiteControllerModule',
+	
+	'schedulerRouteControllerModule',
+	'schedulerAddRouteControllerModule',
 	
 
 	'httpInterceptorModule'

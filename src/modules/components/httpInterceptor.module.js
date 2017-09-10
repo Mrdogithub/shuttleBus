@@ -1,22 +1,26 @@
 
 
+angular.module('httpInterceptorModule',[]).factory('httpInterceptor',function(localStorageFactory,$q, $injector) {  
+        var httpInterceptor = {
+            'request':function(request){
+                if(localStorageFactory.getObject('token',null)){
+                    request.headers['Authorization'] ='Bearer '+localStorageFactory.getObject('token',null).accessToken;
+                }
 
-angular.module('httpInterceptorModule',[]).factory('httpInterceptor', [ '$q', '$injector',function($q, $injector) {  
-        var httpInterceptor = {  
+                return request; 
+            },
             'responseError' : function(response) {  
-                if (response.status == 401) {  
-                    // var rootScope = $injector.get('$rootScope');  
-                    // var state = $injector.get('$rootScope').$state.current.name;  
-                    // rootScope.stateBeforLogin = state;  
-                    // rootScope.$state.go("login"); 
-                    $.alert('可能遇到问题，请稍候再试:401')
+                if (response.status == 401) { 
+                    alertify.alert('可能遇到问题，请稍候再试:401')
                     return $q.reject(response);  
                 } else if (response.status === 404) {  
-                   $.alert('可能遇到问题，请稍候再试:404') 
+                   alertify.alert('可能遇到问题，请稍候再试:404') 
                     return $q.reject(response);  
                 } else if (response.status === 500){
-                   $.alert('可能遇到问题，请稍候再试:500') 
+                   alertify.alert('可能遇到问题，请稍候再试:500') 
                     return $q.reject(response);  
+                } else if(response.status == 504 ){
+                    alertify.alert('响应超时，请重试:504')
                 }
             },  
             'response' : function(response) {  
@@ -24,5 +28,4 @@ angular.module('httpInterceptorModule',[]).factory('httpInterceptor', [ '$q', '$
             }  
         }  
         return httpInterceptor;  
-    }   
-]);  
+    }  );  

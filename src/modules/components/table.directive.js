@@ -16,7 +16,7 @@ angular.module('tableComponentModule',[]).directive('tableComponent',function(lo
 				+' 	    <div class="table-head">'
 				+'		 	<span class="first-operate" ng-if="stableFlag.checkbox"></span>'
 				+'			<span ng-repeat="head in tableConfig.head">{{head["selfKey"]["value"]}}</span>'
-				+'			<span ng-if="tableConfig.operateIfFlag">操作</span>'
+				+'			<span ng-if="tableConfig.operateIfFlag"></span>'
 				+'		</div>'
 				+'		<ul class="table-body">'
 				+'			<li class="list-item" ng-repeat="item in tableData track by $index">'
@@ -24,10 +24,10 @@ angular.module('tableComponentModule',[]).directive('tableComponent',function(lo
 				+'					<input type="checkbox" id="item{{$index}}" id="item{{$index}}" ng-model="selectObj.checkArray[$index]" ng-click="selectObj.checkIsAllSelect(selectObj.checkArray[$index])" ng-disabled="tableConfig.changeEnable && tableConfig.changeEnable(item)" data-disable="{{tableConfig.changeEnable && tableConfig.changeEnable(item)}}" />'
 				+'				    <label for="item{{$index}}" class="check-box"></label>' 
 				+'				</span>'
-				+'				<span ng-repeat="head in tableConfig.head">{{item[head.parentKey][head.selfKey.key] || tableConfig.defaultValue}}</span>'
+				+'				<span ng-repeat="head in tableConfig.head">{{(item[head.parentKey]?item[head.parentKey][head.selfKey.key] :item[head.selfKey.key] )|| tableConfig.defaultValue}}</span>'
 				// +'				<span ><a>编辑</a></span>'
-				+'				<span ng-repeat="o in stableFlag.operate" class="item-operate"  ng-click="preventPropagation($event)" ng-if="tableConfig.operateIfFlag || (stableFlag.operate && stableFlag.operate.Length !=0 && (o.ngIf(item) ||o.ngIf ==undefined))">'
-				+'					  <a ng-click="o.fun(item,$event)" ng-if="tableConfig.operateIfFlag || (o.ngIf(item) || o.ngIf ==undefined)">{{o.name}}</a> '     	
+				+'				<span class="item-operate"  ng-click="preventPropagation($event)" ng-if="tableConfig.operateIfFlag || (stableFlag.operate && stableFlag.operate.Length !=0 && (o.ngIf(item) ||o.ngIf ==undefined))">'
+				+'					  <a class="operateBtnForTableList" ng-click="o.fun(item,$event)" ng-repeat="o in stableFlag.operate"  ng-if="tableConfig.operateIfFlag || (o.ngIf(item) || o.ngIf ==undefined)">{{o.name}}</a> '     	
 				+'				</span>'
 				+'			</li>'
 				+'		</ul>'
@@ -62,7 +62,7 @@ angular.module('tableComponentModule',[]).directive('tableComponent',function(lo
 			}
 
 
-			if(scope.stableFlag.checkbox){//check box fn...
+			if(scope.stableFlag.checkbox){
 				scope.selectObj = {
 					allSelecteFlag:false,
 					checkArray:[],

@@ -1,13 +1,16 @@
 'use strict'
 angular.module('listControllerModule',[]).controller('listController',function(passengerHttpService,$state,$scope){
 		//table data config
-
+	var _configAccount = {
+		'hrUUID':'666',
+		'secondCompanyID':'666'
+	}
 	$scope.selectAllStatus = false;
 	$scope.pageConfigs={
 		params:{},
 		list:null,
 		getList:function(){
-			return passengerHttpService.passenger({'hrUUID':'666','secondCompanyID':'666'})
+			return passengerHttpService.passenger(_configAccount)
 		},
 		loadData:function(){
 			console.log('load data')
@@ -23,9 +26,23 @@ angular.module('listControllerModule',[]).controller('listController',function(p
 		//extendParams:function(){}
 	}
 
+	$scope.queryByKeyObj = {
+		'active':{'key':'name','value':'员工姓名'},
+		'list':[{'key':'phoneNumber','value':'手机号'},{'key':'name','value':'员工姓名'}]
+	}
+
+	$scope.selectKey = function(activeObj){
+		$scope.queryByKeyObj.active.key = activeObj.key;
+		$scope.queryByKeyObj.active.value = activeObj.value;
+		$('.dropdown-menu').css('display','none')
+	}
+
+	$scope.showQueryKeyList = function(){
+		$('.dropdown-menu').css('display','block')
+	}
 	$scope.selectAll = function(){
 		//$scope.tableConfig.checkbox.selectAll = true;
-		$.alert('正在建设中....')
+		alertify.alert('正在建设中....')
 		var _selectAllStatus  = !$scope.selectAllStatus;
 		console.log(_selectAllStatus+':_selectAllStatus')
 		$scope.$broadcast('checkboxSelectAll',{'status':_selectAllStatus})
@@ -33,14 +50,14 @@ angular.module('listControllerModule',[]).controller('listController',function(p
 	}
 
 	$scope.deletePassenger = function(){
-		$.alert('正在建设中....')
+		alertify.alert('正在建设中....')
 	};
 
 	$scope.importPassenger = function(){
-		$.alert('正在建设中...')
+		alertify.alert('正在建设中...')
 	}
 	$scope.addPassenger = function(){
-		$state.go('passenger.add',{'passengerUuid':'111','hrUuid':'111'})
+		$state.go('passenger.add',{'hrUuid':_configAccount.hrUUID,'secondCompanyId':_configAccount.secondCompanyID})
 	};
 
 	$scope.tableConfig={

@@ -14,8 +14,6 @@
 		<div class="info-wrapper">
 			<div class="title">
 				<h1>基础信息</h1>
-				<a ng-click="editDriverProfile(false)" ng-if="!active">编辑</a>
-				<a ng-click="!submitOnProgress&& submitDriverProfile(formValidate.$invalid)" ng-if="active">完成</a>
 			</div>
 			<div class="content">
 				<form name="formValidate" novalidate>
@@ -31,7 +29,7 @@
 								   ng-disabled="!active" 
 								   ng-class="{'edit':active,'preview':!active}" 
 								   ng-model="params.name"
-								   ng-pattern="/^[a-zA-Z\u4E00-\u9FA5]{1,10}$/"/>
+								   ng-pattern="/^[a-zA-Z\u4E00-\u9FA5]{1,16}$/"/><sup class="requireMark">*</sup>
 							<div class="error"  
 								 ng-show="formValidate.name.$dirty && formValidate.name.$invalid">
 						        <small class="control-label" 
@@ -59,7 +57,7 @@
 								   name="phoneNumber" 
 								   ng-disabled="!active" 
 								   ng-class="{'edit':active,'preview':!active}" 
-								   ng-model="params.phoneNumber">
+								   ng-model="params.phoneNumber"><sup class="requireMark">*</sup>
 							<div class="error"  ng-show="formValidate.phoneNumber.$dirty && formValidate.phoneNumber.$invalid">
 								<small class="control-label" 
 						            ng-show="formValidate.phoneNumber.$error.required">
@@ -82,9 +80,10 @@
 						</div>
 
 					</div>
+					
 					<div class="content-inline">
 						<div class="content-inline-item" ng-class="{'has-error':formValidate.shuttleCompanyId.$dirty && formValidate.shuttleCompanyId.$invalid,'has-success':formValidate.shuttleCompanyId.$dirty && !formValidate.shuttleCompanyId.$invalid}">
-							<label class="control-label">巴士公司:</label>
+							<label class="control-label">运营单位:</label>
 							<input type="text" 
 								   class= "form-control"  
 								   required="" 
@@ -92,11 +91,11 @@
 								   id="busCompany" 
 								   ng-disabled="!active" 
 								   ng-class="{'edit':active,'preview':!active}" 
-								   ng-model="params.shuttleCompanyId">
+								   ng-model="params.shuttleCompanyId"><sup class="requireMark">*</sup>
 							<div class="error"  ng-show="formValidate.shuttleCompanyId.$dirty && formValidate.shuttleCompanyId.$invalid">
 								<small class="control-label" 
 						            ng-show="formValidate.shuttleCompanyId.$error.required">
-						            请输入巴士公司
+						            请选择车辆运营单位
 						        </small>
 						    </div>
 						</div>
@@ -116,6 +115,7 @@
 
 						<div class="content-inline-item">
 							<label class="control-label largeSpace">驾照到期时间:</label>
+<<<<<<< HEAD
 												<div class="input-group date" data-provide="datepicker">
 					    <input type="text" class="form-control">
 					    <div class="input-group-addon">
@@ -129,6 +129,27 @@
 								   ng-disabled="!active" 
 								   ng-class="{'edit':active,'preview':!active}" 
 								   ng-model="params.licenseExpirationDate">
+=======
+							<div class="input-group date datepicker" data-provide="datepicker">
+    							<input type="text" class="form-control"
+    							 	   name="licenseExpirationDate" 
+								       id="busCompany" 
+								       ng-disabled="!active" 
+								       ng-class="{'edit':active,'preview':!active}" 
+								       ng-model="params.licenseExpirationDate">
+    							<div class="input-group-addon">
+        							<span class="glyphicon glyphicon-th"></span>
+    							</div>
+							</div>
+						</div>
+
+					</div>
+
+					<div class="content-inline">
+						<div class="btn-wrapper">
+							<a ng-click="close()"  class="submitBtn submit-cancel">取消</a>
+							<a ng-click="!submitOnProgress&& submitDriverProfile(formValidate.$invalid)" class="submitBtn submit-ok">确认</a>
+>>>>>>> 6d89a840de570e060656e5fb9d4e13d321ab5b26
 						</div>
 					</div>
 				</form>				

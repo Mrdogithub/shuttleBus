@@ -103,7 +103,7 @@ angular.module('schedulerDriverControllerModule',[])
 				},
 				{
 					'parentKey':'driverProfileDTO',
-					'selfKey':{'key':'shuttleCompanyId','value':'巴士公司'},
+					'selfKey':{'key':'shuttleCompanyId','value':'运营单位'},
 					'checkFlag':true
 				}
 	    	]

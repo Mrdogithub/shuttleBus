@@ -26,7 +26,7 @@ angular.module("leftNavModule",[]).directive('leftNavComponent',function(){
 				}
 
 				if(targetState === 'building'){
-					$.confirm('正在努力建设中...')
+					alertify.confirm('正在努力建设中...')
 				}
 
 				$state.go(targetState);

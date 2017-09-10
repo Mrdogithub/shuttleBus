@@ -6,13 +6,13 @@ angular.module('passengerAddControllerModule',[])
 		$scope.passengerUuid = $stateParams.passengerUuid;
 		$scope.params = {
 			'status':1,
-			'passengerUuid':$stateParams.passengerUuid,
-			'roleType':$stateParams.roleType,
+			'passengerUuid':'',
+			'roleType':'ROLE_PASSENGER',
 			'hrUuid':$stateParams.hrUuid,
 			'secondCompanyId':$stateParams.secondCompanyId,
-			'accountId':$stateParams.accountId,
-			'routeName':$stateParams.routeName,
-			'stationName':$stateParams.stationName,
+			'accountId':'',
+			'routeName':'',
+			'stationName':'',
 			'phoneNumber':$stateParams.phoneNumber,
 			'employeeId':$stateParams.employeeId,
 			'passengerName':$stateParams.passengerName
@@ -37,42 +37,56 @@ angular.module('passengerAddControllerModule',[])
 		$scope.active = !flag;
 	};
 
+
+	// form information haven't been completed by user and then user trigger ‘取消’
+	// we should provide messages for user
+	$scope.close = function(){
+		alertify.confirm('请确认是否离开该页面,未保存的数据将在离开之后丢失。',function(){
+			$state.go('passenger.list')
+		},function(){
+
+		});
+	}
+
+	// form information completed by user and the group params whin _params obj
+	// invoke API.Before invoke api we need to check all filed's status by 'setDirty'
+	// services.
 	$scope.addPassengerProfile = function(formValidate,formValidateObj){
+
+		// if all input filed empty and then user trigger submit button
+		// we will provide message for user to complete the requre filed.
 		if(!formValidate) return setDirty($scope.formValidate)
-		$.confirm('确认新增名为"'+$scope.params.passengerName+'"的这个乘客？',function(){
-			$scope.submitOnProgress = true;
-			$scope.submitStatusText = '正在创建中';
+		alertify.confirm('确认新增名为"'+$scope.params.passengerName+'"的这个乘客？',function(){
 			var _params = {
 				'phoneNumber':$scope.params.phoneNumber,
 				'roleType':$scope.params.roleType,
-				'accountId':$scope.params.accountId,
+				'accountId':'',
 				'name':$scope.params.passengerName,
 				'employeeId':$scope.params.employeeId,
 				'hrUuid':$scope.params.hrUuid,
-				'passengerUuid':$scope.params.passengerUuid,
+				'passengerUuid':'',
 				'secondCompanyId':$scope.params.secondCompanyId
 			}
 			passengerHttpService.addPassenger(_params).then(function(result){
 				var responseData = result.data;
 				if(!responseData.error){
-					$.alert('新增成功！',function(){
-						$scope.submitStatusText = '完成';
-						$scope.active = true;
-						$state.go('passenger.list',{'hrUuid':$scope.params.hrUuid})
-					})
+					$state.go('passenger.list',{'hrUuid':$scope.params.hrUuid})
+					// alertify.alert('新增成功！',function(){
+					// 	$scope.submitStatusText = '完成';
+					// 	$scope.active = true;
+					// 	$state.go('passenger.list',{'hrUuid':$scope.params.hrUuid})
+					// })
 				}else{
-					$scope.submitStatusText = '完成';
 					switch(responseData.error.statusCode){
-						case '500':$.alert(responseData.error.message+":"+responseData.error.statusCode)
+						case '500':alertify.alert(responseData.error.message+":"+responseData.error.statusCode)
 						break;
-						case '400':$.alert(responseData.error.message+":"+responseData.error.statusCode)
+						case '400':alertify.alert(responseData.error.message+":"+responseData.error.statusCode)
 						break;
+						default:alertify.alert(responseData.error.message+":"+responseData.error.statusCode)
 					}
 				}
 			},function(errorResult){
-				$scope.submitStatusText = '完成';
-				$scope.active = true;
-				$.alert(errorResult.error.message)
+				alertify.alert(errorResult.error.message)
 			})
 		},function(){
 			console.log('cancel')
