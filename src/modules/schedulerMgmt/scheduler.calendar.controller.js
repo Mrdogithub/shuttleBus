@@ -2,6 +2,7 @@
 angular.module('schedulerCalendarControllerModule',[])
 .controller('schedulerCalendarController',function(schedulerHttpService,utilFactory,$scope,$state,$compile){
 
+<<<<<<< HEAD
   // add Schedule
 
   $scope.addSchedule = function(){
@@ -135,6 +136,18 @@ angular.module('schedulerCalendarControllerModule',[])
 
 
   ///////////////////////////////////////////////////
+=======
+
+
+
+  $scope.pre = function(){
+   $scope.uiConfig.calendar.eventClick();
+  };
+
+  $scope.next = function(){
+
+  };
+>>>>>>> fae182c997129da5e738fdc0f7f3592524772844
 	// function CalendarCtrl($scope,uiCalendarConfig) {
     var date = new Date();
     var d = date.getDate();
@@ -153,7 +166,7 @@ angular.module('schedulerCalendarControllerModule',[])
     $scope.events = [
       {title: 'All Day Event',start: new Date(y, m, 1)},
       {title: 'Long Event',start: new Date(y, m, d - 5),end: new Date(y, m, d - 2)},
-      {id: 999,title: 'Repeating Event',start: new Date(y, m, d - 3, 16, 0),allDay: false},
+      {dataObj: {'id':999,'name':'ok'},title: 'Repeating Event',start: new Date(y, m, d - 3, 16, 0),allDay: false},
       {id: 999,title: 'Repeating Event',start: new Date(y, m, d + 4, 16, 0),allDay: false},
       {title: 'Birthday Party',start: new Date(y, m, d + 1, 19, 0),end: new Date(y, m, d + 1, 22, 30),allDay: false},
       {title: 'Click for Google',start: new Date(y, m, 28),end: new Date(y, m, 29),url: 'http://google.com/'}
@@ -167,15 +180,15 @@ angular.module('schedulerCalendarControllerModule',[])
       callback(events);
     };
 
-    $scope.calEventsExt = {
-       color: '#f00',
-       textColor: 'yellow',
-       events: [ 
-          {type:'party',title: 'Lunch',start: new Date(y, m, d, 12, 0),end: new Date(y, m, d, 14, 0),allDay: false},
-          {type:'party',title: 'Lunch 2',start: new Date(y, m, d, 12, 0),end: new Date(y, m, d, 14, 0),allDay: false},
-          {type:'party',title: 'Click for Google',start: new Date(y, m, 28),end: new Date(y, m, 29),url: 'http://google.com/'}
-        ]
-    };
+    // $scope.calEventsExt = {
+    //    color: '#f00',
+    //    textColor: 'yellow',
+    //    events: [ 
+    //       {type:'party',title: 'Lunch',data:{'bus_id':'1'},start: new Date(y, m, d, 12, 0),end: new Date(y, m, d, 14, 0),allDay: false},
+    //       {type:'party',title: 'Lunch 2',data:{'bus_id':'1'},start: new Date(y, m, d, 12, 0),end: new Date(y, m, d, 14, 0),allDay: false},
+    //       {type:'party',title: 'Click for Google',data:{'bus_id':'1'},start: new Date(y, m, 28),end: new Date(y, m, 29),url: 'http://google.com/'}
+    //     ]
+    // };
     /* alert on eventClick */
     $scope.alertOnEventClick = function( date, jsEvent, view){
 
@@ -232,6 +245,9 @@ angular.module('schedulerCalendarControllerModule',[])
     $scope.renderCalender = function(calendar) {
       if(uiCalendarConfig.calendars[calendar]){
         uiCalendarConfig.calendars[calendar].fullCalendar('render');
+
+
+        console.log(1, uiCalendarConfig.calendars[calendar].fullCalendar('render'))
       }
     };
      /* Render Tooltip */
@@ -242,7 +258,6 @@ angular.module('schedulerCalendarControllerModule',[])
     /* config object */
     $scope.uiConfig = {
       calendar:{
-      	lang:'zh-cn',
         height: 450,
         editable: true,
         header:{
@@ -250,9 +265,28 @@ angular.module('schedulerCalendarControllerModule',[])
           center: '',
           right: '今天 prev,next'
         },
+             views: {
+              month: { // name of view
+                  titleFormat: 'YYYY - MM'
+                  // other view-specific options here
+              }
+          },
+        monthNames:['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'], 
+        monthNamesShort:['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
         dayNames:['星期日','星期一','星期二','星期三','星期四','星期五','星期六'],
         dayNamesShort:['星期日','星期一','星期二','星期三','星期四','星期五','星期六'],
-        eventClick: $scope.alertOnEventClick,
+        eventClick: function(event, element){
+  alertify.dialog('errorAlert',function factory(){
+    return{
+            build:function(){
+                var errorHeader = '<span class="fa fa-times-circle fa-2x" '
+                +    'style="vertical-align:middle;color:#e10000;">'
+                + '</span> Application Error';
+                this.setHeader(errorHeader);
+            }
+        };
+    },true,'alert');
+        },//$scope.alertOnEventClick,
         eventDrop: $scope.alertOnDrop,
         eventResize: $scope.alertOnResize,
         eventRender: $scope.eventRender

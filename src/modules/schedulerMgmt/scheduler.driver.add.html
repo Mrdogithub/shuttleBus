@@ -115,6 +115,21 @@
 
 						<div class="content-inline-item">
 							<label class="control-label largeSpace">驾照到期时间:</label>
+<<<<<<< HEAD
+												<div class="input-group date" data-provide="datepicker">
+					    <input type="text" class="form-control">
+					    <div class="input-group-addon">
+					        <span class="glyphicon glyphicon-th"></span>
+					    </div>
+					</div>
+							<input type="text" 
+								   class= "form-control"  
+								   name="licenseExpirationDate" 
+								   id="busCompany" 
+								   ng-disabled="!active" 
+								   ng-class="{'edit':active,'preview':!active}" 
+								   ng-model="params.licenseExpirationDate">
+=======
 							<div class="input-group date datepicker" data-provide="datepicker">
     							<input type="text" class="form-control"
     							 	   name="licenseExpirationDate" 
@@ -134,6 +149,7 @@
 						<div class="btn-wrapper">
 							<a ng-click="close()"  class="submitBtn submit-cancel">取消</a>
 							<a ng-click="!submitOnProgress&& submitDriverProfile(formValidate.$invalid)" class="submitBtn submit-ok">确认</a>
+>>>>>>> 6d89a840de570e060656e5fb9d4e13d321ab5b26
 						</div>
 					</div>
 				</form>				
