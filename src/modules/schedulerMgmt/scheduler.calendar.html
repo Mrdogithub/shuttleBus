@@ -6,10 +6,33 @@
  		<p ng-if ="!active">{{params.name}}</p>
  	</div>
  	<div class="subTitle-operate">
-		<a ng-click="deleteDriver()">删除司机</a>
+		<a ng-click="addSchedule()">新增班次</a>
  	</div>
 </div>
 <div class="right-content-wrapper container-shadow-border">
 	<div ui-calendar="uiConfig.calendar" class="span8 calendar" ng-model="eventSources"></div>
-<!-- 	<div id='calendar'></div>  -->
+<!-- Button trigger modal -->
+
+	<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document"  style="width: 900px;"> 
+    <div class="modal-content" style="    border-radius: 0px;">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">2017-01-02</h4>
+      </div>
+      <div class="modal-body">
+        <table-component table-config = "tableConfig" table-data="pageConfigs.list"></table-component>
+
+        <div class="pagination-wrapper">
+			     <pagination-component page-configs= "pageConfigs" ng-show="pageConfigs.ngIf"></pagination-component>
+		    </div>
+      </div>
+      <div class="modal-footer" style="text-align: center;border: none;">
+        <button type="button" class="submitBtn submit-cancel" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 </div>

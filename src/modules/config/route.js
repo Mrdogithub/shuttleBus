@@ -33,6 +33,11 @@ angular.module('app',['injectModules'])
 		params:{'phoneNumber':null,'smsCode':null,'requestType':null},
 		controller:'forgetController'
 	})
+	.state('admin',{
+		url:'/',
+		templateUrl:'modules/admin/admin.html',
+		controller:'adminController'
+	})
 	.state('passenger',{
 		url:"/passenger",
 		templateUrl:'modules/passengerMgmt/passenger.html',
@@ -207,6 +212,11 @@ angular.module('app',['injectModules'])
 		url:'/calendar',
 		templateUrl:'modules/schedulerMgmt/scheduler.calendar.html',
 		controller:'schedulerCalendarController'
+	})
+	.state('scheduler.addSchedule',{
+		url:'/addSchedule',
+		templateUrl:'modules/schedulerMgmt/scheduler.addSchedule.html',
+		controller:'schedulerAddScheduleController'
 	})
 	$urlRouterProvider.otherwise('entry/check')
 

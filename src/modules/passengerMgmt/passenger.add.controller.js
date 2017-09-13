@@ -22,7 +22,7 @@ angular.module('passengerAddControllerModule',[])
 		$scope.submitOnProgress = false;
 		$scope.submitStatusText = '完成';
 		$scope.breadcrumbParams = {
-			'hrUuid':$stateParams.hrUuid,
+		'hrUuid':$stateParams.hrUuid,
 			'secondCompanyId':$stateParams.secondCompanyId	
 		}
 		$scope.breadcrumbText={

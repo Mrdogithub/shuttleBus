@@ -16,7 +16,7 @@ angular.module('tableComponentModule',[]).directive('tableComponent',function(lo
 				+' 	    <div class="table-head">'
 				+'		 	<span class="first-operate" ng-if="stableFlag.checkbox"></span>'
 				+'			<span ng-repeat="head in tableConfig.head">{{head["selfKey"]["value"]}}</span>'
-				+'			<span ng-if="tableConfig.operateIfFlag"></span>'
+				+'			<span ng-if="tableConfig.operateIfFlag">操作</span>'
 				+'		</div>'
 				+'		<ul class="table-body">'
 				+'			<li class="list-item" ng-repeat="item in tableData track by $index">'

@@ -1,6 +1,6 @@
 'use strict'
 angular.module('schedulerAddDriverControllerModule',[])
-.controller('schedulerAddDriverController',function(schedulerHttpService,setDirty,$stateParams,$state,$scope){
+.controller('schedulerAddDriverController',function(schedulerHttpService,utilFactory,setDirty,$stateParams,$state,$scope){
 
 	if($stateParams.schedulerUUID  &&$stateParams.secondCompanyId){
 		$scope.params = {
@@ -83,7 +83,7 @@ angular.module('schedulerAddDriverControllerModule',[])
 				'secondCompanyId':$scope.params.secondCompanyId,
 				'shuttleCompanyId':$scope.params.shuttleCompanyId,
 				'licenseID':$scope.params.licenseID,
-				'licenseExpirationDate':new Date($scope.params.licenseExpirationDate).getTime(),
+				'licenseExpirationDate':utilFactory.getTimestamp($scope.params.licenseExpirationDate),
 				'identityCard':$scope.params.identityCard
 			}
 

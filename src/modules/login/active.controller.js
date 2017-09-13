@@ -1,5 +1,5 @@
 angular.module("activeControllerModule",[])
-.controller("activeController",function(loginHttpService,REQUESTTYPE,ACTIVE_ACCOUNT_ERROR,md5Service,$scope,$state,$stateParams){
+.controller("activeController",function(loginHttpService,REQUESTTYPE,USER_ACCOUNT,ACTIVE_ACCOUNT_ERROR,md5Service,$scope,$state,$stateParams){
 
 	if(!$stateParams.phoneNumber){
 		$state.go('entry.check');
@@ -53,10 +53,70 @@ angular.module("activeControllerModule",[])
 			loginHttpService.smsCode({'phoneNumber':$scope.phoneNumber,'requestType':REQUESTTYPE.activeAccount,'smsCode':$scope.smsCode,'password':$scope.password})
 			.then(function(result){
 				var responseData = result.data;
+
+				console.log('responseData.value.authCode:'+responseData.value.authCode)
 				if(!responseData.error){
-					alertify.alert('激活成功')
+
+					var tokenObjList = result.data.value;
+
+					if(tokenObjList.roles){
+							var _getRoleArray = tokenObjList.roles.split(":");
+							for(var i=0;i<_getRoleArray.length;i++){
+								if(USER_ACCOUNT.hasOwnProperty(_getRoleArray[i])){
+									USER_ACCOUNT[_getRoleArray[i]] = true;
+								}
+							}
+
+							if(USER_ACCOUNT.ROLE_DRIVER){
+								alertify.alert('未分配权限,请联系统管理员',function(){
+									$scope.activeText = "激活";
+									$scope.disabled = false;
+									$scope.$apply();
+								});
+								return
+							}
+
+							if(USER_ACCOUNT.ROLE_PASSENGER){
+								alertify.alert('未分配权限,请联系统管理员',function(){
+									$scope.activeText = "激活";
+									$scope.disabled = false;
+									$scope.$apply();
+								})
+								return
+							}
+						}
+
+
+						USER_ACCOUNT.accessToken = tokenObjList.accessToken;
+						USER_ACCOUNT.refreshToken = tokenObjList.refreshToken;
+						USER_ACCOUNT.accountId = tokenObjList.accountId;
+
+						localStorageFactory.remove('account');
+						localStorageFactory.setObject('account',USER_ACCOUNT);
+
+
+
+						//get role
+
+						var _roleList = localStorageFactory.getObject('account');
+
+
+						if(_roleList.ROLE_HR){
+							$state.go('passenger.list')
+						}
+
+						if(_roleList.ROLE_SCHEDULER){
+							$state.go('scheduler.route')
+						}else{
+							alertify.alertify('权限未开通',function(){})
+						}
+						// if(_roleList.ROLE_HR && _roleList.ROLE_SCHEDULER){
+						// 	//$state.go('admin')
+						// }
+
+
 				}else{
-					switch(responseData.statusCode){
+					switch(responseData.error.statusCode){
 						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0100113.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0100113.message,responseData)
 							break;
 						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0100115.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0100115.message,responseData)

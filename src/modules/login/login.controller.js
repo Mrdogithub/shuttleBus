@@ -1,5 +1,5 @@
 angular.module("loginControllerModule",[])
-.controller("loginController",function(loginHttpService,md5Service,LOGIN_ACCOUNT_ERROR,localStorageFactory,$scope,$state,$stateParams){
+.controller("loginController",function(loginHttpService,md5Service,USER_ACCOUNT,LOGIN_ACCOUNT_ERROR,localStorageFactory,$scope,$state,$stateParams){
 
 
 
@@ -21,20 +21,71 @@ angular.module("loginControllerModule",[])
 			loginHttpService.login({'phoneNumber':$stateParams.phoneNumber,'password':$scope.password})
 			.then(function(result){
 				var responseData = result.data;
+
 				if(!responseData.error){
 					loginHttpService.accessToken({'code':responseData.value.authCode}).then(function(result){
+
+
+
+
 						var tokenObjList = result.data.value;
-						var token = {
-							'accessToken': tokenObjList.accessToken,
-							'refreshToken': tokenObjList.refreshToken
+
+						if(tokenObjList.roles){
+							var _getRoleArray = tokenObjList.roles.split(":");
+							for(var i=0;i<_getRoleArray.length;i++){
+								if(USER_ACCOUNT.hasOwnProperty(_getRoleArray[i])){
+									USER_ACCOUNT[_getRoleArray[i]] = true;
+								}
+							}
+
+							if(USER_ACCOUNT.ROLE_DRIVER){
+								alertify.alert('未分配权限,请联系统管理员',function(){
+									$scope.loginText = "登录";
+									$scope.disabled = false;
+									$scope.$apply();
+								});
+								return
+							}
+
+							if(USER_ACCOUNT.ROLE_PASSENGER){
+								alertify.alert('未分配权限,请联系统管理员',function(){
+									$scope.loginText = "登录";
+									$scope.disabled = false;
+									$scope.$apply();
+								})
+								return
+							}
+
+							USER_ACCOUNT.accessToken = tokenObjList.accessToken;
+							USER_ACCOUNT.refreshToken = tokenObjList.refreshToken;
+							USER_ACCOUNT.accountId = tokenObjList.accountId;
+
+							localStorageFactory.remove('account');
+							localStorageFactory.setObject('account',USER_ACCOUNT);
+
+
+
+							//get role
+
+							var _roleList = localStorageFactory.getObject('account');
+
+
+							if(_roleList.ROLE_HR){
+								$state.go('passenger.list')
+							}
+
+							if(_roleList.ROLE_SCHEDULER){
+								$state.go('scheduler.route')
+							}
 						}
-						alertify.alert('登录成功！ 管理页面正在建设中...',function(){
-							localStorageFactory.remove('token');
-							localStorageFactory.setObject('token',token);
-							$scope.loginText = "登录";
-							$scope.disabled = false;
-							$scope.$apply();			
-						})
+
+
+
+						// if(_roleList.ROLE_HR && _roleList.ROLE_SCHEDULER){
+						// 	//$state.go('admin')
+						// }
+
+
 					})
 
 				}else{

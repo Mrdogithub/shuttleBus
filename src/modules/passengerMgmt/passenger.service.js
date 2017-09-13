@@ -21,8 +21,8 @@ angular.module('passengerHttpServiceModule',['ngResource']).factory('passengerHt
 		var paramsData = {
 			"apiPath":passengerAccount+"passenger",
 			paramsList:{
-				"hrUUID": '2', //paramsObj.hrUUID,
-				"secondCompanyID":'2',//paramsObj.secondCompanyID,
+				"accountId": paramsObj.accountId,
+				//"secondCompanyID":paramsObj.secondCompanyID,
 				"pageNumber":"1",
 				"pageSize":"10"
 			}

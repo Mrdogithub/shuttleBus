@@ -53,7 +53,7 @@ angular.module('schedulerAddBusControllerModule',[])
 
 
 	$scope.close = function(){
-		alertify.confirm('请确认是否离开该页面,未保存的数据将在离开之后丢失。',function(){
+		alertify.confirm('请确认是否离开该inde页面,未保存的数据将在离开之后丢失。',function(){
 			$state.go('scheduler.bus')
 		},function(){
 

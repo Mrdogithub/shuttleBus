@@ -3,7 +3,7 @@ angular.module("leftNavModule",[]).directive('leftNavComponent',function(){
 	return {
 		restrict:"E",
 		replace:true,
-		scope:false,
+		scope:true,
 		template:'<div class="left-side">'
 				+	'<div class="title-wrapper">'
 				+       '<img class="menu-icon" ng-src={{icon}} />'

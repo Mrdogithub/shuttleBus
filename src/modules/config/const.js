@@ -1,18 +1,20 @@
 'use strict'
 angular.module('constModule',[])
 .constant('APISERVICEPATH',{
-	'dev':'http://ford-shuttlebus-authentication-management.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/',
+	'dev'              :'http://ford-shuttlebus-authentication-management.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/',
+	'token'            :'http://ford-shuttlebus-authentication-management.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/',
+	'assignmentService':'http://ford-shuttlebus-authentication-management.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/assignmentService/',
 	//'dev':'http://19.229.169.185:7072/api/v1/',
 	// 'dev_1':'http://19.229.169.185:7080/api/v1/',
-	'passengerDev':'./modules/data/',
-	'passengerTrip':'http://ford-shuttlebus-route-management.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/tripHistoryService/',
-	'passengerAccount':'http://ford-shuttlebus-accountandauthority-management.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/passengerAccount/',
-	'passengerProfile':'http://ford-shuttlebus-profile-management.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/passengerProfile/',
-	'vehicleService':'http://ford-shuttlebus-shuttle-management.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/vehicleService/',
+	'passengerDev'     :'./data/',
+	'passengerTrip'    :'http://ford-shuttlebus-route-management.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/tripHistoryService/',
+	'passengerAccount' :'http://ford-shuttlebus-accountandauthority-management.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/passengerAccount/',
+	'passengerProfile' :'http://ford-shuttlebus-profile-management.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/passengerProfile/',
+	'vehicleService'   :'http://ford-shuttlebus-shuttle-management.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/vehicleService/',
 	// 'prd':'http://19.229.169.202:7071/api/v1/passengerAccount/',
-	'driverAccount':'http://ford-shuttlebus-accountandauthority-management.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/driverAccount/',
-	'stationService':'http://ford-shuttlebus-route-management.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/stationService/',
-	'stationDev':'/api/v1/stationService/'
+	'driverAccount'    : 'http://ford-shuttlebus-accountandauthority-management.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/driverAccount/',
+	'stationService'   :'http://ford-shuttlebus-route-management.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/stationService/',
+	'stationDev'       :'/api/v1/stationService/'
 })
 .constant('ERRORCODE',{
 	'activeProgress':'0100104',
@@ -82,4 +84,20 @@ angular.module('constModule',[])
 	'STATUS_CODE_0200110':{'code':'0200110','message':'无效的请求'},
 	'STATUS_CODE_0200111':{'code':'0200111','message':'无效的请求'},
 	'STATUS_CODE_0200112':{'code':'0200112','message':'无效的请求'}
+})
+.constant('TOKEN_ERROR',{
+	'STATUS_CODE_0200102':{'code':'0200102','message':'token 过期'},
+	'STATUS_CODE_0200105':{'code':'0200105','message':'重新登录'}
+}).
+constant('USER_ACCOUNT',{
+	'accountId':'',
+	'accessToken':'',
+	'refreshToken':'',
+	'ROLE_SYSADMIN':false,
+	'ROLE_APPLICATION_ADMIN':false,
+	'ROLE_SECOND_COMPANY_ADMIN':false,
+	'ROLE_HR':false,
+	'ROLE_SCHEDULER':false,
+	'ROLE_PASSENGER':false,
+	'ROLE_DRIVER':false
 })

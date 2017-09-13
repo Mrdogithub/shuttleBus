@@ -1,5 +1,5 @@
 angular.module('paginationModule',[])
-.directive('paginationComponent',['$parse','$q',function($parse,$q){
+.directive('paginationComponent',function(TOKEN_ERROR,getRefreshTokenFacotry,localStorageFactory,$state,$parse,$q){
 	return{
 		restrict:'E',
 		template:'<div class="pagination-wrapper" ng-if="pageConfigs.list">' 
@@ -56,12 +56,24 @@ angular.module('paginationModule',[])
 				var _params = angular.extend(_params,scope.pageConfigs.extendParams);
 
 				scope.pageConfigs.getList(_params).then(function(data){
+					if(data.data.error){
+						if(data.data.error.statusCode == TOKEN_ERROR.STATUS_CODE_0200102.code){
+							getRefreshTokenFacotry.getRefreshToken().then(function(result){
+								var _tokenRes = result.data;
+								// if(!_tokenRes.error){
+								// 	localStorageFactory.remove('token');
+								// 	localStorageFactory.setObject('token',token);
+								// 	getListFun();
+
+								// }else if(_tokenRes.error.statusCode == TOKEN_ERROR.STATUS_CODE_0200105.code){
+								// 	localStorageFactory.remove('token');
+								// 	$state.go('entry.check')
+								// }
+							},function(){});
+						}
+					}
 					var _total;
-					console.log('data')
-					console.log(1,data)
 					var data = data.data;
-					console.log('data.data')
-					console.log(1,data)
 					if(scope.pageConfigs.dataSet){
 						scope.pageConfigs.dataSet(data)
 					}
@@ -212,4 +224,4 @@ angular.module('paginationModule',[])
 			});
 		}
 	}
-}])
+})

@@ -2,12 +2,14 @@
 angular.module('injectModules',[
 	'ui.router',
 	'ui.sortable',
+	'ui.bootstrap',
 	'ui.calendar',
 	'ngAnimate',
 	'ngResource',
 	'headerModule',
 	'leftNavModule',
 	'constModule',
+	'utilFactoryModule',
 	'md5ServiceModule',
 	'smsCodeModule',
 	'breadcrumbModule',
@@ -16,6 +18,7 @@ angular.module('injectModules',[
 	'tableComponentModule',
 	'paginationModule',
 	'sortableDirectiveModule',
+	'getRefreshTokenFacotryModule',
 	'formValidateSerivceModule',
 	'localStorageFactoryModule',
 	'loginHttpServiceModule',
@@ -23,7 +26,7 @@ angular.module('injectModules',[
 	'forgetControllerModule',
 	
 	'activeControllerModule',
-	
+	'adminControllerModule',
 	
 	'passengerControllerModule',
 	'passengerHttpServiceModule',
@@ -39,6 +42,7 @@ angular.module('injectModules',[
 	'schedulerDriverDetailControllerModule',
 	'schedulerAddDriverControllerModule',
 	'schedulerCalendarControllerModule',
+	'schedulerAddScheduleControllerModule',
 	'schedulerBusControllerModule',
 	'schedulerSiteControllerModule',
 	

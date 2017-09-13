@@ -1,7 +1,140 @@
 'use strict'
 angular.module('schedulerCalendarControllerModule',[])
-.controller('schedulerCalendarController',function($scope,$compile){
+.controller('schedulerCalendarController',function(schedulerHttpService,utilFactory,$scope,$state,$compile){
 
+  // add Schedule
+
+  $scope.addSchedule = function(){
+    $state.go('scheduler.addSchedule')
+  }
+
+  /////////////////  TABLE CONFIG ////////////////////
+  $scope.active = true;
+  $scope.submitOnProgress = false;
+
+  $scope.selectAllStatus = false;
+  $scope.pageConfigs={
+    params:{},
+    list:null,
+    ngIf:false,
+    getList:function(_params){
+      return schedulerHttpService.assignmentService(_params);
+    },
+    loadData:function(){
+      console.log('load data')
+    },
+    dataSet:function(result){
+     if(result.value !=null){
+        var _dataArray = result.value
+        for(var i=0;i<_dataArray.length;i++){
+          _dataArray[i]['departureTime'] =utilFactory.getLocalTime(_dataArray[i]['departureTime']);
+        }
+      }
+    }
+    //extendParams:function(){}
+  }
+
+  $scope.queryByKeyObj = {
+    'active':{'key':'name','value':'员工姓名'},
+    'list':[{'key':'phoneNumber','value':'手机号'},{'key':'name','value':'员工姓名'}]
+  }
+
+  $scope.selectKey = function(activeObj){
+    $scope.queryByKeyObj.active.key = activeObj.key;
+    $scope.queryByKeyObj.active.value = activeObj.value;
+    $('.dropdown-menu').css('display','none')
+  }
+
+  $scope.showQueryKeyList = function(){
+    $('.dropdown-menu').css('display','block')
+  }
+  $scope.selectAll = function(){
+    //$scope.tableConfig.checkbox.selectAll = true;
+    alertify.alert('正在建设中....')
+    var _selectAllStatus  = !$scope.selectAllStatus;
+    console.log(_selectAllStatus+':_selectAllStatus')
+    $scope.$broadcast('checkboxSelectAll',{'status':_selectAllStatus})
+
+  }
+
+  $scope.deletePassenger = function(){
+    alertify.alert('正在建设中....')
+  };
+
+  $scope.importPassenger = function(){
+    alertify.alert('正在建设中...')
+  }
+  $scope.addPassenger = function(){
+    $state.go('passenger.add',{'hrUuid':_configAccount.hrUUID,'secondCompanyId':_configAccount.secondCompanyID})
+  };
+
+  $scope.tableConfig={
+    stableFlag:{
+      arrow:true,
+      index:true,
+      checkbox:false,
+      radio:true,
+      operate:[{
+        name:'删除',
+        ngIf:function(){},
+        fun:function(item){
+          alertify.alert('正在努力建设中...')
+        }
+      }]
+    },
+    // height:290,
+    // head:[{name:'文件名',key:'filename'}],
+    // className:function(flag){},
+    // clickFun:function(){},
+    // rowClickFun:function(item){},
+    checkbox:{
+      checkArray:[]
+    },
+    defaultValue:'---',
+    // radioSelect:function(){},
+    operateIfFlag:true,
+    setHeadOptional:{
+      cancelSelectNum:5,
+        selectOptions:[
+        {
+          'parentKey':'',
+          'selfKey':{'key':'routeName','value':'线路名称'},
+          'checkFlag':true
+        },
+        {
+          'parentKey':'',
+          'selfKey':{'key':'phoneNumber','value':'运行状态'},
+          'checkFlag':true
+        },
+        {
+          'parentKey':'',
+          'selfKey':{'key':'driverName','value':'司机名称'},
+          'checkFlag':true
+        },
+        {
+          'parentKey':'',
+          'selfKey':{'key':'vehicleLicensePlate','value':'牌照信息'},
+          'checkFlag':true
+        },
+        {
+          'parentKey':'',
+          'selfKey':{'key':'departureTime','value':'发车时间'},
+          'checkFlag':true
+        }
+        ]
+      }
+    // changeEnable:function(item){}
+  }
+
+
+  // $scope.$watch('$viewContentLoaded',function(event){ 
+  //     $scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1'});
+  // });
+
+
+
+
+  ///////////////////////////////////////////////////
 	// function CalendarCtrl($scope,uiCalendarConfig) {
     var date = new Date();
     var d = date.getDate();
@@ -9,7 +142,7 @@ angular.module('schedulerCalendarControllerModule',[])
     var y = date.getFullYear();
     
    // $scope.changeTo = 'Hungarian';
-    /* event source that pulls from google.com */
+    /* event sources that pulls from google.com */
     $scope.eventSource = {
             url: "http://www.google.com/calendar/feeds/usa__en%40holiday.calendar.google.com/public/basic",
             className: 'gcal-event',           // an option!
@@ -45,7 +178,17 @@ angular.module('schedulerCalendarControllerModule',[])
     };
     /* alert on eventClick */
     $scope.alertOnEventClick = function( date, jsEvent, view){
-        $scope.alertMessage = (date.title + ' was clicked ');
+
+       $('#myModal').modal('toggle');
+       var _params = {
+          'schedulerUUID':'',
+          'secondCompanyId':'',
+          'date':''
+       };
+      $scope.pageConfigs.list = null;
+      $scope.pageConfigs.getList(_params);
+      $scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1'});
+
     };
     /* alert on Drop */
      $scope.alertOnDrop = function(event, delta, revertFunc, jsEvent, ui, view){

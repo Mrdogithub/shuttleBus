@@ -1,9 +1,8 @@
 'use strict'
-angular.module('listControllerModule',[]).controller('listController',function(passengerHttpService,$state,$scope){
+angular.module('listControllerModule',[]).controller('listController',function(passengerHttpService,USER_ACCOUNT,$state,$scope){
 		//table data config
 	var _configAccount = {
-		'hrUUID':'666',
-		'secondCompanyID':'666'
+		'accountId':USER_ACCOUNT.accountId
 	}
 	$scope.selectAllStatus = false;
 	$scope.pageConfigs={
@@ -17,7 +16,8 @@ angular.module('listControllerModule',[]).controller('listController',function(p
 			
 		},
 		dataSet:function(result){
-			if(result.data.value != null){
+			if(result.value != null){
+				var _result = result.value;
 				for(var i=0;i<_result.length;i++){
 					_result[i]['passengerProfileOutDTO']['status'] =_result[i]['passengerProfileOutDTO']['status'] == 0?'未激活':'已激活'
 				}

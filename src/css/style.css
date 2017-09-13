@@ -384,6 +384,7 @@ a.btn-confirm:hover{
 
 /***reset bootstrap**/
 .form-control{
+	padding: 0;
 	border-radius: 0px;
 	display: inline-block;
 	height: 23px;

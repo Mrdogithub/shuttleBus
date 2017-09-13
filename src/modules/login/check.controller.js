@@ -1,9 +1,9 @@
-angular.module("checkControllerModule",[]).controller("checkController",function(localStorageFactory,loginHttpService,CHECK_ACCOUNT_STATUS,CHECK_ACCOUNT_ERROR,$scope,$state){
+angular.module("checkControllerModule",[]).controller("checkController",function(localStorageFactory,loginHttpService,CHECK_ACCOUNT_STATUS,ACTIVE_ACCOUNT_ERROR,CHECK_ACCOUNT_ERROR,$scope,$state){
 	$scope.btnMessage = "下一步";
 
-	if(localStorageFactory.getObject('token',null)){
-		$state.go('passenger.list',{})
-	}
+	// if(localStorageFactory.getObject('token',null)){
+	// 	$state.go('passenger.list',{})
+	// }
 	$scope.checkNumber = function(e){
 		//var myreg = "^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8}$";
 		var myreg=/^[0-9][0,1,2,3,4,5,6,7,8,9][0-9]{9}$/; 
@@ -22,8 +22,21 @@ angular.module("checkControllerModule",[]).controller("checkController",function
         	loginHttpService.account({'phoneNumber':$scope.phoneNumber,'requestType':0}).then(function(result){
 				var responseData = result.data;
 				var accountActiveObj = responseData.value;
-				
+	            
+
 				if(!responseData.error){
+
+
+
+
+
+
+
+
+					//
+		
+
+
 					switch(accountActiveObj.status){
 						case CHECK_ACCOUNT_STATUS.accountActive:$state.go('entry.active',{'phoneNumber':$scope.phoneNumber,'requestType':'0','smsCode':accountActiveObj.smsCode})
 						break;

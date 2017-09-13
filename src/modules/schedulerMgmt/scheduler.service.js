@@ -4,6 +4,9 @@ angular.module('schedulerHttpServiceModule',['ngResource']).factory('schedulerHt
 	var driverAccount = APISERVICEPATH.driverAccount;
 	var vehicleService = APISERVICEPATH.vehicleService;
 	var stationService = APISERVICEPATH.stationService;
+
+	// API for scheduler's calendar 
+	var assignmentService = APISERVICEPATH.assignmentService;
 	schedulerHttp.getDriverList = function(paramsObj){
 		var paramsData = {
 			"apiPath":driverAccount+"driver",
@@ -42,60 +45,6 @@ angular.module('schedulerHttpServiceModule',['ngResource']).factory('schedulerHt
 		};
 		return  $http({ method: 'PATCH',url:paramsData.apiPath,data:paramsData.paramsList,headers:{'Content-type':'application/json'}});
 	};
-	// passengerHttp.passenger = function(paramsObj){
-	// 	var paramsData = {
-	// 		"apiPath":passengerAccount+"passenger",
-	// 		paramsList:{
-	// 			"hrUUID":paramsObj.hrUUID,
-	// 			"secondCompanyID":paramsObj.secondCompanyID,
-	// 			"pageNumber":"1",
-	// 			"pageSize":"10"
-	// 		}
-	// 	};
-
-	// 	return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
-	// }
-
-	// passengerHttp.passengerByID = function(paramsObj){
-
-	// 	var paramsData = {
-	// 		"apiPath":passengerProfile+"passengerByID",
-	// 		paramsList:{
-	// 			"passengerUUID":paramsObj.passengerUUID
-	// 		}
-	// 	};
-
-	// 	return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
-	// };
-
-	// passengerHttp.updatePassengerByID = function(paramsObj){
-	// 	var paramsData = {
-	// 		"apiPath":passengerAccount+"passenger",
-	// 		paramsList:{
-	// 			 "accountDTO": {
-	// 			    "phoneNumber": paramsObj.phoneNumber,
-	// 			    "roleType":'ROLE_PASSENGER'
-	// 			  },
-	// 			  "baseProfileDTO": {
-	// 			    "accountId": paramsObj.accountId,
-	// 			    //'accountId':'2329059598338048',
-	// 			    "name": paramsObj.name
-	// 			  },
-	// 			  "passengerProfileDTO": {
-	// 			    "accountId": paramsObj.accountId,
-	// 			    //'accountId':'2329059598338048',
-	// 			    "employeeId": paramsObj.employeeId,
-	// 			    "hrUuid": paramsObj.hrUuid,
-	// 			    "passengerUuid": paramsObj.passengerUuid,
-	// 			    //'passengerUuid':'2329059612100608',
-	// 			   "secondCompanyId":paramsObj.secondCompanyId
-	// 			   //'secondCompanyId':'666'
-	// 			  }
-	// 		}
-	// 	};
-
-	// 	return  $http({ method: 'PATCH',url:paramsData.apiPath,data:paramsData.paramsList,headers:{'Content-type':'application/json'}});
-	// };
 
 	schedulerHttp.deleteDriverByID = function(paramsObj){
 		var paramsData = {
@@ -230,5 +179,31 @@ angular.module('schedulerHttpServiceModule',['ngResource']).factory('schedulerHt
 	};
 
 
+	// Get scheduler's calendar result for one day
+	schedulerHttp.assignmentService = function(paramsObj){
+		var paramsData = {
+			//"apiPath":assignmentService+"assignments/"+paramsObj.schedulerUUID+"/"+paramsObj.secondCompanyId,
+			"apiPath":APISERVICEPATH.passengerDev+"assignments.json",
+			paramsList:{
+				"date":paramsObj.date
+			}
+		};
+		return  $http({ method: 'GET',url:paramsData.apiPath});
+		//return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
+	};
+
+	// Get driver's list ,vehicle's list and routeTemplate's list.
+	// when scheduler create new schedule,below api will provide driver ,vehical and 
+	// route name list 
+	schedulerHttp.schedulingelements = function(paramsObj){
+		var paramsData = {
+			//"apiPath":assignmentService+"schedulingelements/"+paramsObj.schedulerUUID+"/"+paramsObj.secondCompanyId,
+			"apiPath":APISERVICEPATH.passengerDev+"schedulingelements.json"
+		};
+		return  $http({ method: 'GET',url:paramsData.apiPath});
+		//return  $http({ method: 'GET',url:paramsData.apiPath});
+	};
+
 	return schedulerHttp;
 });
+

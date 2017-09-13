@@ -1,0 +1,91 @@
+{
+  "error": {
+    "message": "string",
+    "statusCode": "string",
+    "statusContext": "string"
+  },
+  "lastRequested": 0,
+  "requestStatus": "string",
+  "value": [
+    {
+      "departureTime": "1505116832",
+      "driverName": "舒马赫",
+      "driverUUID": "F1",
+      "routeID": "F2",
+      "routeName": "世纪大道一线",
+      "routeType": "AM",
+      "vehicleID": "12",
+      "vehicleLicensePlate": "沪A8888"
+    },
+        {
+      "departureTime": "1505116832",
+      "driverName": "韩寒",
+      "driverUUID": "F1",
+      "routeID": "F2",
+      "routeName": "世纪大道二线",
+      "routeType": "AM",
+      "vehicleID": "12",
+      "vehicleLicensePlate": "沪A8888"
+    },
+        {
+      "departureTime": "1505116832",
+      "driverName": "林志颖",
+      "driverUUID": "F1",
+      "routeID": "F2",
+      "routeName": "世纪大道三线",
+      "routeType": "AM",
+      "vehicleID": "12",
+      "vehicleLicensePlate": "沪A8888"
+    },
+        {
+      "departureTime": "1505116832",
+      "driverName": "莱科宁",
+      "driverUUID": "F1",
+      "routeID": "F2",
+      "routeName": "世纪大道四线",
+      "routeType": "AM",
+      "vehicleID": "12",
+      "vehicleLicensePlate": "沪A8888"
+    },
+        {
+      "departureTime": "1505116832",
+      "driverName": "王五",
+      "driverUUID": "F1",
+      "routeID": "F2",
+      "routeName": "世纪大道五线",
+      "routeType": "AM",
+      "vehicleID": "12",
+      "vehicleLicensePlate": "沪A8888"
+    },
+        {
+      "departureTime": "1505116832",
+      "driverName": "张二",
+      "driverUUID": "F1",
+      "routeID": "F2",
+      "routeName": "世纪大道六线",
+      "routeType": "AM",
+      "vehicleID": "12",
+      "vehicleLicensePlate": "沪A8888"
+    },
+        {
+      "departureTime": "1505116832",
+      "driverName": "李三",
+      "driverUUID": "F1",
+      "routeID": "F2",
+      "routeName": "世纪大道七线",
+      "routeType": "AM",
+      "vehicleID": "12",
+      "vehicleLicensePlate": "沪A8888"
+    },
+        {
+      "departureTime": "1505116832",
+      "driverName": "王久",
+      "driverUUID": "F1",
+      "routeID": "F2",
+      "routeName": "世纪大道八线",
+      "routeType": "AM",
+      "vehicleID": "12",
+      "vehicleLicensePlate": "沪A8888"
+    }
+  ]
+}
