@@ -27,12 +27,13 @@ angular.module('tableComponentModule',[]).directive('tableComponent',function(lo
 				+'				<span ng-repeat="head in tableConfig.head">{{(item[head.parentKey]?item[head.parentKey][head.selfKey.key] :item[head.selfKey.key] )|| tableConfig.defaultValue}}</span>'
 				// +'				<span ><a>编辑</a></span>'
 				+'				<span class="item-operate"  ng-click="preventPropagation($event)" ng-if="tableConfig.operateIfFlag || (stableFlag.operate && stableFlag.operate.Length !=0 && (o.ngIf(item) ||o.ngIf ==undefined))">'
+				
 				+'					  <a class="operateBtnForTableList" ng-click="o.fun(item,$event)" ng-repeat="o in stableFlag.operate"  ng-if="tableConfig.operateIfFlag || (o.ngIf(item) || o.ngIf ==undefined)">{{o.name}}</a> '     	
 				+'				</span>'
 				+'			</li>'
 				+'		</ul>'
 				+'	</div>'
-				+'  <div ng-if="tableData == null" style="text-align: center;margin-top: 50px;">{{tableData.length}}暂无数据</div>',
+				+'  <div ng-if="tableData.length === 0" style="text-align: center;margin-top: 50px;">暂无数据</div>',
 		scope:{
 			tableConfig:'=',
 			tableData:'='
@@ -80,7 +81,6 @@ angular.module('tableComponentModule',[]).directive('tableComponent',function(lo
 						}
 					},
 					checkIsAllSelect:function(flag){
-						console.log(flag+"::flag")
 						var _isAllSelectFlag = 0;
 						var _array = this.checkArray;
 						var _length = _array.length;

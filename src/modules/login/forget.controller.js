@@ -1,5 +1,5 @@
 angular.module("forgetControllerModule",[])
-.controller("forgetController",function(loginHttpService,REQUESTTYPE,md5Service,$scope,$state,$stateParams){
+.controller("forgetController",function(loginHttpService,REQUESTTYPE,FORGET_ACCOUNT_ERROR,md5Service,$scope,$state,$stateParams){
 
 	if(!$stateParams.phoneNumber){
 		$state.go('entry.check')
@@ -62,25 +62,25 @@ angular.module("forgetControllerModule",[])
 					})
 				}else{
 					switch(responseData.statusCode){
-						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0100112.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0100112.message,responseData)
+						case FORGET_ACCOUNT_ERROR.STATUS_CODE_0100112.code:errorMessageFn(FORGET_ACCOUNT_ERROR.STATUS_CODE_0100112.message,responseData)
 							break;
-						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0100109.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0100109.message,responseData)
+						case FORGET_ACCOUNT_ERROR.STATUS_CODE_0100109.code:errorMessageFn(FORGET_ACCOUNT_ERROR.STATUS_CODE_0100109.message,responseData)
 							break;
-						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200107.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200107.message,responseData)
+						case FORGET_ACCOUNT_ERROR.STATUS_CODE_0200107.code:errorMessageFn(FORGET_ACCOUNT_ERROR.STATUS_CODE_0200107.message,responseData)
 							break;
-						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200106.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200106.message,responseData)
+						case FORGET_ACCOUNT_ERROR.STATUS_CODE_0200106.code:errorMessageFn(FORGET_ACCOUNT_ERROR.STATUS_CODE_0200106.message,responseData)
 							break;
-						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200104.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200104.message,responseData)
+						case FORGET_ACCOUNT_ERROR.STATUS_CODE_0200104.code:errorMessageFn(FORGET_ACCOUNT_ERROR.STATUS_CODE_0200104.message,responseData)
 							break;
-						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200108.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200108.message,responseData)
+						case FORGET_ACCOUNT_ERROR.STATUS_CODE_0200108.code:errorMessageFn(FORGET_ACCOUNT_ERROR.STATUS_CODE_0200108.message,responseData)
 							break;
-						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200109.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200109.message,responseData)
+						case FORGET_ACCOUNT_ERROR.STATUS_CODE_0200109.code:errorMessageFn(FORGET_ACCOUNT_ERROR.STATUS_CODE_0200109.message,responseData)
 							break;
-						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200110.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200110.message,responseData)
+						case FORGET_ACCOUNT_ERROR.STATUS_CODE_0200110.code:errorMessageFn(FORGET_ACCOUNT_ERROR.STATUS_CODE_0200110.message,responseData)
 							break;
-						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200111.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200111.message,responseData)
+						case FORGET_ACCOUNT_ERROR.STATUS_CODE_0200111.code:errorMessageFn(FORGET_ACCOUNT_ERROR.STATUS_CODE_0200111.message,responseData)
 							break;
-						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200112.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200112.message,responseData)
+						case FORGET_ACCOUNT_ERROR.STATUS_CODE_0200112.code:errorMessageFn(FORGET_ACCOUNT_ERROR.STATUS_CODE_0200112.message,responseData)
 							break;
 						default:errorMessageFn(responseData.error.message)
 					}

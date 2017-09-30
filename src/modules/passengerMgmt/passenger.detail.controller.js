@@ -1,33 +1,26 @@
 'use strict'
 angular.module('passengerDetailControllerModule',[])
 .controller('passengerDetailController',function(passengerHttpService,$stateParams,$state,$scope){
-	if($stateParams.passengerUuid && $stateParams.hrUuid){
-		$scope.passengerUuid = $stateParams.passengerUuid;
+	if($stateParams.schedulerId){
+
 		$scope.params = {
-			'status':$stateParams.status,
-			'passengerUuid':$stateParams.passengerUuid,
-			'roleType':$stateParams.roleType,
-			'hrUuid':$stateParams.hrUuid,
-			'secondCompanyId':$stateParams.secondCompanyId,
-			'accountId':$stateParams.accountId,
-			'routeName':$stateParams.routeName,
-			'stationName':$stateParams.stationName,
-			'phoneNumber':$stateParams.phoneNumber,
-			'employeeId':$stateParams.employeeId,
-			'passengerName':$stateParams.passengerName
+			'schedulerId': $stateParams.schedulerId,
+			'passengerId': $stateParams.passengerId,
+			'secondCompanyId': $stateParams.secondCompanyId,
+			'defaultRouteName': $stateParams.defaultRouteName,
+			'defaultStationName': $stateParams.defaultStationName,
+			'employeeId': $stateParams.employeeId,
+			'name': $stateParams.name,
+			'phoneNumber': $stateParams.phoneNumber
 		};
 		$scope.active = false;
 		$scope.submitOnProgress = false;
-		$scope.breadcrumbParams = {
-			'hrUuid':$stateParams.hrUuid,
-			'secondCompanyId':$stateParams.secondCompanyId	
-		}
 		$scope.breadcrumbText={
 			'lv1':'乘客列表',
 			'lv2':'乘客详情'
 		}
 	}else{
-		$state.go('passenger.list',{'hrUUID':'666','secondCompanyID':'666'})
+		$state.go('passenger.list')
 	}
 
 	$scope.editPassengerProfile = function(flag){
@@ -37,17 +30,26 @@ angular.module('passengerDetailControllerModule',[])
 	$scope.submitPassengerProfile = function(){
 		$scope.submitOnProgress = true;
 		var _params = {
-			'phoneNumber':$scope.params.phoneNumber,
-			'roleType':$scope.params.roleType,
-			'accountId':$scope.params.accountId,
-			'name':$scope.params.passengerName,
-			'employeeId':$scope.params.employeeId,
-			'hrUuid':$scope.params.hrUuid,
-			'passengerUuid':$scope.params.passengerUuid,
-			'secondCompanyId':$scope.params.secondCompanyId
+			'schedulerId': $scope.params.schedulerId,
+			'passengerId': $scope.params.passengerId,
+			'secondCompanyId': $scope.params.secondCompanyId,
+			'defaultRouteName': $scope.params.defaultRouteName,
+			'defaultStationName': $scope.params.defaultStationName,
+			'employeeId': $scope.params.employeeId,
+			'name': $scope.params.name,
+			'phoneNumber': $scope.params.phoneNumber
 		}
+
 		passengerHttpService.updatePassengerByID(_params).then(function(result){
 			$scope.submitOnProgress = false;
+			var _resultData = result.data;
+			if(!_resultData.error){
+				alertify.alert('更新成功!',function(){
+					$state.go('passenger.list')
+				})
+			}else{
+				alertify.alert(_resultData.error.message)
+			}
 		},function(){})
 	};
 
@@ -74,9 +76,8 @@ angular.module('passengerDetailControllerModule',[])
 			
 		},
 		dataSet:function(result){
-			var _result = result.data.value;
-			for(var i=0;i<_result.length;i++){
-				_result[i]['passengerProfileOutDTO']['status'] =_result[i]['passengerProfileOutDTO']['status'] == 0?'未激活':'已激活'
+			for(var i=0;i<result.length;i++){
+				result[i]['status'] =result[i]['status'] == 0?'未激活':'已激活'
 			}
 		}
 		//extendParams:function(){}
@@ -132,7 +133,7 @@ angular.module('passengerDetailControllerModule',[])
 		checkbox:{
 			checkArray:[]
 		},
-		defaultValue:'---',
+		defaultValue:'——',
 		// radioSelect:function(){},
 		operateIfFlag:false,
 		setHeadOptional:{

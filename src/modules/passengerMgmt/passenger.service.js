@@ -1,5 +1,5 @@
 'use strict'
-angular.module('passengerHttpServiceModule',['ngResource']).factory('passengerHttpService',function($http,APISERVICEPATH){
+angular.module('passengerHttpServiceModule',['ngResource']).factory('passengerHttpService',function($http,ROLE_CODE,APISERVICEPATH){
 	var passengerHttp = {};
 	var passengerAccount = APISERVICEPATH.passengerAccount;
 	//var passengerAccount = APISERVICEPATH.prd;
@@ -8,23 +8,24 @@ angular.module('passengerHttpServiceModule',['ngResource']).factory('passengerHt
 	
 	passengerHttp.getPassengerTrip = function(paramsObj){
 		var paramsData = {
-			"apiPath":passengerTrip+"passengerTrip",
+			'apiPath':passengerTrip+'passengerTrip/'+paramsObj.passengerId,
 			paramsList:{
-				"passengerId":paramsObj.passengerUuid,
-				"pageNumber":'10'
+				'pageNumber': paramsObj.pageNumber || '1',
+				'pageSize': paramsObj.pageSize || '20'
 			}
 		};
 
 		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
 	};
+	
 	passengerHttp.passenger = function(paramsObj){
 		var paramsData = {
-			"apiPath":passengerAccount+"passenger",
+			'apiPath':passengerAccount+'passenger',
 			paramsList:{
-				"accountId": paramsObj.accountId,
-				//"secondCompanyID":paramsObj.secondCompanyID,
-				"pageNumber":"1",
-				"pageSize":"10"
+				'hrId': paramsObj.hrId,
+				'secondCompanyId':paramsObj.secondCompanyId,
+				'pageNumber': '1',
+				'pageSize':'10'
 			}
 		};
 
@@ -34,9 +35,9 @@ angular.module('passengerHttpServiceModule',['ngResource']).factory('passengerHt
 	passengerHttp.passengerByID = function(paramsObj){
 
 		var paramsData = {
-			"apiPath":passengerProfile+"passengerByID",
+			'apiPath':passengerProfile+'passengerByID',
 			paramsList:{
-				"passengerUUID":paramsObj.passengerUUID
+				'passengerUUID':paramsObj.passengerUUID
 			}
 		};
 
@@ -45,42 +46,30 @@ angular.module('passengerHttpServiceModule',['ngResource']).factory('passengerHt
 
 	passengerHttp.updatePassengerByID = function(paramsObj){
 		var paramsData = {
-			"apiPath":passengerAccount+"passenger",
+			'apiPath':passengerAccount+'passenger',
 			paramsList:{
-				 "accountDTO": {
-				    "phoneNumber": paramsObj.phoneNumber,
-				    "roleType":'ROLE_PASSENGER'
-				  },
-				  "baseProfileDTO": {
-				    "accountId": paramsObj.accountId,
-				    //'accountId':'2329059598338048',
-				    "name": paramsObj.name
-				  },
-				  "passengerProfileDTO": {
-				    "accountId": paramsObj.accountId,
-				    //'accountId':'2329059598338048',
-				    "employeeId": paramsObj.employeeId,
-				    "hrUuid": paramsObj.hrUuid,
-				    "passengerUuid": paramsObj.passengerUuid,
-				    //'passengerUuid':'2329059612100608',
-				   "secondCompanyId":paramsObj.secondCompanyId
-				   //'secondCompanyId':'666'
-				  }
+				'affiCompanyId': paramsObj.secondCompanyId,
+				'employeeId': paramsObj.employeeId,
+				'name': paramsObj.name,
+				'phoneNumber': paramsObj.phoneNumber,
+				'operateAccountId': paramsObj.schedulerId,
+				'partyId':  paramsObj.passengerId,
+				'status': '1'
 			}
 		};
 
-		return  $http({ method: 'PATCH',url:paramsData.apiPath,data:paramsData.paramsList,headers:{'Content-type':'application/json'}});
+		return  $http({ method: 'PUT',url:paramsData.apiPath,data:paramsData.paramsList,headers:{'Content-type':'application/json'}});
 	};
 
 	passengerHttp.deletePassengerByID = function(paramsObj){
 		var paramsData = {
-			"apiPath":passengerAccount+"passenger",
+			'apiPath':passengerAccount+'passenger',
 			paramsList:{
 				//'passengerUUID':'2329059612100608',
 				'passengerUUID':paramsObj.passengerUuid,
 				'hrUUID':paramsObj.hrUuid,
 				//'hrUUID':'666',
-				"roleType":'ROLE_PASSENGER',
+				'roleType':'ROLE_PASSENGER',
 			}
 		};
 		return  $http({ method: 'DELETE',url:paramsData.apiPath,params:paramsData.paramsList});
@@ -88,24 +77,16 @@ angular.module('passengerHttpServiceModule',['ngResource']).factory('passengerHt
 
 
 	passengerHttp.addPassenger = function(paramsObj){
+		
 		var paramsData = {
-			"apiPath":passengerAccount+"passenger",
+			'apiPath':passengerAccount+'passenger',
 			paramsList:{
-				 "accountDTO": {
-				    "phoneNumber": paramsObj.phoneNumber,
-				    "roleType": 'ROLE_PASSENGER'
-				  },
-				  "baseProfileDTO": {
-				    "accountId": '',
-				    "name": paramsObj.name
-				  },
-				  "passengerProfileDTO": {
-				    "accountId":'',
-				    "employeeId": paramsObj.employeeId,
-				    "hrUuid": paramsObj.hrUuid,
-				    "passengerUuid": '',
-				    "secondCompanyId":paramsObj.secondCompanyId 
-				  }
+				'affiCompanyId': paramsObj.secondCompanyId,
+				'employeeId': paramsObj.employeeId,
+				'name': paramsObj.name,
+				'phoneNumber': paramsObj.phoneNumber,
+				'operateAccountId': paramsObj.schedulerId,
+				'status': '1'
 			}
 		};
 		return  $http({ method: 'POST',url:paramsData.apiPath,headers:{'Content-type':'application/json'},data:paramsData.paramsList});

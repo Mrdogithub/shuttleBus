@@ -1,15 +1,12 @@
 'use strict'
-angular.module('listControllerModule',[]).controller('listController',function(passengerHttpService,USER_ACCOUNT,$state,$scope){
-		//table data config
-	var _configAccount = {
-		'accountId':USER_ACCOUNT.accountId
-	}
+angular.module('listControllerModule',[]).controller('listController',function(passengerHttpService,utilFactory,$state,$scope){
+
 	$scope.selectAllStatus = false;
 	$scope.pageConfigs={
 		params:{},
 		list:null,
 		getList:function(){
-			return passengerHttpService.passenger(_configAccount)
+			return passengerHttpService.passenger({'hrId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId()})
 		},
 		loadData:function(){
 			console.log('load data')
@@ -19,7 +16,7 @@ angular.module('listControllerModule',[]).controller('listController',function(p
 			if(result.value != null){
 				var _result = result.value;
 				for(var i=0;i<_result.length;i++){
-					_result[i]['passengerProfileOutDTO']['status'] =_result[i]['passengerProfileOutDTO']['status'] == 0?'未激活':'已激活'
+					_result[i]['status'] =_result[i]['status'] == 0?'未激活':'已激活'
 				}
 			}
 		}
@@ -28,12 +25,15 @@ angular.module('listControllerModule',[]).controller('listController',function(p
 
 	$scope.queryByKeyObj = {
 		'active':{'key':'name','value':'员工姓名'},
-		'list':[{'key':'phoneNumber','value':'手机号'},{'key':'name','value':'员工姓名'}]
+		'list':[{'key':'phoneNumber','value':'手机号'}]
 	}
 
 	$scope.selectKey = function(activeObj){
+		$scope.queryByKeyObj.list.length = 0;
+		$scope.queryByKeyObj.list.push( {'key':$scope.queryByKeyObj.active.key,'value':$scope.queryByKeyObj.active.value})
 		$scope.queryByKeyObj.active.key = activeObj.key;
 		$scope.queryByKeyObj.active.value = activeObj.value;
+
 		$('.dropdown-menu').css('display','none')
 	}
 
@@ -57,46 +57,38 @@ angular.module('listControllerModule',[]).controller('listController',function(p
 		alertify.alert('正在建设中...')
 	}
 	$scope.addPassenger = function(){
-		$state.go('passenger.add',{'hrUuid':_configAccount.hrUUID,'secondCompanyId':_configAccount.secondCompanyID})
+		$state.go('passenger.add',{'schedulerId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId()})
 	};
 
 	$scope.tableConfig={
 		stableFlag:{
 			arrow:true,
 			index:true,
-			checkbox:true,
+			checkbox:false,
 			radio:true,
 			operate:[{
 				name:'编辑',
 				ngIf:function(){},
 				fun:function(item){
 					var _params = {
-						'status':item.passengerProfileOutDTO.status,
-						'passengerUuid':item.passengerProfileOutDTO.passengerUuid,
-						'roleType':item.passengerProfileOutDTO.roleType,
-						'hrUuid':item.passengerProfileOutDTO.hrUuid,
-						'secondCompanyId':item.passengerProfileOutDTO.secondCompanyId,
-						'accountId':item.passengerProfileOutDTO.accountId,
-						'routeName':item.passengerProfileOutDTO.routeName,
-						'stationName':item.passengerProfileOutDTO.stationName,
-						'phoneNumber':item.accountDTO.phoneNumber,
-						'employeeId':item.passengerProfileOutDTO.employeeId,
-						'passengerName':item.baseProfileInDTO.name,
+						'secondCompanyId': item.secondCompanyId,
+						'employeeId': item.employeeId,
+						'name': item.name,
+						'phoneNumber': item.phoneNumber,
+						'schedulerId':  item.accountId,
+						'status': item.status,
+						'passengerId': item.partyId
 					}
-
-					$state.go('passenger.detail',{
-						'status':_params.status,
-						'passengerUuid':_params.passengerUuid,
-						'roleType':_params.roleType,
-						'hrUuid':_params.hrUuid,
-						'secondCompanyId':_params.secondCompanyId,
-						'accountId':_params.accountId,
-						'routeName':_params.routeName,
-						'stationName':_params.stationName,
-						'phoneNumber':_params.phoneNumber,
-						'employeeId':_params.employeeId,
-						'passengerName':_params.passengerName
-					});
+					console.log('------- params -----------')
+					console.log(1,_params)
+					$state.go('passenger.detail',_params);
+				}
+			},
+			{
+				name:'删除',
+				ngIf:function(){},
+				fun:function(item){
+					alertify.alert('正在建设中...')
 				}
 			}]
 		},
@@ -108,15 +100,15 @@ angular.module('listControllerModule',[]).controller('listController',function(p
 		checkbox:{
 			checkArray:[]
 		},
-		defaultValue:'---',
+		defaultValue:'——',
 		// radioSelect:function(){},
 		operateIfFlag:true,
 		setHeadOptional:{
 			cancelSelectNum:5,
-	    	selectOptions:[
+			selectOptions:[
 				{
-					'parentKey':'passengerProfileOutDTO',
-					'selfKey':{'key':'passengerUuid','value':'员工姓名'},
+					'parentKey':'',
+					'selfKey':{'key':'name','value':'员工姓名'},
 					'checkFlag':true
 				},
 				{
@@ -125,22 +117,22 @@ angular.module('listControllerModule',[]).controller('listController',function(p
 					'checkFlag':true
 				},
 				{
-					'parentKey':'passengerProfileOutDTO',
-					'selfKey':{'key':'stationName','value':'默认站点'},
+					'parentKey':'',
+					'selfKey':{'key':'defautStationName','value':'默认站点'},
 					'checkFlag':true
 				},
 				{
-					'parentKey':'passengerProfileOutDTO',
-					'selfKey':{'key':'routeName','value':'默认线路'},
+					'parentKey':'',
+					'selfKey':{'key':'defautRouteName','value':'默认线路'},
 					'checkFlag':true
 				},
 				{
-					'parentKey':'passengerProfileOutDTO',
+					'parentKey':'',
 					'selfKey':{'key':'status','value':'激活状态'},
 					'checkFlag':true
 				}
-	    	]
-	    }
+			]
+		}
 		// changeEnable:function(item){}
 	}
 

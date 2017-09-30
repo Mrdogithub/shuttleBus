@@ -3,17 +3,23 @@ angular.module('constModule',[])
 .constant('APISERVICEPATH',{
 	'dev'              :'http://ford-shuttlebus-authentication-management.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/',
 	'token'            :'http://ford-shuttlebus-authentication-management.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/',
-	'assignmentService':'http://ford-shuttlebus-authentication-management.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/assignmentService/',
-	//'dev':'http://19.229.169.185:7072/api/v1/',
-	// 'dev_1':'http://19.229.169.185:7080/api/v1/',
+	'assignmentService':'http://ford-shuttlebus-routeandshuttlemeta-management.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/assignmentService/',
+	// 'devPassenger':'http://19.229.169.185:7073/api/v1/passengerAccount/',
+	// 'devLogin':'http://19.229.169.185:7072/api/v1/',
+	// 'dev_1':'http://192.168.43.163:7072/api/v1/',
+
+	//'busAPI':'http://19.229.169.228:7072/api/v1/vehicleService/',
+	//'div_2':'http://192.168.43.163:7073/api/v1/passengerAccount/',
 	'passengerDev'     :'./data/',
 	'passengerTrip'    :'http://ford-shuttlebus-route-management.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/tripHistoryService/',
-	'passengerAccount' :'http://ford-shuttlebus-accountandauthority-management.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/passengerAccount/',
+	'passengerAccount' :'http://ford-shuttlebus-profile-management.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/passengerAccount/',
 	'passengerProfile' :'http://ford-shuttlebus-profile-management.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/passengerProfile/',
+	'companyAccount'   :'http://ford-shuttlebus-profile-management.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/companyAccount/',
 	'vehicleService'   :'http://ford-shuttlebus-shuttle-management.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/vehicleService/',
 	// 'prd':'http://19.229.169.202:7071/api/v1/passengerAccount/',
-	'driverAccount'    : 'http://ford-shuttlebus-accountandauthority-management.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/driverAccount/',
+	'driverAccount'    :'http://ford-shuttlebus-profile-management.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/driverAccount/',
 	'stationService'   :'http://ford-shuttlebus-route-management.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/stationService/',
+	'routeService'     :'http://ford-shuttlebus-route-management.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/routeService/',
 	'stationDev'       :'/api/v1/stationService/'
 })
 .constant('ERRORCODE',{
@@ -93,6 +99,7 @@ constant('USER_ACCOUNT',{
 	'accountId':'',
 	'accessToken':'',
 	'refreshToken':'',
+	'secondCompanyId':'',
 	'ROLE_SYSADMIN':false,
 	'ROLE_APPLICATION_ADMIN':false,
 	'ROLE_SECOND_COMPANY_ADMIN':false,
@@ -101,3 +108,13 @@ constant('USER_ACCOUNT',{
 	'ROLE_PASSENGER':false,
 	'ROLE_DRIVER':false
 })
+.constant('ROLE_CODE',{
+	'ROLE_SYSADMIN':'1',
+	'ROLE_APPLICATION_ADMIN':'2',
+	'ROLE_SECOND_COMPANY_ADMIN':'3',
+	'ROLE_HR':'4',
+	'ROLE_SCHEDULER':'5',
+	'ROLE_PASSENGER':'6',
+	'ROLE_DRIVER':'7',
+	'ROLE_COMPANY':'8'
+});

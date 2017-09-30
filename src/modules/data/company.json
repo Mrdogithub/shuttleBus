@@ -1,0 +1,28 @@
+{ "value":{
+	"list":[
+	{
+	  "affiCompanyId": "1",
+	  "name": "111",
+	  "operateAccountId": "111",
+	  "phoneNumber": "111",
+	  "roleCode": "111",
+	  "status": "111"
+	},
+	{
+	  "affiCompanyId": "222",
+	  "name": "222",
+	  "operateAccountId": "2222",
+	  "phoneNumber": "22222",
+	  "roleCode": "2222",
+	  "status": "2222"
+	},
+	{
+	  "affiCompanyId": "333",
+	  "name": "333",
+	  "operateAccountId": "333",
+	  "phoneNumber": "333",
+	  "roleCode": "3333",
+	  "status": "3333"
+	}
+]
+}}

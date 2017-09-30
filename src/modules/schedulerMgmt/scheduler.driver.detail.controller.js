@@ -1,39 +1,49 @@
 'use strict'
 angular.module('schedulerDriverDetailControllerModule',[])
-.controller('schedulerDriverDetailController',function(schedulerHttpService,setDirty,$stateParams,$state,$scope){
+.controller('schedulerDriverDetailController',function(schedulerHttpService,utilFactory,$stateParams,$state,$scope){
 	//$stateParams.schedulerUUID && $stateParams.secondCompanyId
 	if(true){
 
 		//get params from driver list
 		$scope.params = {
-			'phoneNumber':$stateParams.phoneNumber ||'--',
-			'roleType':$stateParams.roleType,
-			'name':$stateParams.name ||'--',
-			'accountId':$stateParams.accountId ||'--',
-			'driverUUID':$stateParams.driverUUID ||'--',
-			'schedulerUUID':$stateParams.schedulerUUID ||'--',
-			'secondCompanyId':$stateParams.secondCompanyId ||'--',
-			'shuttleCompanyId':$stateParams.shuttleCompanyId ||'--',
-			'licenseID':$stateParams.licenseID ||'--',
-			'licenseExpirationDate':$stateParams.licenseExpirationDate ||'--',
-			'identityCard':$stateParams.identityCard||'--'
+			'schedulerId': $stateParams.schedulerId,
+			'identityCard': $stateParams.identityCard,
+			'licenseExpirationDate': $stateParams.licenseExpirationDate,
+			'licenseId': $stateParams.licenseId,
+			'name': $stateParams.name,
+			'driverId': $stateParams.driverId,
+			'phoneNumber': $stateParams.phoneNumber,
+			'secondCompanyId': $stateParams.secondCompanyId,
+			'secondCompanyName': $stateParams.secondCompanyName,
+			'shuttleCompanyName': $stateParams.shuttleCompanyName,
+			'shuttleCompanyId': $stateParams.shuttleCompanyId,
+			'busCompany':[{'name':'数据加载中...','id':null}],
 		};
 
-					
-		//set default params for driver detail
 
+		// Get bus company list 
+		schedulerHttpService.getBusCompany({'schedulerId': $scope.params.schedulerId,'secondCompanyId': $scope.params.secondCompanyId}).then(function(result){
+			var	_resultData = result.data;
+
+			if(!_resultData.error){
+				$scope.params.busCompany.length = 0;
+				_resultData.value.list.length? $scope.params.busCompany = _resultData.value.list :$scope.params.busCompany.push({'name':'暂无数据','id':null});
+			} else{
+				alertify.aleret(_resultData.error.message)
+			}
+		});
+
+
+		//set default params for driver detail
 		$scope.active = false;
 		$scope.submitOnProgress = false;
-		$scope.breadcrumbParams = {
-			'schedulerUUID':$stateParams.schedulerUUID,
-			'secondCompanyId':$stateParams.secondCompanyId	
-		}
+
 		$scope.breadcrumbText={
 			'lv1':'司机管理',
 			'lv2':'司机详情'
 		}
 	}else{
-		$state.go('scheduler.driver',$scope.breadcrumbParams)
+		$state.go('scheduler.driver')
 	}
 
 	$scope.editPassengerProfile = function(flag){
@@ -48,7 +58,7 @@ angular.module('schedulerDriverDetailControllerModule',[])
 		
 		// all input filed empty and then user trigger submit button
 		// we will provide message for user to complete the requre filed.
-		if(formValidateIsInvalid) return setDirty($scope.formValidate);
+		if(formValidateIsInvalid) return utilFactory.setDirty($scope.formValidate);
 		
 
 		alertify.confirm('确认更新司机"'+$scope.params.name+'"?',function(){
@@ -56,30 +66,28 @@ angular.module('schedulerDriverDetailControllerModule',[])
 			$scope.submitStatusText = "正在更新中...";
 
 			var _params = {
-				'phoneNumber':$scope.params.phoneNumber,
-				'roleType':$scope.params.roleType,
-				'name':$scope.params.name,
-				'accountId':$scope.params.accountId,
-				'driverUUID':$scope.params.driverUUID,
-				'schedulerUUID':$scope.params.schedulerUUID,
-				'secondCompanyId':$scope.params.secondCompanyId,
-				'shuttleCompanyId':$scope.params.shuttleCompanyId,
-				'licenseID':$scope.params.licenseID,
-				'licenseExpirationDate':$scope.params.licenseExpirationDate,
-				'identityCard':$scope.params.identityCard
+				'schedulerId': $scope.params.schedulerId,
+				'identityCard': $scope.params.identityCard,
+				'licenseExpirationDate': utilFactory.getTimestamp($scope.params.licenseExpirationDate),
+				'licenseId': $scope.params.licenseId,
+				'name': $scope.params.name,
+				'driverId': $scope.params.driverId,
+				'phoneNumber': $scope.params.phoneNumber,
+				'shuttleCompanyId':$scope.params.busCompanyObj.shuttleCompanyId,
+				'shuttleCompanyName': $scope.params.busCompanyObj.shuttleCompanyName,
+				'secondCompanyId': $scope.params.secondCompanyId,
+				'secondCompanyName': $scope.params.secondCompanyName
 			}
 
-			console.log(1,_params)
 			schedulerHttpService.updateDriverByID(_params).then(function(result){
-				console.log(1,result)
 				var responseData = result.data;
 				if(!responseData.error){
-					$state.go('scheduler.driver',{'schedulerUUID':_params.schedulerUUID,'secondCompanyID':_params.shuttleCompanyId})
-					// alertify.alert('新增成功！',function(){
-					// 	$scope.submitStatusText = '完成';
-					// 	$scope.active = true;
-					// 	$state.go('scheduler.driver',{'schedulerUUID':_params.schedulerUUID,'secondCompanyID':_params.shuttleCompanyId})
-					// })
+					$state.go('scheduler.driver')
+					alertify.alert('新增成功！',function(){
+						$scope.submitStatusText = '完成';
+						$scope.active = true;
+						$state.go('scheduler.driver')
+					})
 				}else{
 					$scope.submitStatusText = '完成';
 					switch(responseData.error.statusCode){

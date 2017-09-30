@@ -9,7 +9,7 @@
  * @sleep={booleans}: true => init component status by "获取验证码",false => init component status by "重新获取"
  *
  */
-angular.module('smsCodeModule',[]).directive('smsCodeComponent',function(loginHttpService,SMSCODE_ERROR,$state){
+angular.module('smsCodeModule',[]).directive('smsCodeComponent',function(loginHttpService,REQUESTTYPE,SMSCODE_ERROR,$state){
 	return {
 		restrict:"EA",
 		template:'<button  id="smsCodeBtn" class="btn-normal" ng-class="{\'smsActive\': isActive,\'smsSheep\': !isActive}"  ng-click="invokeSmsCode()">{{defaultValue}}</button>',
@@ -18,6 +18,7 @@ angular.module('smsCodeModule',[]).directive('smsCodeComponent',function(loginHt
 			requestType:'=requestType',
 			smsCode:'=smsCode',
 			defaultValue:'@defaultValue',
+			requestType:'@requestType',
 			codeStatus:'=codeStatus',
 			sleep:'@'
 		},
@@ -30,8 +31,8 @@ angular.module('smsCodeModule',[]).directive('smsCodeComponent',function(loginHt
 			scope.invokeSmsCode = function(){
 				time = 60;
 				scope.isActive = true; //disabled click event when get smsCode progress working.
-				
-				loginHttpService.account({'phoneNumber':scope.phoneNumber,'requestType':scope.requestType}).then(function(result){
+				var _type = scope.requestType == 'forget'? REQUESTTYPE.forgetAccount : REQUESTTYPE.activeAccount
+				loginHttpService.account({'phoneNumber':scope.phoneNumber,'requestType':_type}).then(function(result){
 					var responseData = result.data;
 					if(!responseData.error){
 						setTime('smsCodeBtn',time,scope.defaultValue);
@@ -43,15 +44,15 @@ angular.module('smsCodeModule',[]).directive('smsCodeComponent',function(loginHt
 								break;
 							case SMSCODE_ERROR.SMSCODE_ERROR_0100110.code:errorMessageFn(SMSCODE_ERROR.STATUS_CODE_0100108.message,responseData)
 								break;
-							case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200108.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200108.message,responseData)
+							case SMSCODE_ERROR.STATUS_CODE_0200108.code:errorMessageFn(SMSCODE_ERROR.STATUS_CODE_0200108.message,responseData)
 							break;
-							case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200109.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200109.message,responseData)
+							case SMSCODE_ERROR.STATUS_CODE_0200109.code:errorMessageFn(SMSCODE_ERROR.STATUS_CODE_0200109.message,responseData)
 								break;
-							case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200110.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200110.message,responseData)
+							case SMSCODE_ERROR.STATUS_CODE_0200110.code:errorMessageFn(SMSCODE_ERROR.STATUS_CODE_0200110.message,responseData)
 								break;
-							case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200111.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200111.message,responseData)
+							case SMSCODE_ERROR.STATUS_CODE_0200111.code:errorMessageFn(SMSCODE_ERROR.STATUS_CODE_0200111.message,responseData)
 								break;
-							case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200112.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200112.message,responseData)
+							case SMSCODE_ERROR.STATUS_CODE_0200112.code:errorMessageFn(SMSCODE_ERROR.STATUS_CODE_0200112.message,responseData)
 								break;
 							default:errorMessageFn(responseData.error.message)
 						}

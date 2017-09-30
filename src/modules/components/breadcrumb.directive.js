@@ -12,24 +12,30 @@
 angular.module('breadcrumbModule',[]).directive('breadcrumbComponent',function($state){
 	return {
 		restrict:"EA",
-		template: '<a class="breadcrumb-link">{{breadcrumbText.lv1}}'
+		template: '<a class="breadcrumb-link" ng-click="goBack()" style="font-weight:bold;">{{breadcrumbText.lv1}}'
 					+'<img style="margin-left: 5px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAANCAYAAABlyXS1AAAAAXNSR0IArs4c6QAAAIZJREFUGBljmDlz5om5c+eaMGABTCwsLDl///5dhU0BI0gDSAKkgJmZOSw5OfkMzBCwJC4FcElsClAk0RVgSIIUAH0QCqQ6MCTnzZun9Pv3721MTExZKJJAHcpAHVtBEqmpqfvgkugSIOPBktgkwJIgCUZGxm1AnAkyCiQIA0xAwcnYJEAKACT1SIbDa5BdAAAAAElFTkSuQmCC"/>'
 					+'</a>'
-					+'<span>{{breadcrumbText.lv2}}</span>',
+					+'<span style="font-weight:bold;">{{breadcrumbText.lv2}}</span>',
 		scope:{
 			gopath:'@',
 			breadcrumbParams:'=',
 			breadcrumbText:'='
 		},
+		controller:function($scope){
+			$scope.goBack = function(){
+				window.history.go(-1)
+			}
+		},
 		link:function(scope,elements,attrs){
-			elements.bind('click',function(){
-				if(scope.gopath){
-					$state.go(scope.gopath,scope.breadcrumbParams)	
-				}else{
-					window.history.go(-1)
-				}
+
+			// elements.bind('click',function(){
+			// 	if(scope.gopath){
+			// 		$state.go(scope.gopath,scope.breadcrumbParams)	
+			// 	}else{
+			// 		window.history.go(-1)
+			// 	}
 				
-			});
+			// });
 		}
 	}
 })	

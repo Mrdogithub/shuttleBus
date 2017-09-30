@@ -13,36 +13,36 @@
 	<div class="inner-content">
 		<div class="info-wrapper">
 			<div class="title">
-				<h1>基础信息</h1>
+				<h1>基础信息:</h1>
 			</div>
 			<div class="content">
 				<form name="formValidate" novalidate>
 					<div class="content-inline">
-						<div class="content-inline-item"  ng-class="{'has-error':formValidate.passengerName.$dirty && formValidate.passengerName.$invalid,'has-success':formValidate.passengerName.$dirty && !formValidate.passengerName.$invalid}">
-							<label for="passengerName" class="control-label" >员工姓名:</label>
+						<div class="content-inline-item"  ng-class="{'has-error':formValidate.name.$dirty && formValidate.name.$invalid,'has-success':formValidate.name.$dirty && !formValidate.name.$invalid}">
+							<label for="name" class="control-label" >员工姓名:</label>
 							<input type="text"  
 								   class= "form-control" 
-								   id="passengerName" 
-								   name="passengerName" 
+								   id="name" 
+								   name="name" 
 								   required="" 
 								   ng-disabled="!active" 
 								   ng-class="{'edit':active,'preview':!active}" 
-								   ng-model="params.passengerName"
-								   ng-pattern="/^[a-zA-Z\u4E00-\u9FA5]{1,15}$/"/><sup class="requireMark">*</sup>
-							<div class="error"  ng-show="formValidate.passengerName.$dirty && formValidate.passengerName.$invalid">
+								   ng-model="params.name"
+								   ng-maxlength="30"/><sup class="requireMark">*</sup>
+							<div class="error"  ng-show="formValidate.name.$dirty && formValidate.name.$invalid">
 						        <small class="control-label" 
-						            ng-show="formValidate.passengerName.$error.required">
+						            ng-show="formValidate.name.$error.required">
 						            请输入员工姓名
 						        </small>
 						        <small class="control-label" 
-						            ng-show="formValidate.passengerName.$error.pattern">
+						            ng-show="formValidate.name.$error.maxlength">
 						            员工姓名格式错误，请重新输入
 						        </small>
 						     </div>
 						</div>
 
 						<div class="content-inline-item" ng-class="{'has-error':formValidate.phoneNumber.$dirty && formValidate.phoneNumber.$invalid,'has-success':formValidate.phoneNumber.$dirty && !formValidate.phoneNumber.$invalid}">
-							<label class=" control-label" for="phoneNumber" >手机号码：</label>
+							<label class=" control-label largeSpace" for="phoneNumber" >手机号码：</label>
 							<input type="text" 
 								   id="phoneNumber" 
 								   class= "form-control" 

@@ -1,10 +1,11 @@
 
 'use strict'
 angular.module('schedulerSiteControllerModule',[])
-.controller('schedulerSiteController',function(schedulerHttpService,$state,$scope){
+.controller('schedulerSiteController',function(schedulerHttpService,utilFactory,$state,$scope){
+
 
 	$scope.addSite = function(){
-		$state.go('scheduler.addSite',{'schedulerUUID':'666','secondCompanyId':'666'})
+		$state.go('scheduler.addSite',{'accountId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId()})
 	}
 
 	$scope.downLoadTemplte = function(){
@@ -24,17 +25,17 @@ angular.module('schedulerSiteControllerModule',[])
 		params:{},
 		list:null,
 		getList:function(){
-			return schedulerHttpService.getSiteList({'schedulerID':'666','secondCompanyID':'666'})
+			return schedulerHttpService.getSiteList({'accountId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId(),'pageNumber':1,'pageSize':20})
 		},
 		loadData:function(){
 			//console.log('load data')
 			
 		},
 		dataSet:function(result){
-			var _result = result.value;
-			for(var i=0;i<_result.length;i++){
-				_result[i]['stationType'] =_result[i]['stationType'] == 'PM'?'上行':'下行'
-			}
+			// var _result = result.value;
+			// for(var i=0;i<_result.length;i++){
+			// 	_result[i]['stationType'] =_result[i]['stationType'] == 'PM'?'上行':'下行'
+			// }
 		}
 		//extendParams:function(){}
 	}
@@ -63,18 +64,16 @@ angular.module('schedulerSiteControllerModule',[])
 				ngIf:function(){},
 				fun:function(item){
 					var _params = {
-						'phoneNumber':item.accountDTO.phoneNumber,
-						'roleType':item.accountDTO.roleType,
-						'name':item.baseProfileDTO.name,
-						'accountId':item.baseProfileDTO.accountId,
-						'driverUUID':item.driverProfileDTO.driverUUID,
-						'schedulerUUID':item.driverProfileDTO.schedulerUUID,
-						'secondCompanyId':item.driverProfileDTO.secondCompanyId,
-						'shuttleCompanyId':item.driverProfileDTO.shuttleCompanyId,
-						'licenseID':item.driverProfileDTO.licenseID,
-						'licenseExpirationDate':item.driverProfileDTO.licenseExpirationDate,
-						'identityCard':item.driverProfileDTO.identityCard,
+						  "address": item.address,
+						  "gps": item.gps,
+						  "stationName": item.stationName,
+						  "schedulerId": utilFactory.getAccountId(),
+						  "secondCompanyId": utilFactory.getSecondCompanyId(),
+						  "stationId": item.stationId,
+						  "stationType": item.stationType
 					}
+
+					$state.go('scheduler.updateSite',_params)
 				}
 			},
 			{
@@ -82,8 +81,8 @@ angular.module('schedulerSiteControllerModule',[])
 				ngIf:function(){},
 				fun:function(item){
 					var _params = {
-						'stationID':item.id,
-						'schedulerID':666
+						'stationId':item.stationId,
+						'schedulerId':utilFactory.getAccountId()
 					}
 
 					alertify.confirm('请确认时候要删除该站点',function(){
@@ -119,7 +118,7 @@ angular.module('schedulerSiteControllerModule',[])
 		checkbox:{
 			checkArray:[]
 		},
-		defaultValue:'---',
+		defaultValue:'——',
 		// radioSelect:function(){},
 		operateIfFlag:true,
 		setHeadOptional:{
@@ -127,7 +126,7 @@ angular.module('schedulerSiteControllerModule',[])
 	    	selectOptions:[
 				{
 					'parentKey':'',
-					'selfKey':{'key':'name','value':'站点名称'},
+					'selfKey':{'key':'stationName','value':'站点名称'},
 					'checkFlag':true
 				},
 				{

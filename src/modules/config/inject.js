@@ -17,7 +17,7 @@ angular.module('injectModules',[
 	'gobackModule',
 	'tableComponentModule',
 	'paginationModule',
-	'sortableDirectiveModule',
+	//'sortableDirectiveModule',
 	'getRefreshTokenFacotryModule',
 	'formValidateSerivceModule',
 	'localStorageFactoryModule',
@@ -45,6 +45,8 @@ angular.module('injectModules',[
 	'schedulerAddScheduleControllerModule',
 	'schedulerBusControllerModule',
 	'schedulerSiteControllerModule',
+	'schedulerUpdateSiteControllerModule',
+	'schedulerbusCompanyControllerModule',
 	
 	'schedulerAddBusControllerModule',
 	'schedulerBusDetailControllerModule',
@@ -53,7 +55,7 @@ angular.module('injectModules',[
 	
 	'schedulerRouteControllerModule',
 	'schedulerAddRouteControllerModule',
-	
+	'schedulerUpdateRouteControllerModule',
 
 	'httpInterceptorModule'
 ])
