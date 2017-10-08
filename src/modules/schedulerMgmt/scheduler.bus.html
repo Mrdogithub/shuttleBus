@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 <div class="title-wrapper">
 	<div class="main-title-wrapper">
@@ -28,4 +29,36 @@
 
 <div class="pagination-wrapper">
 	<pagination-component page-configs= "pageConfigs"></pagination-component>
+=======
+
+<div class="title-wrapper">
+	<div class="main-title-wrapper">
+		<div><a>车辆管理</a></div>
+		<div class="search-wrapper ">
+			<input type="text" name="" placeholder="搜索车辆牌照">
+			<div class="searchImage">
+					<img style="vertical-align: baseline;"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAAAXNSR0IArs4c6QAAAV5JREFUKBWNUT1Lw1AUbZ4kSzsLikMNios6mIQYI/gDuhqqkyIoDi7+AN110sFVECfBqbh1MHQJIQmCuggSWhAXF6FL2kDjuTW3FKnohZdz77nv3I8XqZCbbduTnU7nKMsyC1RZkqRnYL1UKp24rpvwPUJBH03TKkmSBBC0ZFneVBRlAqJDxFPtdvvBNM1Zujcw6gDROxKLA3LI0XV9B8d3HGeMaYGRjhGc+77/yOQwhmF4iY4fcRxXmRcgljFSjYlRKISoYVzatW+0UzlN01Yej4Rer9dE8WlOkugJVeaZ+AUXcOeFc+gs6gj2mPiJeAAFgm10uuOcKBaLpyBWDMPYZZKRBHiAC8RvURTdMy+RY1nWTLfbvUbFTxSgpZugaeQtHNp3CVw1CIIG/O+f63neq6qqq4ivcOZw9iEeBx7gySvAdcQ3mGYNfqHfiZy/DD/Yxp1bdNz4t4iK5sKzLwtCfTE0zEQeAAAAAElFTkSuQmCC"/>
+			</div>
+		</div>
+	</div>
+
+</div>
+<div class="subTitle-wrapper">
+<!-- 	<div class="subTitle-content">
+	 	<a style="margin-left: 20px;margin-right: 30px;" ng-click="selectAll()">全选</a>
+	 	<a ng-click="trick()">删除</a>
+	</div> -->
+	<div class="subTitle-operate">
+		<a ng-click="addBus()">新增车辆</a>
+	<!-- 	<a>导入乘客</a> -->
+	</div>	 	
+</div>
+
+<div class="right-content-wrapper container-shadow-border">
+	<table-component table-config = "tableConfig" table-data="pageConfigs.list"></table-component>
+</div>
+
+<div class="pagination-wrapper">
+	<pagination-component page-configs= "pageConfigs"></pagination-component>
+>>>>>>> 7d3cf1803017ce6215a2432ad96e570109fcee20
 </div>

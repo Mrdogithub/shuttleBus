@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .right-content-wrapper .inner-content{
 		width: 100%;
 		padding: 20px;
@@ -83,3 +84,70 @@ ul.tab-list{
 	color: #fff;
 }
 
+=======
+.right-content-wrapper .inner-content{
+		width: 100%;
+		padding: 20px;
+	}
+	.right-content-wrapper .inner-content .info-wrapper {
+		margin-bottom: 20px;
+	}
+	.right-content-wrapper .inner-content .info-wrapper  .title{
+		position: relative;
+		height: 40px;
+		background: #f9f9f9;
+	}
+
+	.right-content-wrapper .inner-content .info-wrapper  .content{
+		margin-left: 20px;
+	}
+	.right-content-wrapper .inner-content .info-wrapper  .content .content-inline{
+		display: flex;
+		margin-top: 14px;
+	}
+	.right-content-wrapper .inner-content .info-wrapper  .content .content-inline .content-inline-item{
+		width: 328px;
+
+	}
+	.right-content-wrapper .inner-content .info-wrapper  .content .content-inline .content-inline-item input{
+		width: 170px;
+		height: 23px;
+	}
+	.right-content-wrapper .inner-content .info-wrapper  .content .content-inline .content-inline-item label{
+		width: 70px;
+		-color: #666;
+	}
+	.right-content-wrapper .inner-content .info-wrapper  .content .content-inline .content-inline-item p{
+		color: #666;
+		font-weight: 500;
+	}
+	.right-content-wrapper .inner-content .info-wrapper  .content .content-inline .content-inline-item label.largeSpace{
+		width: 100px;
+	}
+	.right-content-wrapper .inner-content .info-wrapper  .title h1{
+		position: absolute;
+	    left: 20px;
+	    /* line-height: 40px; */
+	    font-size: 16px;
+	    font-weight: 500;
+	    color: #666;
+	    margin: 0;
+	    top: 13px;
+	    letter-spacing: 2px;
+	    padding: 0;
+	    font-weight: bold;
+	}
+	.right-content-wrapper .inner-content .info-wrapper  .title a{
+		position: absolute;
+	    right: 20px;
+	    top: 13px;
+	    letter-spacing: 2px;
+	}
+	.breadcrumb-wrapper{
+		color: #154e81;
+		font-size: 16px;
+	}
+	.breadcrumb-wrapper a{
+		color: #999;
+	}
+>>>>>>> 7d3cf1803017ce6215a2432ad96e570109fcee20
