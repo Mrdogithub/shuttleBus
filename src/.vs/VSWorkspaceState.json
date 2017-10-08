@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {
   "ExpandedNodes": [
     "",
@@ -7,14 +6,4 @@
   ],
   "SelectedNode": "\\modules\\components\\getRefreshToken.factory.js",
   "PreviewInSolutionExplorer": false
-=======
-{
-  "ExpandedNodes": [
-    "",
-    "\\modules",
-    "\\modules\\components"
-  ],
-  "SelectedNode": "\\modules\\components\\getRefreshToken.factory.js",
-  "PreviewInSolutionExplorer": false
->>>>>>> 7d3cf1803017ce6215a2432ad96e570109fcee20
 }

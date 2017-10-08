@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <style type="text/css">
 .fc-view, .fc-view>table {
     position: relative;
@@ -68,75 +67,4 @@
   </div>
 </div>
 
-=======
-<style type="text/css">
-.fc-view, .fc-view>table {
-    position: relative;
-    z-index: 1;
-}
-
-.fc-unthemed .fc-content, .fc-unthemed .fc-divider, .fc-unthemed .fc-list-heading td, .fc-unthemed .fc-list-view, .fc-unthemed .fc-popover, .fc-unthemed .fc-row, .fc-unthemed tbody, .fc-unthemed td, .fc-unthemed th, .fc-unthemed thead {
-    border-color: #ddd;
-}
-
-.fc-scroller .fc-day-grid-container{
-  border-left: 2px solid #ddd;
-  border-right: 2px solid #ddd;
-  border-bottom: 2px solid #ddd;
-}
-
-.fc-head-container .fc-widget-header{
-  height: 30px;
-  border: 0;
-  border-width: 0px;
-  line-height: 30px;
-  background: #047190;
-  border: 2px solid #047190;
-  color: #fff;
-}
-
-</style>
-
-<div class="title-wrapper breadcrumb-wrapper">
-	<breadcrumb-component breadcrumb-params="breadcrumbParams" breadcrumb-text="breadcrumbText"></breadcrumb-component>
-    <a ng-click="addSchedule()" style="float: right;color: #338ca5;">新增班次</a>
-</div>
-<!-- <div class="subTitle-wrapper">
- 	<div class="subTitle-content">
- 		<p ng-if ="!active">{{params.name}}</p>
- 	</div>
-
-</div> -->
-<div class="right-content-wrapper">
-<!-- 	<button ng-click="pre()">上一个月</button><select name="" >
-		<option value="">2017</option>
-		<option value="">2017</option>
-		<option value="">2017</option>
-		<option value="">2017</option>
-	</select><a ng-click="next()">下一个月</a> -->
-	<div ui-calendar="uiConfig.calendar" class="span8 calendar" ng-model="eventSources"></div>
-<!-- Button trigger modal -->
-
-	<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document"  style="width: 900px;"> 
-    <div class="modal-content" style="    border-radius: 0px;">
-      <div class="modal-header">
-        <h4 class="modal-title" id="myModalLabel">2017-01-02</h4>
-      </div>
-      <div class="modal-body">
-        <table-component table-config = "tableConfig" table-data="pageConfigs.list"></table-component>
-<!-- 
-        <div class="pagination-wrapper">
-			     <pagination-component page-configs= "pageConfigs" ng-show="pageConfigs.ngIf"></pagination-component>
-		    </div> -->
-      </div>
-      <div class="modal-footer" style="text-align: center;border: none;">
-        <button type="button" class="submitBtn submit-cancel" data-dismiss="modal">关闭</button>
-      </div>
-    </div>
-  </div>
-</div>
-
->>>>>>> 7d3cf1803017ce6215a2432ad96e570109fcee20
 </div>
