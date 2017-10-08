@@ -59,6 +59,10 @@ input[type=checkbox] {
   display: none;
 }
 
+input[type=radio] {
+  display: none;
+}
+
 .check-box {
     height: 15px;
     width: 15px;
@@ -134,4 +138,23 @@ input[type=checkbox]:checked + .check-box::before, .check-box.checked::before {
   -webkit-animation: dothatopcheck 0.4s ease 0s forwards;
   animation: dothatopcheck 0.4s ease 0s forwards;
 }
-   
+ 
+
+ input[type=radio]:checked + .check-box, .check-box.checked {
+  border-color: #338ca5;
+  background: #338ca5;
+}
+input[type=radio]:checked + .check-box::after, .check-box.checked::after {
+  height: 6px;
+  -moz-animation: dothabottomcheck 0.2s ease 0s forwards;
+  -o-animation: dothabottomcheck 0.2s ease 0s forwards;
+  -webkit-animation: dothabottomcheck 0.2s ease 0s forwards;
+  animation: dothabottomcheck 0.2s ease 0s forwards;
+}
+input[type=radio]:checked + .check-box::before, .check-box.checked::before {
+  height: 11px;
+  -moz-animation: dothatopcheck 0.4s ease 0s forwards;
+  -o-animation: dothatopcheck 0.4s ease 0s forwards;
+  -webkit-animation: dothatopcheck 0.4s ease 0s forwards;
+  animation: dothatopcheck 0.4s ease 0s forwards;
+}  

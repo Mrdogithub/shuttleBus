@@ -1,23 +1,24 @@
 'use strict'
 angular.module('schedulerAddBusControllerModule',[])
-.controller('schedulerAddBusController',function(schedulerHttpService,setDirty,$stateParams,$state,$scope){
+.controller('schedulerAddBusController',function(schedulerHttpService,utilFactory,$stateParams,$state,$scope){
 
-	if($stateParams.secondCompanyId && $stateParams.schedulerUUID){ 
+	if($stateParams.secondCompanyId && $stateParams.schedulerId){ 
 		$scope.params = {
 		  // "annualInspectionExpiration":$stateParams.annualInspectionExpiration,
 		  // "availableSeats": $stateParams.availableSeats,
 		  // "engineNumber": $stateParams.engineNumber,
 		  // "insuranceExpiration": $stateParams.insuranceExpiration,
 		  // "licensePlate": $stateParams.licensePlate,
-		  "schedulerUUID": $stateParams.schedulerUUID,
+		  "schedulerId": $stateParams.schedulerId,
 		  "secondCompanyId": $stateParams.secondCompanyId,
+		  'busCompany':[{'name':'数据加载中...','id':null}],
 		  // "shuttleCompanyId": $stateParams.shuttleCompanyId,
 		  // "vehicleLicense": $stateParams.vehicleLicense,
 		  // "vehicleModel": $stateParams.vehicleModel,
 		  // "vin": $stateParams.vin
 		}
 		$scope.breadcrumbParams = {
-			'schedulerUUID':$stateParams.schedulerUUID,
+			'schedulerId':$stateParams.schedulerId,
 			'secondCompanyId':$stateParams.secondCompanyId	
 		}
 		$scope.active = true;
@@ -26,6 +27,18 @@ angular.module('schedulerAddBusControllerModule',[])
 			'lv1':'车辆管理',
 			'lv2':'新增车辆'
 		}
+
+		// Get bus company list
+		schedulerHttpService.getBusCompany({'schedulerId': $stateParams.schedulerId,'secondCompanyId': $stateParams.secondCompanyId}).then(function(result){
+			var	_resultData = result.data;
+
+			if(!_resultData.error){
+				$scope.params.busCompany.length = 0;
+				_resultData.value.list.length? $scope.params.busCompany = _resultData.value.list :$scope.params.busCompany.push({'name':'暂无数据','id':null});
+			} else{
+				alertify.aleret(_resultData.error.message)
+			}
+		});
 	}else{
 		$state.go('scheduler.bus')
 	}
@@ -63,36 +76,36 @@ angular.module('schedulerAddBusControllerModule',[])
 
 	$scope.submitDriverProfile = function(formValidateIsInvalid){
 
-		if(formValidateIsInvalid) return setDirty($scope.formValidate);
+		if(formValidateIsInvalid) return utilFactory.setDirty($scope.formValidate);
 
 		alertify.confirm('确认新增 "'+$scope.params.licensePlate+'"?',function(){
 			$scope.submitOnProgress = true;
 			$scope.submitStatusText = "正在创建中..."
 			var _params = {
-				"annualInspectionExpiration":$scope.params.annualInspectionExpiration,
+				"annualInspectionExpiration":utilFactory.getTimestamp($scope.params.annualInspectionExpiration),
 				"availableSeats": $scope.params.availableSeats,
 				"engineNumber": $scope.params.engineNumber,
-				"insuranceExpiration": $scope.params.insuranceExpiration,
+				"insuranceExpiration": utilFactory.getTimestamp($scope.params.insuranceExpiration),
 				"licensePlate": $scope.params.licensePlate,
-				"schedulerUUID": $scope.params.schedulerUUID,
-				"secondCompanyId": $scope.params.secondCompanyId,
-				"shuttleCompanyId": $scope.params.shuttleCompanyId,
-				"shuttleCompanyName":$scope.params.shuttleCompanyName,
+				"schedulerId": utilFactory.getAccountId(),
+				"secondCompanyId": utilFactory.getSecondCompanyId(),
+				"shuttleCompanyId":$scope.params.busCompanyObj.partyId,
+				'shuttleCompanyName': $scope.params.busCompanyObj.name,
 				"vehicleLicense": $scope.params.vehicleLicense,
 				"vehicleModel": $scope.params.vehicleModel,
 				"vin": $scope.params.vin
 			}
-
+			console.log('------ _params -----')
 			console.log(1,_params)
 			schedulerHttpService.addBus(_params).then(function(result){
 				var responseData = result.data;
 				if(!responseData.error){
-					$state.go('scheduler.driver',{'schedulerUUID':_params.schedulerUUID,'secondCompanyID':_params.shuttleCompanyId})
-					// alertify.alert('新增成功！',function(){
-					// 	$scope.submitStatusText = '完成';
-					// 	$scope.active = true;
-					// 	$state.go('scheduler.driver',{'schedulerUUID':_params.schedulerUUID,'secondCompanyID':_params.shuttleCompanyId})
-					// })
+					
+					alertify.alert('新增成功！',function(){
+						$scope.submitStatusText = '完成';
+						$scope.active = true;
+						$state.go('scheduler.bus')
+					})
 				}else{
 					$scope.submitStatusText = '完成';
 					switch(responseData.error.statusCode){

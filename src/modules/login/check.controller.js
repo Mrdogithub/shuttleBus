@@ -1,9 +1,5 @@
 angular.module("checkControllerModule",[]).controller("checkController",function(localStorageFactory,loginHttpService,CHECK_ACCOUNT_STATUS,ACTIVE_ACCOUNT_ERROR,CHECK_ACCOUNT_ERROR,$scope,$state){
 	$scope.btnMessage = "下一步";
-
-	// if(localStorageFactory.getObject('token',null)){
-	// 	$state.go('passenger.list',{})
-	// }
 	$scope.checkNumber = function(e){
 		//var myreg = "^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8}$";
 		var myreg=/^[0-9][0,1,2,3,4,5,6,7,8,9][0-9]{9}$/; 
@@ -16,7 +12,7 @@ angular.module("checkControllerModule",[]).controller("checkController",function
         if(phoneNumber && !phoneNumber.match(myreg)) {
         		alertify.alert('请输入正确的手机号码');
         } else{
-        	$scope.btnMessage = "获取权限中..";
+        	$scope.btnMessage = "获取权限中...";
         	$scope.disabled= true;
 
         	loginHttpService.account({'phoneNumber':$scope.phoneNumber,'requestType':0}).then(function(result){
@@ -24,19 +20,8 @@ angular.module("checkControllerModule",[]).controller("checkController",function
 				var accountActiveObj = responseData.value;
 	            
 
+
 				if(!responseData.error){
-
-
-
-
-
-
-
-
-					//
-		
-
-
 					switch(accountActiveObj.status){
 						case CHECK_ACCOUNT_STATUS.accountActive:$state.go('entry.active',{'phoneNumber':$scope.phoneNumber,'requestType':'0','smsCode':accountActiveObj.smsCode})
 						break;

@@ -1,4 +1,3 @@
-'use strict'
 angular.module('injectModules',[
 	'ui.router',
 	'ui.sortable',
@@ -17,7 +16,7 @@ angular.module('injectModules',[
 	'gobackModule',
 	'tableComponentModule',
 	'paginationModule',
-	'sortableDirectiveModule',
+	//'sortableDirectiveModule',
 	'getRefreshTokenFacotryModule',
 	'formValidateSerivceModule',
 	'localStorageFactoryModule',
@@ -45,6 +44,8 @@ angular.module('injectModules',[
 	'schedulerAddScheduleControllerModule',
 	'schedulerBusControllerModule',
 	'schedulerSiteControllerModule',
+	'schedulerUpdateSiteControllerModule',
+	'schedulerbusCompanyControllerModule',
 	
 	'schedulerAddBusControllerModule',
 	'schedulerBusDetailControllerModule',
@@ -53,7 +54,23 @@ angular.module('injectModules',[
 	
 	'schedulerRouteControllerModule',
 	'schedulerAddRouteControllerModule',
-	
+	'schedulerUpdateRouteControllerModule',
 
-	'httpInterceptorModule'
+	'httpInterceptorModule',
+
+
+	'companyControllerModule',
+	'companyListControllerModule',
+	'companyHttpServiceModule',
+	'companyAddControllerModule',
+
+	'HRControllerModule',
+	'companyDetailControllerModule',
+	'companySchedulerControllerModule',
+
+	'passengerReportDataControllerModule',
+	'passengerReportRouteControllerModule',
+	'passengerReportStationControllerModule',
+	'passengerReportPassengersControllerModule',
+	'passengerReportArrivalControllerModule'
 ])

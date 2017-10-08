@@ -21,26 +21,26 @@
 				<form name="formValidate" novalidate>
 					<div class="content-inline">
 						<div class="content-inline-item"  
-							 ng-class="{'has-error':formValidate.passengerName.$dirty && formValidate.passengerName.$invalid,'has-success':formValidate.passengerName.$dirty && !formValidate.passengerName.$invalid}">
-							<label for="passengerName" class="control-label" >员工姓名:</label>
+							 ng-class="{'has-error':formValidate.name.$dirty && formValidate.name.$invalid,'has-success':formValidate.name.$dirty && !formValidate.name.$invalid}">
+							<label for="name" class="control-label" >员工姓名:</label>
 							<input type="text"  
 								   class= "form-control" 
-								   id="passengerName" 
-								   name="passengerName" 
+								   id="name" 
+								   name="name" 
 								   required="" 
 								   ng-disabled="!active" 
 								   ng-class="{'edit':active,'preview':!active}" 
-								   ng-model="params.passengerName"
+								   ng-model="params.name"
 								   ng-pattern="/^[a-zA-Z\u4E00-\u9FA5]{1,10}$/"/>
 							<div class="error"  
-								 ng-show="formValidate.passengerName.$dirty && formValidate.passengerName.$invalid">
+								 ng-show="formValidate.name.$dirty && formValidate.name.$invalid">
 						        <small class="control-label" 
-						           	   sng-show="formValidate.passengerName.$error.required">
+						           	   sng-show="formValidate.name.$error.required">
 						            请输入员工姓名
 						        </small>
 						        <small class="control-label" 
-						            ng-show="formValidate.passengerName.$error.pattern">
-						            员工姓名过长，请重新输入
+						            ng-show="formValidate.name.$error.pattern">
+						            员工姓名格式错误，请重新输入
 						        </small>
 						      </div>
 						</div>

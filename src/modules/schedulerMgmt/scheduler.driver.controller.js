@@ -1,14 +1,37 @@
 
 'use strict'
 angular.module('schedulerDriverControllerModule',[])
-.controller('schedulerDriverController',function(schedulerHttpService,$state,$scope){
+.controller('schedulerDriverController',function(schedulerHttpService,utilFactory,$state,$scope){
+
 
 	$scope.selectAllStatus = false;
+
+	// search inpuut 
+
+	$scope.queryByKeyObj = {
+		'active':{'key':'name','value':'司机姓名'},
+		'list':[{'key':'phoneNumber','value':'手机号'}]
+	}
+
+	$scope.selectKey = function(activeObj){
+		$scope.queryByKeyObj.list.length = 0;
+		$scope.queryByKeyObj.list.push( {'key':$scope.queryByKeyObj.active.key,'value':$scope.queryByKeyObj.active.value})
+		$scope.queryByKeyObj.active.key = activeObj.key;
+		$scope.queryByKeyObj.active.value = activeObj.value;
+
+
+		$('.dropdown-menu').css('display','none')
+	}
+
+	$scope.showQueryKeyList = function(){
+		$('.dropdown-menu').css('display','block')
+	}
+
 	$scope.pageConfigs={
 		params:{},
 		list:null,
 		getList:function(){
-			return schedulerHttpService.getDriverList({'schedulerUUID':'18','secondCompanyID':'18'})
+			return schedulerHttpService.getDriverList({'accountId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId()})
 		},
 		loadData:function(){
 			console.log('load data')
@@ -26,56 +49,73 @@ angular.module('schedulerDriverControllerModule',[])
 	$scope.selectAll = function(){
 		//$scope.tableConfig.checkbox.selectAll = true;
 		var _selectAllStatus  = !$scope.selectAllStatus;
-		console.log(_selectAllStatus+':_selectAllStatus')
 		$scope.$broadcast('checkboxSelectAll',{'status':_selectAllStatus})
 
 	}
 
+	// add new driver
 	$scope.addDriver = function(){
-		$state.go('scheduler.addDriver',{
-			'schedulerUUID':'18','secondCompanyId':'18'})
+		$state.go('scheduler.addDriver',{'schedulerId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId()})
 	};
 
 	$scope.tableConfig={
 		stableFlag:{
 			arrow:true,
 			index:true,
-			checkbox:true,
+			checkbox:false,
 			radio:true,
 			operate:[{
-				name:'编辑',
+				name:'查看详情',
 				ngIf:function(){},
 				fun:function(item){
 					var _params = {
-						'phoneNumber':item.accountDTO.phoneNumber,
-						'roleType':item.accountDTO.roleType,
-						'name':item.baseProfileDTO.name,
-						'accountId':item.baseProfileDTO.accountId,
-						'driverUUID':item.driverProfileDTO.driverUUID,
-						'schedulerUUID':item.driverProfileDTO.schedulerUUID,
-						'secondCompanyId':item.driverProfileDTO.secondCompanyId,
-						'shuttleCompanyId':item.driverProfileDTO.shuttleCompanyId,
-						'licenseID':item.driverProfileDTO.licenseID,
-						'licenseExpirationDate':item.driverProfileDTO.licenseExpirationDate,
-						'identityCard':item.driverProfileDTO.identityCard,
+						'schedulerId': utilFactory.getAccountId(),
+						'identityCard': item.identityCard,
+						'licenseExpirationDate': item.licenseExpirationDate,
+						'licenseId': item.name,
+						'name': item.name,
+						'driverId': item.partyId,
+						'phoneNumber': item.phoneNumber,
+						'secondCompanyId': item.secondCompanyId,
+						'shuttleCompanyName':item.shuttleCompanyName,
+						'shuttleCompanyId': item.shuttleCompanyId,
+						'secondCompanyName': item.secondCompanyName
 					}
 
-					console.log(1,_params)
-					$state.go('scheduler.driverDetail',{
-						'phoneNumber':_params.phoneNumber,
-						'roleType':_params.roleType,
-						'name':_params.name,
-						'accountId':_params.accountId,
-						'driverUUID':_params.driverUUID,
-						'schedulerUUID':_params.schedulerUUID,
-						'secondCompanyId':_params.secondCompanyId,
-						'shuttleCompanyId':_params.shuttleCompanyId,
-						'licenseID':_params.licenseID,
-						'licenseExpirationDate':_params.licenseExpirationDate,
-						'identityCard':_params.identityCard
-					});
+					$state.go('scheduler.driverDetail',_params);
 				}
-			}]
+			},
+			{
+				name:'删除',
+				ngIf:function(){},
+				fun:function(item){
+					var _params = {
+						'schedulerId': utilFactory.getAccountId(),
+						'identityCard': item.identityCard,
+						'licenseExpirationDate': item.licenseExpirationDate,
+						'licenseId': item.name,
+						'name': item.name,
+						'driverId': item.partyId,
+						'phoneNumber': item.phoneNumber,
+						'secondCompanyId': item.secondCompanyId,
+						'secondCompanyName': item.secondCompanyName,
+					}
+
+					alertify.confirm('确认删除'+_params.name+"?",function(){
+						schedulerHttpService.deleteDriverByID(_params).then(function(result){
+							var _resultData = result.data;
+
+							if(!_resultData.error){
+								$state.go('scheduler.driver',{},{reload:true})
+							}else {
+								alertify.alert(_resultData.error.message)
+							}
+							
+						});
+					},function(){})
+				}
+			},
+			]
 		},
 		// height:290,
 		// head:[{name:'文件名',key:'filename'}],
@@ -85,25 +125,26 @@ angular.module('schedulerDriverControllerModule',[])
 		checkbox:{
 			checkArray:[]
 		},
-		defaultValue:'---',
+		defaultValue:'——',
 		// radioSelect:function(){},
+
 		operateIfFlag:true,
 		setHeadOptional:{
 			cancelSelectNum:5,
 	    	selectOptions:[
 				{
-					'parentKey':'baseProfileDTO',
-					'selfKey':{'key':'name','value':'司机名称'},
+					'parentKey':'',
+					'selfKey':{'key':'name','value':'司机姓名'},
 					'checkFlag':true
 				},
 				{
-					'parentKey':'accountDTO',
+					'parentKey':'',
 					'selfKey':{'key':'phoneNumber','value':'手机号'},
 					'checkFlag':true
 				},
 				{
-					'parentKey':'driverProfileDTO',
-					'selfKey':{'key':'shuttleCompanyId','value':'运营单位'},
+					'parentKey':'',
+					'selfKey':{'key':'shuttleCompanyName','value':'运营单位'},
 					'checkFlag':true
 				}
 	    	]

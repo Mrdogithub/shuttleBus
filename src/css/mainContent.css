@@ -105,6 +105,9 @@
 	.right-content-wrapper .inner-content .info-wrapper  .content .content-inline .content-inline-item p{
 		color: #666;
 		font-weight: 500;
+	} 
+	.right-content-wrapper .inner-content .info-wrapper  .content .content-inline .content-inline-item select{
+		width: 170px; margin-right: -7px
 	}
 	.right-content-wrapper .inner-content .info-wrapper  .content .content-inline .content-inline-item label.largeSpace{
 		width: 100px;

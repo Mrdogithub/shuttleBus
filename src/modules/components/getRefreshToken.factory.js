@@ -11,7 +11,6 @@ angular.module('getRefreshTokenFacotryModule',[]).factory('getRefreshTokenFacotr
 	} 
 
 
-
 	$$token.getRefreshToken = function(paramsObj){
 		var paramsData = {
 			"apiPath":_path,
@@ -22,12 +21,12 @@ angular.module('getRefreshTokenFacotryModule',[]).factory('getRefreshTokenFacotr
 					"redirect_uri":"http://f-shuttlebus-authentication-management.apps.cl-cn-north-preprod01.cf.ford.com/api/v1/",
 					"response_type":"token",
 					"grant_type":"refresh_token",
-					"refresh_token":localStorageFactory.getObject('token',null).refreshToken
+					"refresh_token":localStorageFactory.getObject('account',null).refreshToken
 				},
-			setHeader: {'ApplicationId':'BACKGROUND','Content-Type': 'application/x-www-form-urlencoded','X-Requested-With':'XMLHttpRequest'}
+			setHeader: {'Content-Type': 'application/json','X-Requested-With':'XMLHttpRequest'}
 		};
 
-		return $http({method: 'POST', url:paramsData.apiPath, params:paramsData.paramsList,headers:paramsData.setHeader});
+		return $http({method: 'POST', url:paramsData.apiPath, data:paramsData.paramsList,headers:paramsData.setHeader});
 	}
 
 

@@ -1,5 +1,5 @@
 angular.module("activeControllerModule",[])
-.controller("activeController",function(loginHttpService,REQUESTTYPE,USER_ACCOUNT,ACTIVE_ACCOUNT_ERROR,md5Service,$scope,$state,$stateParams){
+.controller("activeController",function(loginHttpService,REQUESTTYPE,localStorageFactory,USER_ACCOUNT,ACTIVE_ACCOUNT_ERROR,md5Service,$scope,$state,$stateParams){
 
 	if(!$stateParams.phoneNumber){
 		$state.go('entry.check');
@@ -53,8 +53,6 @@ angular.module("activeControllerModule",[])
 			loginHttpService.smsCode({'phoneNumber':$scope.phoneNumber,'requestType':REQUESTTYPE.activeAccount,'smsCode':$scope.smsCode,'password':$scope.password})
 			.then(function(result){
 				var responseData = result.data;
-
-				console.log('responseData.value.authCode:'+responseData.value.authCode)
 				if(!responseData.error){
 
 					var tokenObjList = result.data.value;

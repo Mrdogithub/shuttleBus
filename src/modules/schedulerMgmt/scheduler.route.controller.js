@@ -1,10 +1,12 @@
 
 'use strict'
 angular.module('schedulerRouteControllerModule',[])
-.controller('schedulerRouteController',function(schedulerHttpService,$state,$scope){
+.controller('schedulerRouteController',function(utilFactory,schedulerHttpService,$state,$scope){
+
+	//var _accountId = localStorageFactory.getObject('account',null).accountId;
 
 	$scope.addRoute = function(){
-		$state.go('scheduler.addRoute',{'schedulerUUID':'666','secondCompanyID':'666'})
+		$state.go('scheduler.addRoute',{'schedulerId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId()})
 	}
 
 	$scope.downLoadTemplte = function(){
@@ -24,7 +26,7 @@ angular.module('schedulerRouteControllerModule',[])
 		params:{},
 		list:null,
 		getList:function(){
-			return schedulerHttpService.getSiteList({'schedulerUUID':'5555','secondCompanyID':'5555'})
+			return schedulerHttpService.getRoute({'schedulerId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId(),'pageNumber':'1','pageSize':'20'})
 		},
 		loadData:function(){
 			console.log('load data')
@@ -56,40 +58,16 @@ angular.module('schedulerRouteControllerModule',[])
 		stableFlag:{
 			arrow:true,
 			index:true,
-			checkbox:true,
+			checkbox:false,
 			radio:true,
 			operate:[{
-				name:'编辑',
+				name:'查看详情',
 				ngIf:function(){},
 				fun:function(item){
-					var _params = {
-						'phoneNumber':item.accountDTO.phoneNumber,
-						'roleType':item.accountDTO.roleType,
-						'name':item.baseProfileDTO.name,
-						'accountId':item.baseProfileDTO.accountId,
-						'driverUUID':item.driverProfileDTO.driverUUID,
-						'schedulerUUID':item.driverProfileDTO.schedulerUUID,
-						'secondCompanyId':item.driverProfileDTO.secondCompanyId,
-						'shuttleCompanyId':item.driverProfileDTO.shuttleCompanyId,
-						'licenseID':item.driverProfileDTO.licenseID,
-						'licenseExpirationDate':item.driverProfileDTO.licenseExpirationDate,
-						'identityCard':item.driverProfileDTO.identityCard,
-					}
 
-					console.log(1,_params)
-					$state.go('scheduler.driverDetail',{
-						'phoneNumber':_params.phoneNumber,
-						'roleType':_params.roleType,
-						'name':_params.name,
-						'accountId':_params.accountId,
-						'driverUUID':_params.driverUUID,
-						'schedulerUUID':_params.schedulerUUID,
-						'secondCompanyId':_params.secondCompanyId,
-						'shuttleCompanyId':_params.shuttleCompanyId,
-						'licenseID':_params.licenseID,
-						'licenseExpirationDate':_params.licenseExpirationDate,
-						'identityCard':_params.identityCard
-					});
+					$state.go('scheduler.routeDetail',{'routeId':item.routeId,'schedulerId':utilFactory.getAccountId()})
+					
+
 				}
 			}]
 		},
@@ -108,25 +86,26 @@ angular.module('schedulerRouteControllerModule',[])
 			cancelSelectNum:5,
 	    	selectOptions:[
 				{
-					'parentKey':'baseProfileDTO',
-					'selfKey':{'key':'name','value':'线路名称'},
-					'checkFlag':true
-				},
-				{
-					'parentKey':'accountDTO',
-					'selfKey':{'key':'stationType','value':'线路类型'},
-					'checkFlag':true
-				},
-				{
-					'parentKey':'driverProfileDTO',
-					'selfKey':{'key':'address','value':'起点站'},
-					'checkFlag':true
-				},
-				{
-					'parentKey':'driverProfileDTO',
-					'selfKey':{'key':'address','value':'终点站'},
+					'parentKey':'',
+					'selfKey':{'key':'routeName','value':'线路名称'},
 					'checkFlag':true
 				}
+				// ,
+				// {
+				// 	'parentKey':'accountDTO',
+				// 	'selfKey':{'key':'stationType','value':'线路类型'},
+				// 	'checkFlag':true
+				// },
+				// {
+				// 	'parentKey':'driverProfileDTO',
+				// 	'selfKey':{'key':'address','value':'起点站'},
+				// 	'checkFlag':true
+				// },
+				// {
+				// 	'parentKey':'driverProfileDTO',
+				// 	'selfKey':{'key':'address','value':'终点站'},
+				// 	'checkFlag':true
+				// }
 	    	]
 	    }
 		// changeEnable:function(item){}

@@ -1,26 +1,21 @@
 <div class="title-wrapper breadcrumb-wrapper">
 	<breadcrumb-component breadcrumb-params="breadcrumbParams" breadcrumb-text="breadcrumbText"></breadcrumb-component>
 </div>
-<div class="subTitle-wrapper">
- 	<div class="subTitle-content">
- 		<p ng-if ="!active">{{params.name}}</p>
- 	</div>
- 	<div class="subTitle-operate">
-<!-- 		<a ng-click="deletePassenger()">删除司机</a> -->
- 	</div>
-</div>
 <div class="right-content-wrapper container-shadow-border">
+
 	<div class="inner-content">
-		<div class="info-wrapper" ng-if = "stepOne">
+
+		<div class="info-wrapper" ng-show = "stepOne">
 			<div class="title">
-				<h1>基础信息</h1>
+				<h1>基础信息:</h1>
 			</div>
+			
 			<div class="content">
+	
 				<form name="formValidateOne" novalidate style="text-align: center;">
+
 					<div class="content-inline">
-						<div class="content-inline-item"
-							 style="width: 100%;" 
-							 ng-class="{'has-error':formValidateOne.beginDate.$dirty && formValidateOne.beginDate.$invalid,'has-success':formValidateOne.beginDate.$dirty && !formValidateOne.beginDate.$invalid}">
+						<div class="content-inline-item" style="width: 100%;"  ng-class="{'has-error':formValidateOne.beginDate.$dirty && formValidateOne.beginDate.$invalid,'has-success':formValidateOne.beginDate.$dirty && !formValidateOne.beginDate.$invalid}">
 							<label for="beginDate" class="control-label" >开始时间:</label>
 							<div class="input-group date datepicker" data-provide="datepicker">
     							<input type="text" 
@@ -28,27 +23,26 @@
     							 	   name="beginDate" 
 								       id="beginDate" 
 								       ng-disabled="!active"
-								       required="" 
+								       required=""
+								       style="border-right: none;" 
 								       ng-class="{'edit':active,'preview':!active}" 
 								       ng-model="params.beginDate">
-    							<div class="input-group-addon">
-        							<span class="glyphicon glyphicon-th"></span>
-    							</div>
+								<div class="input-group-addon">
+									<img style="margin-left: -6px;margin-top: 4px;" src="data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAANCAYAAACdKY9CAAAAAXNSR0IArs4c6QAAAS5JREFUKBV9UD1LA0EQfTN7h1hYekH7kH/hD7DYBBQrsQhYCPkHIiQXRdTeWrAVi4D/wFIQGyuL1BFB8AuS2xl3F1YCHtli5s3b94aZAeZe0S5fWvZsJVEBBy7VIdOaPd6o4PYM8a1TuSPGNpRsFJGOVHBjGJtOsGUMXWcOcmnYdJWWxnDf8MZnRxq7GvC0ggB5/mBm8uZErlC0B4+xmw9FZ3jQ7yunOuDApbqwgyfyM46hfJjIRVlJTjOF5gRdXySc+8uYgMlkdHQB0i+P3yNmfNZhUn3NklsVTUCnsVZpKmj2DwdifukoWBDC0n8XWe2UvYYtu7GJv0zDDvfrvH8jsaDlR/qIojASoaozUGHLewKdq5GfOkHiyPGyP+tJpmx6JNUOhPL0WZ9lBqbdX0AIf9mrUj0dAAAAAElFTkSuQmCC">
+	    						</div>
 							</div>
-
+							<sup class="requireMark">*</sup>
 							<div class="error"  
 							 	 ng-show="formValidateOne.beginDate.$dirty && formValidateOne.beginDate.$invalid">
-						        <small class="control-label" ng-show="formValidateOne.beginDate.$error.required">
-						        	请输开始时间
+								<small class="control-label" ng-show="formValidateOne.beginDate.$error.required">
+						        	请选择开始时间
 						        </small>
 					      	</div>
 						</div>
 					</div>
 
 					<div class="content-inline">
-						<div class="content-inline-item"
-							 style="width: 100%;" 
-							 ng-class="{'has-error':formValidateOne.endDate.$dirty && formValidateOne.endDate.$invalid,'has-success':formValidateOne.endDate.$dirty && !formValidateOne.endDate.$invalid}">
+						<div class="content-inline-item" style="width: 100%;" ng-class="{'has-error':formValidateOne.endDate.$dirty && formValidateOne.endDate.$invalid,'has-success':formValidateOne.endDate.$dirty && !formValidateOne.endDate.$invalid}">
 							<label for="endDate" class="control-label">结束时间:</label>
 							<div class="input-group date datepicker" data-provide="datepicker">
     							<input type="text" 
@@ -56,17 +50,18 @@
     							 	   name="endDate" 
 								       id="endDate" 
 								       ng-disabled="!active"
-								       required="" 
+								       required=""
+								       style="border-right: none;" 
 								       ng-class="{'edit':active,'preview':!active}" 
 								       ng-model="params.endDate">
-    							<div class="input-group-addon">
-        							<span class="glyphicon glyphicon-th"></span>
-    							</div>
+								<div class="input-group-addon" >
+									<img style="margin-left: -6px;margin-top: 4px;" src="data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAANCAYAAACdKY9CAAAAAXNSR0IArs4c6QAAAS5JREFUKBV9UD1LA0EQfTN7h1hYekH7kH/hD7DYBBQrsQhYCPkHIiQXRdTeWrAVi4D/wFIQGyuL1BFB8AuS2xl3F1YCHtli5s3b94aZAeZe0S5fWvZsJVEBBy7VIdOaPd6o4PYM8a1TuSPGNpRsFJGOVHBjGJtOsGUMXWcOcmnYdJWWxnDf8MZnRxq7GvC0ggB5/mBm8uZErlC0B4+xmw9FZ3jQ7yunOuDApbqwgyfyM46hfJjIRVlJTjOF5gRdXySc+8uYgMlkdHQB0i+P3yNmfNZhUn3NklsVTUCnsVZpKmj2DwdifukoWBDC0n8XWe2UvYYtu7GJv0zDDvfrvH8jsaDlR/qIojASoaozUGHLewKdq5GfOkHiyPGyP+tJpmx6JNUOhPL0WZ9lBqbdX0AIf9mrUj0dAAAAAElFTkSuQmCC">
+								</div>
 							</div>
-
+							<sup class="requireMark">*</sup>
 							<div class="error"	ng-show="formValidateOne.endDate.$dirty && formValidateOne.endDate.$invalid">
 						        <small class="control-label"	ng-show="formValidateOne.endDate.$error.required">
-						            请输入结束时间
+						            请选择结束时间
 						        </small>
 					      	</div>
 						</div>
@@ -74,20 +69,20 @@
 
 
 					<div class="content-inline">
-						<div class="content-inline-item"
-							 style="width: 100%;" 
-							 ng-class="{'has-error':formValidateOne.departureTime.$dirty && formValidateOne.departureTime.$invalid,'has-success':formValidateOne.departureTime.$dirty && !formValidateOne.departureTime.$invalid}">
-							<label class=" control-label" for="departureTime" >运行时段:</label>
-								<select ng-model="params.routeType"	
-										name="departureTime" 
-										required="" 
-										style="width: 176px; margin-right: -11px"
-										class="form-control">
-									<option value="AM">AM</option>
-									<option value="PM">PM</option>
-								</select>
-							<div class="error"	ng-show="formValidateOne.departureTime.$dirty && formValidateOne.departureTime.$invalid">
-						        <small class="control-label"	ng-show="formValidateOne.departureTime.$error.required">
+						<div class="content-inline-item" style="width: 100%;" ng-class="{'has-error':formValidateOne.routeType.$dirty && formValidateOne.routeType.$invalid,'has-success':formValidateOne.routeType.$dirty && !formValidateOne.routeType.$invalid}">
+							<label class=" control-label" for="routeType" >运行时段:</label>
+								<div class="input-group">
+									<select ng-model="params.routeType"	
+											name="routeType" 
+											required="" 
+											class="form-control">
+										<option value="AM">AM</option>
+										<option value="PM">PM</option>
+									</select>
+								</div>
+								<sup class="requireMark" style="margin-left: 5px;">*</sup>
+							<div class="error"	ng-show="formValidateOne.routeType.$dirty && formValidateOne.routeType.$invalid">
+						        <small class="control-label"	ng-show="formValidateOne.routeType.$error.required">
 						            请选择运行时段
 						        </small>
 					      	</div>
@@ -96,17 +91,15 @@
 
 
 					<div class="content-inline">
-						<div class="content-inline-item" 
-							  style="width: 100%;" 
-							 ng-class="{'has-error':formValidateOne.shuttleCompanyId.$dirty && formValidateOne.shuttleCompanyId.$invalid,'has-success':formValidateOne.shuttleCompanyId.$dirty && !formValidateOne.shuttleCompanyId.$invalid}">
+						<div class="content-inline-item" style="width: 100%;" ng-class="{'has-error':formValidateOne.shuttleCompanyId.$dirty && formValidateOne.shuttleCompanyId.$invalid,'has-success':formValidateOne.shuttleCompanyId.$dirty && !formValidateOne.shuttleCompanyId.$invalid}">
 							<label class="control-label">周末排班:</label>
-								<span class="first-operate" style="margin-right: 10px;">
-									<input type="checkbox" id="item" ng-model="params.includingSaturday" />
+								<span class="first-operate">
+									<input type="checkbox" id="item" ng-model="params.includeSaturday" />
 									<label for="item" class="check-box" style="width: 15px;margin-bottom: 0px;vertical-align: sub;"></label>
 									<span>包含周六</span>
 								</span>
-								<span class="first-operate">
-									<input type="checkbox" id="item_1"  ng-model="params.includingSunday"/>
+								<span class="first-operate" style="margin-right: 25px;">
+									<input type="checkbox" id="item_1"  ng-model="params.includeSunday"/>
 									<label for="item_1" class="check-box" style="width: 15px;margin-bottom: 0px;vertical-align: sub;"></label>
 									<span>包含周日</span>
 								</span>
@@ -131,98 +124,86 @@
 		</div>
 
 
-		<div class="info-wrapper" ng-if="stepTwo">
+		<div class="info-wrapper" ng-show="stepTwo">
 			<div class="title">
-				<h1>线路信息</h1>
+				<h1>线路信息:</h1>
 			</div>
 			<div class="content">
+
 				<form name="formValidateTwo" novalidate style="text-align: center;">
+
 					<div class="content-inline">
-						<div class="content-inline-item"
-							 style="width: 100%;" 
-							 ng-class="{'has-error':formValidateTwo.routeTemplateName.$dirty && formValidateTwo.routeTemplateName.$invalid,'has-success':formValidateTwo.routeTemplateName.$dirty && !formValidateTwo.routeTemplateName.$invalid}">
+						<div class="content-inline-item" style="width: 100%;" ng-class="{'has-error':formValidateTwo.routeTemplateName.$dirty && formValidateTwo.routeTemplateName.$invalid,'has-success':formValidateTwo.routeTemplateName.$dirty && !formValidateTwo.routeTemplateName.$invalid}">
 							<label for="routeTemplateName" class="control-label" >线路名称:</label>
 							<div class="input-group">
-								<select ng-options="item.routeTemplateName for item in params.routeTemplate" ng-model="params.routeTemplateObj" style="width: 220px">
+								<select ng-options="item.routeTemplateName for item in params.routeTemplate" name="routeTemplateName" required="" ng-model="params.routeTemplateObj">
 								</select>
 							</div>
-
+							<sup class="requireMark">*</sup>
 							<div class="error"  
-								 ng-show="formValidateTwo.name.$dirty && formValidateTwo.name.$invalid">
+								 ng-show="formValidateTwo.routeTemplateName.$dirty && formValidateTwo.routeTemplateName.$invalid">
 						        <small class="control-label" 
-						           	   ng-show="formValidateTwo.name.$error.required">
-						            请输入员司机姓名
+						           	   ng-show="formValidateTwo.routeTemplateName.$error.required">
+						            请选择线路名称
 						        </small>
-						        <small class="control-label" 
-						            ng-show="formValidateTwo.name.$error.pattern">
-						            司机姓名过长，请重新输入
-						        </small>
-						      </div>
+						    </div>
 						</div>
 					</div>
 
 					<div class="content-inline">
-						<div class="content-inline-item" 
-						     style="width: 100%;" 
-							 ng-class="{'has-error':formValidateTwo.licensePlate.$dirty && formValidateTwo.licensePlate.$invalid,'has-success':formValidateTwo.licensePlate.$dirty && !formValidateTwo.licensePlate.$invalid}">
+						<div class="content-inline-item" style="width: 100%;" ng-class="{'has-error':formValidateTwo.licensePlate.$dirty && formValidateTwo.licensePlate.$invalid,'has-success':formValidateTwo.licensePlate.$dirty && !formValidateTwo.licensePlate.$invalid}">
 							<label class=" control-label" for="licensePlate" >牌照信息:</label>
 							<div class="input-group">
-								<select ng-options="item.licensePlate for item in params.vehicles" ng-model="params.vehicleObj" style="width: 220px">
+								<select ng-options="item.licensePlate for item in params.vehicles" ng-model="params.vehicleObj" required="" name="licensePlate">
 								</select>
 							</div>
+							<sup class="requireMark">*</sup>
+							<div class="error"  
+								 ng-show="formValidateTwo.licensePlate.$dirty && formValidateTwo.licensePlate.$invalid">
+						        <small class="control-label" 
+						           	   ng-show="formValidateTwo.licensePlate.$error.required">
+						            请选择牌照信息
+						        </small>
+						    </div>
 						</div>
 					</div>
 					
-
 					<div class="content-inline">
-						<div class="content-inline-item"
-							 style="width: 100%;" 
-							 ng-class="{'has-error':formValidateTwo.endDate.$dirty && formValidateTwo.endDate.$invalid,'has-success':formValidateTwo.endDate.$dirty && !formValidateTwo.endDate.$invalid}">
-							<label class=" control-label" for="endDate" >司机名称:</label>
+						<div class="content-inline-item" style="width: 100%;" ng-class="{'has-error':formValidateTwo.driverName.$dirty && formValidateTwo.driverName.$invalid,'has-success':formValidateTwo.driverName.$dirty && !formValidateTwo.driverName.$invalid}">
+							<label class=" control-label" for="driverName" >司机名称:</label>
 							<div class="input-group">
-								<select ng-options="item.driverName for item in params.drivers" ng-model="params.driverObj" style="width: 220px">
+								<select ng-options="item.driverName for item in params.drivers" ng-model="params.driverObj" name="driverName" required="">
 								</select>
 							</div>
+							<sup class="requireMark">*</sup>
+							<div class="error"  
+								 ng-show="formValidateTwo.driverName.$dirty && formValidateTwo.driverName.$invalid">
+						        <small class="control-label" 
+						           	   ng-show="formValidateTwo.driverName.$error.required">
+						            请选择司机名称
+						        </small>
+						    </div>
 						</div>
 					</div>
 
-					<div class="content-inline" style="padding-left:38%">
-						<div style="width: 100%;" 
-							 ng-class="{'has-error':formValidateTwo.endDate.$dirty && formValidateTwo.endDate.$invalid,'has-success':formValidateTwo.endDate.$dirty && !formValidateTwo.endDate.$invalid}">
-							<label class=" control-label" for="endDate"  style="float: left;margin-top: 36px;margin-right: 14px;">发车时间:</label>
-							  
-							<div class="startTime" style="float: left;">
-								<div uib-timepicker ng-model="params.departureTime" hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></div>
-
-							</div>
-							<div style="float: left;float: left;
-									    display: inline-block;
-									    margin-top: 34px;
-									    margin-left: 7px;">
-								<button class="btn" 
-										style="background: #338ca5;
-											    color: #fff;
-											    height: 23px;
-											    line-height: 10px;
-											    border-radius: none;
-											    border-radius: 0;"
-										ng-click = "clear()">清空</button>
-							</div>
-							
-							<!-- <div class="input-group date datepicker" data-provide="datepicker">
-								<input type="text" class="form-control"
-								 	   name="licenseExpirationDate" 
-								       id="endDate" 
-								       ng-disabled="!active" 
-								       ng-class="{'edit':active,'preview':!active}" 
-								       ng-model="params.endDate">
+					<div class="content-inline">
+						<div class="content-inline-item" style="width: 100%;"  ng-class="{'has-error':formValidateOne.departureTime.$dirty && formValidateOne.departureTime.$invalid,'has-success':formValidateOne.departureTime.$dirty && !formValidateOne.departureTime.$invalid}">
+							<label for="departureTime" class="control-label" >发车时间:</label>
+							<div class="input-group clockpicker" >
+								<input type="text" id="departureTime" readonly="" class="form-control" value="18:00" required="" name="departureTime">
 								<div class="input-group-addon">
-	    							<span class="glyphicon glyphicon-th"></span>
-								</div>
-							</div> -->
+									<img style="margin-left: -6px;margin-top: 4px;" src="data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAAAXNSR0IArs4c6QAAAX5JREFUKBWNkrFLw0AUxt+7tKGDi6BWFFcVXHTQzXZybSuS/hOOIkKLLQYrODg6uPgHNEhrFzehFbq4uAjqrGCri4hLYnK+LzFYFcQbcpf3/e7uve8d08AYLdTmSftbRDrDRCOa6JmIO8TG/lOzfBWjohFZVt1ouzdlrfWGIjpkRRfaMG/Zd2d0QMsB0TozH2TN2ZrjFH1hiLCBtF4zjeRir1UtDU0NnweK1GOzeoZ/xKGHnPAKKeGGpJG0HhqlOxzyev+yQq53jDUG4tDBgVeoASnFGwBpTQkmbWAdD+jgPnkpWmqIxb/miNMZFbokRf+E5baUpBMaFWuhOeKqgq1wKRYwM6e68nlL5+3ueGF3KdZCN4WXNLkDW2MBc6+x2e83t7Na8VEQBK2JnL2AeMRxh8OGBu9t2DpoBiCMOatuXjtFd3J1b9r1vUtSiWyY81jerqAPg7ZHW6IvNni+50jKJ/3Tip1AGJ2WxhFOSud2fr0IiX+9COG/ufPft/cBa//EKBAR2dMAAAAASUVORK5CYII=">
+	    						</div>
+							</div>
+							<sup class="requireMark">*</sup>
+							<div class="error"  
+							 	 ng-show="formValidateOne.departureTime.$dirty && formValidateOne.departureTime.$invalid">
+								<small class="control-label" ng-show="formValidateOne.departureTime.$error.required">
+						        	请选择发车时间
+						        </small>
+					      	</div>
 						</div>
 					</div>
-
 
 					<div class="content-inline">
 						<div class="btn-wrapper"

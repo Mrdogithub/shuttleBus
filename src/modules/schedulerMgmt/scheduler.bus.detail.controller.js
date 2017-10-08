@@ -1,34 +1,48 @@
 'use strict'
 angular.module('schedulerBusDetailControllerModule',[])
 .controller('schedulerBusDetailController',function(schedulerHttpService,setDirty,$stateParams,$state,$scope){
-//$stateParams.vehicleID
-	if(true){
+
+	if($stateParams.schedulerId){
+		
 		$scope.params = {
-		  "annualInspectionExpiration":$stateParams.annualInspectionExpiration||'--',
-		  "availableSeats": $stateParams.availableSeats || 0,
-		  "engineNumber": $stateParams.engineNumber||'--',
-		  "insuranceExpiration": $stateParams.insuranceExpiration||'--',
-		  "licensePlate": $stateParams.licensePlate||'--',
-		  "schedulerUUID": $stateParams.schedulerUUID|| '--',
-		  "secondCompanyId": $stateParams.secondCompanyId||'--',
-		  "shuttleCompanyId": $stateParams.shuttleCompanyId||'--',
-		  "vehicleLicense": $stateParams.vehicleLicense|| '--',
-		  "vehicleModel": $stateParams.vehicleModel|| '--',
-		  "vin": $stateParams.vin|| '--'
+			'vehicleId': $stateParams.vehicleId,
+			'schedulerId': $stateParams.schedulerId,
+			'annualInspectionExpiration': $stateParams.annualInspectionExpiration,
+			'availableSeats': $stateParams.availableSeats,
+			'engineNumber': $stateParams.engineNumber,
+			'insuranceExpiration': $stateParams.insuranceExpiration,
+			'licensePlate': $stateParams.licensePlate,
+			'schedulerId': $stateParams.schedulerId,
+			'secondCompanyId': $stateParams.secondCompanyId,
+			'shuttleCompanyId': $stateParams.shuttleCompanyId,
+			'shuttleCompanyName': $stateParams.shuttleCompanyName,
+			'vehicleLicense': $stateParams.vehicleLicense,
+			'vehicleModel': $stateParams.vehicleModel,
+			'vin': $stateParams.vin,
+			'busCompany':[{'name':'数据加载中...','id':null}],
 		}
+
 
 		$scope.active = false;
 		$scope.submitOnProgress = false;
-		$scope.breadcrumbParams = {
-			'schedulerUUID':$stateParams.schedulerUUID,
-			'secondCompanyId':$stateParams.secondCompanyId	
-		}
-		$scope.breadcrumbText={
-			'lv1':'车辆管理',
-			'lv2':'编辑车辆'
-		}
+		$scope.breadcrumbText={'lv1':'车辆管理','lv2':'编辑车辆'};
+
+
+		// Get bus company list 
+		schedulerHttpService.getBusCompany({'schedulerId': $scope.params.schedulerId,'secondCompanyId': $scope.params.secondCompanyId}).then(function(result){
+			var	_resultData = result.data;
+
+			if(!_resultData.error){
+				$scope.params.busCompany.length = 0;
+				_resultData.value.list.length? $scope.params.busCompany = _resultData.value.list :$scope.params.busCompany.push({'name':'暂无数据','id':null});
+			} else{
+				alertify.aleret(_resultData.error.message)
+			}
+		});
+
+
 	}else{
-		$state.go('scheduler.driver',$scope.breadcrumbParams)
+		$state.go('scheduler.bus')
 	}
 
 	$scope.editDriverProfile = function(flag){
@@ -41,26 +55,29 @@ angular.module('schedulerBusDetailControllerModule',[])
 
 		alertify.confirm('确认更新牌照信息为"'+$scope.params.licensePlate+'"的车辆?',function(){
 			$scope.submitOnProgress = true;
-			$scope.submitStatusText = "正在更新中..."
+			$scope.submitStatusText = "正在更新中...";
+
 			var _params = {
-			  "annualInspectionExpiration":$scope.params.annualInspectionExpiration,
-			  "availableSeats": $scope.params.availableSeats,
-			  "engineNumber": $scope.params.engineNumber,
-			  "insuranceExpiration": $scope.params.insuranceExpiration,
-			  "licensePlate": $scope.params.licensePlate,
-			  "schedulerUUID": $scope.params.schedulerUUID,
-			  "secondCompanyId": $scope.params.secondCompanyId,
-			  "shuttleCompanyId": $scope.params.shuttleCompanyId,
-			  "vehicleLicense": $scope.params.vehicleLicense,
-			  "vehicleModel": $scope.params.vehicleModel,
-			  "vin": $scope.params.vin
-			}
+				"annualInspectionExpiration":$scope.params.annualInspectionExpiration,
+				"availableSeats": $scope.params.availableSeats,
+				"engineNumber": $scope.params.engineNumber,
+				"insuranceExpiration": $scope.params.insuranceExpiration,
+				"licensePlate": $scope.params.licensePlate,
+				"schedulerId": $scope.params.schedulerId,
+				"secondCompanyId": $scope.params.secondCompanyId,
+				"shuttleCompanyId": $scope.params.busCompanyObj.partyId,
+				"shuttleCompanyName": $scope.params.shuttleCompanyName,
+				"vehicleLicense": $scope.params.vehicleLicense,
+				"vehicleModel": $scope.params.vehicleModel,
+				"vin": $scope.params.vin,
+				'vehicleId':$scope.params.vehicleId
+			};
 
 
-			schedulerHttpService.addBus(_params).then(function(result){
+			schedulerHttpService.updateBus(_params).then(function(result){
 				var responseData = result.data;
 				if(!responseData.error){
-					$state.go('scheduler.driver',{'schedulerUUID':_params.schedulerUUID,'secondCompanyID':_params.shuttleCompanyId})
+					$state.go('scheduler.bus')
 					// alertify.alert('新增成功！',function(){
 					// 	$scope.submitStatusText = '完成';
 					// 	$scope.active = true;

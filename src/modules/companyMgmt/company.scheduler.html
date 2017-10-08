@@ -1,0 +1,191 @@
+<div class="title-wrapper breadcrumb-wrapper">
+	<breadcrumb-component breadcrumb-params="breadcrumbParams" breadcrumb-text="breadcrumbText"></breadcrumb-component>
+</div>
+<div class="right-content-wrapper container-shadow-border">
+	<div class="inner-content">
+		<div class="info-wrapper">
+			<div class="title">
+				<h1>添加班车管理员:</h1>
+			</div>
+			<div class="content">
+				<form name="formValidate" novalidate>
+					<div class="content-inline" style="height: 65px; line-height: 55px;">
+						<div class="content-inline-item"  
+							 ng-class="{'has-error':formValidate.name.$dirty && formValidate.name.$invalid,'has-success':formValidate.name.$dirty && !formValidate.name.$invalid}"
+							 style="position: relative;">
+							<label for="name" class="control-label">姓名:</label>
+							<input type="text"  
+								   class= "form-control" 
+								   id="name" 
+								   name="name" 
+								   required="" 
+								   ng-model="params.name"
+								   ng-maxlength='10'/>
+							<div class="error"  
+								 ng-show="formValidate.name.$dirty && formValidate.name.$invalid"
+								 style="position: absolute;top: 29px;left: 76px;">
+						        <small class="control-label" 
+						           	   ng-show="formValidate.name.$error.required">
+						            请输入姓名
+						        </small>
+						        <small class="control-label" 
+						            ng-show="formValidate.name.$error.maxlength">
+						            姓名格式错误，请重新输入
+						        </small>
+						      </div>
+						</div>
+
+					<div class="content-inline-item"  ng-class="{'has-error':formValidate.phoneNumber.$dirty && formValidate.phoneNumber.$invalid,'has-success':formValidate.phoneNumber.$dirty && !formValidate.phoneNumber.$invalid}" style="position: relative;">
+							<label class=" control-label" for="phoneNumber" >手机号:</label>
+							<input type="text" 
+								   id="phoneNumber" 
+								   class= "form-control" 
+								   required=""  
+								   ng-maxlength="11" 
+								   ng-minlength="11"  
+								   maxlength="11" 
+								   ng-pattern ="/^[0-9][0,1,2,3,4,5,6,7,8,9][0-9]{9}$/" 
+								   name="phoneNumber" 
+								   ng-model="params.phoneNumber">
+							<div class="error"  ng-show="formValidate.phoneNumber.$dirty && formValidate.phoneNumber.$invalid"
+								 style="position: absolute;top: 29px;left: 76px;">
+								<small class="control-label" 
+						            ng-show="formValidate.phoneNumber.$error.required">
+						            请输入手机号
+						        </small>
+						        <small class="control-label" 
+						            ng-show="formValidate.phoneNumber.$error.maxlength">
+						            请输入11位的手机号
+						        </small>
+
+						        <small class="control-label" 
+										ng-show="formValidate.phoneNumber.$error.minlength &&!formValidate.phoneNumber.$error.pattern">
+						            请输入11位手机号
+						        </small>
+						       <small class="control-label" 
+										ng-show="formValidate.phoneNumber.$error.pattern ">
+						            请输入正确的手机号
+						        </small>
+						    </div>
+						</div> 
+
+						<div class="content-inline-item">
+							<div class="btn-wrapper" style="margin-top: 0px;">
+								<a ng-click="!submitOnProgress&& addScheduler(formValidate.$invalid)" 
+								   class="submitBtn submit-ok"
+								   style="border-radius: 4px;">添加</a>
+							</div>
+						</div>
+					</div>
+				</form>				
+			</div>
+		</div>
+
+
+		<div class="info-wrapper">
+			<div class="title">
+				<h1>班车管理员列表:</h1>
+			</div>
+			<div class="right-content-wrapper" style="margin-top: 14px;">
+				<table-component table-config = "tableConfig" table-data="pageConfigs.list"></table-component>
+			</div>
+
+			<div class="pagination-wrapper">
+				<pagination-component page-configs= "pageConfigs"></pagination-component>
+			</div>
+		</div>
+
+
+	</div>
+</div>
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document"  style="width: 500px;"> 
+    <div class="modal-content" style="    border-radius: 0px;">
+      <div class="modal-body">
+      		<form name="updateFormValidate" novalidate style="text-align: center;">
+				<div class="content-inline" style="line-height:60px;">
+					<div class="content-inline-item"  
+						 ng-class="{'has-error':updateFormValidate.name.$dirty && updateFormValidate.name.$invalid,'has-success':updateFormValidate.name.$dirty && !updateFormValidate.name.$invalid}"
+						 style="position: relative;">
+						<label for="name" class="control-label" style="width:50px">姓名:</label>
+						<input type="text"  
+							   class= "form-control" 
+							   style="width: 170px;" 
+							   id="name" 
+							   name="name" 
+							   required="" 
+							   ng-model="updateParams.name"
+							   ng-maxlength='10'/>
+						<div class="error"  
+							 ng-show="updateFormValidate.name.$dirty && updateFormValidate.name.$invalid"
+							 style="position: absolute;top: 29px;left: 120px;">
+					        <small class="control-label" 
+					           	   ng-show="updateFormValidate.name.$error.required">
+					            请输入姓名
+					        </small>
+					        <small class="control-label" 
+					            ng-show="updateFormValidate.name.$error.maxlength">
+					            姓名格式错误，请重新输入
+					        </small>
+					      </div>
+					</div>
+				</div>
+
+				<div class="content-inline" style="line-height:60px;">
+						<div class="content-inline-item"  ng-class="{'has-error':updateFormValidate.phoneNumber.$dirty && updateFormValidate.phoneNumber.$invalid,'has-success':updateFormValidate.phoneNumber.$dirty && !updateFormValidate.phoneNumber.$invalid}" style="position: relative;">
+							<label class=" control-label" for="phoneNumber" style="width:50px">手机号:</label>
+							<input type="text" 
+								   id="phoneNumber" 
+								   class= "form-control" 
+								   required=""
+								   style="width: 170px;"
+								   ng-maxlength="11" 
+								   ng-minlength="11"  
+								   maxlength="11" 
+								   ng-pattern ="/^[0-9][0,1,2,3,4,5,6,7,8,9][0-9]{9}$/" 
+								   name="phoneNumber" 
+								   ng-model="updateParams.phoneNumber">
+							<div class="error"  ng-show="updateFormValidate.phoneNumber.$dirty && updateFormValidate.phoneNumber.$invalid"
+								 style="position: absolute;top: 29px;left: 120px;">
+								<small class="control-label" 
+						            ng-show="updateFormValidate.phoneNumber.$error.required">
+						            请输入手机号
+						        </small>
+						        <small class="control-label" 
+						            ng-show="updateFormValidate.phoneNumber.$error.maxlength">
+						            请输入11位的手机号
+						        </small>
+
+						        <small class="control-label" 
+										ng-show="updateFormValidate.phoneNumber.$error.minlength &&!updateFormValidate.phoneNumber.$error.pattern">
+						            请输入11位手机号
+						        </small>
+						       <small class="control-label" 
+										ng-show="updateFormValidate.phoneNumber.$error.pattern ">
+						            请输入正确的手机号
+						        </small>
+						    </div>
+					</div> 
+				</div>
+
+				<div class="content-inline" style="height: 65px; line-height:50px;">
+					<div class="content-inline-item">
+						<div class="btn-wrapper" style="margin-top: 10px;padding: 0px;">
+							<a ng-click="close()" 
+							   class="submitBtn submit-cancel">取消</a>
+							<a ng-click="!submitOnProgress&& updateScheduler(updateFormValidate.$invalid)" 
+							   class="submitBtn submit-ok">更新</a>
+						</div>
+					</div>
+				</div>
+
+			</form>
+      </div>
+      <div class="modal-footer" style="text-align: center;border: none;">
+      <!--   <button type="button" class="submitBtn submit-cancel" data-dismiss="modal">关闭</button> -->
+      </div>
+    </div>
+  </div>
+</div>

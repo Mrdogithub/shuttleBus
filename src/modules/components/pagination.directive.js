@@ -54,22 +54,36 @@ angular.module('paginationModule',[])
 				}
 
 				var _params = angular.extend(_params,scope.pageConfigs.extendParams);
-
 				scope.pageConfigs.getList(_params).then(function(data){
+					console.log('list list')
+					console.log(1,data)
 					if(data.data.error){
 						if(data.data.error.statusCode == TOKEN_ERROR.STATUS_CODE_0200102.code){
 							getRefreshTokenFacotry.getRefreshToken().then(function(result){
 								var _tokenRes = result.data;
-								// if(!_tokenRes.error){
-								// 	localStorageFactory.remove('token');
-								// 	localStorageFactory.setObject('token',token);
-								// 	getListFun();
+								if(!_tokenRes.error){
+									var _rewriteToken = localStorageFactory.getObject('account',null);
+									_rewriteToken.accessToken = _tokenRes.accessToken;
+									_rewriteToken.refreshToken = _tokenRes.refreshToken;
+									localStorageFactory.setObject('account',_rewriteToken);
+									getListFun();
+								}else if(_tokenRes.error.statusCode == TOKEN_ERROR.STATUS_CODE_0200105.code){
+									localStorageFactory.remove('account');
+									$state.go('entry.check')
+								}else if(_tokenRes.error.statusCode == '0200104'){
+									alertify.alert(_tokenRes.error.message)
+								}
 
-								// }else if(_tokenRes.error.statusCode == TOKEN_ERROR.STATUS_CODE_0200105.code){
-								// 	localStorageFactory.remove('token');
-								// 	$state.go('entry.check')
-								// }
-							},function(){});
+							},function(){
+								console.log('xxxxx')
+							});
+						}else if(data.data.error.statusCode == TOKEN_ERROR.STATUS_CODE_0200105.code){
+							localStorageFactory.remove('account');
+							$state.go('entry.check')
+						}else if( data.data.error.statusCode == '0200104'){
+							alertify.alert(data.data.error.message)
+						}else {
+							alertify.alert(data.data.error.statusCode+':'+data.data.error.statusContext)
 						}
 					}
 					var _total;
@@ -79,12 +93,16 @@ angular.module('paginationModule',[])
 					}
                     
 
-					if(!data.value.list){
-						scope.pageConfigs.list = data.value;						
-					}if(data.value.list){
+					// if(!data.value.list){
+					// 	scope.pageConfigs.list = data.value;						
+					// }if(data.value.list){
+						
+					// }
+					// console.log('xxxx')
+					// console.log(1,data.value)
+					if(data.value.list) {
 						scope.pageConfigs.list = data.value.list;
 					}
-					
 					if(data.value.totalNumber){
 						_total = data.value.totalNumber
 					}else if (data.value == undefined){
@@ -110,7 +128,7 @@ angular.module('paginationModule',[])
 					// }
 					deffered.resolve(_total);
 				},function(errorMessage){
-					scope.pageConfigs.list = [0]
+					scope.pageConfigs.list = null
 				});
 
 				return deffered.promise;

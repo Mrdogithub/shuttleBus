@@ -1,0 +1,86 @@
+
+
+    <style type="text/css">
+        .addSiteForm-wrapper{
+            width: 200px;
+            height: auto;
+            padding: 10px;
+            box-sizing: border-box;
+            border-radius: 4px;
+            background: #fff;
+            -moz-box-shadow: 0 0 15px 0 rgba(0,0,0,.1);
+            -webkit-box-shadow: 0 0 15px 0 rgba(0,0,0,.1);
+            box-shadow: 0 0 15px 0 rgba(0,0,0,.1);
+            position: relative;
+            display: none;
+        }
+        .addSiteForm-wrapper:after{
+            position: absolute;
+            left: -30px;
+            top: 13px;
+            content: '';
+            width: 0;
+            height: 0;
+            border-width: 15px;
+            border-color: transparent #fff transparent transparent;
+            border-style: solid;
+        }
+        .addSiteForm-wrapper .title{
+            margin-bottom: 20px;
+        }
+        .addSiteForm-wrapper .content{
+
+        }
+
+        .addSiteForm-wrapper .content .form-item input,
+        .addSiteForm-wrapper .content .form-item select{
+            padding: 5px;
+            width: 175px;
+            height: 30px;
+            border:1px solid #ccc;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+        
+        .addSiteForm-wrapper .content .form-item button{
+            background: #338ca5;
+            border-radius: 4px;
+            color: #fff;
+            border: 0;
+            margin: 4px;
+            min-width: 80px;
+            min-height: 25px;
+            font-size: 14px;
+            line-height: 28px;
+            text-align: center;
+            font-weight: normal;
+            text-transform: uppercase;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+    </style>
+
+
+<div class="title-wrapper breadcrumb-wrapper">
+    <breadcrumb-component breadcrumb-params="breadcrumbParams" breadcrumb-text="breadcrumbText"></breadcrumb-component>
+</div>
+<div class="subTitle-wrapper">
+    <div class="subTitle-content">
+        <p ng-if ="!active">{{params.name}}</p>
+    </div>
+</div>
+<div class="right-content-wrapper container-shadow-border" style="position: relative;height: 100%;">
+    <div id="container" class="map" tabindex="0" style="min-height: 400px;"></div>
+    <div class="map-search-wrapper">
+        <div class="col-lg-3">
+            <div class="input-group" style="width: 220px;">
+                <input  id="pickerInput" name="keywords" style="height: 23px" type="text" onfocus='this.value=""'>
+                <span class="input-group-btn">
+                    <button id="mapSearch" class="btn" style="background: #338ca5; color: #fff;border: none;padding: 1.5px 6px;" type="button">搜索</button>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+

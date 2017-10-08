@@ -25,16 +25,15 @@ angular.module("loginControllerModule",[])
 				if(!responseData.error){
 					loginHttpService.accessToken({'code':responseData.value.authCode}).then(function(result){
 
-
-
-
 						var tokenObjList = result.data.value;
 
 						if(tokenObjList.roles){
-							var _getRoleArray = tokenObjList.roles.split(":");
+							var _getRoleArray = tokenObjList.roles.split("@");
+							var _roleList = ['ROLE_SYSADMIN','ROLE_APPLICATION_ADMIN','ROLE_SECOND_COMPANY_ADMIN','ROLE_HR','ROLE_SCHEDULER','ROLE_PASSENGER','ROLE_DRIVER','ROLE_COMPANY'];
+
 							for(var i=0;i<_getRoleArray.length;i++){
-								if(USER_ACCOUNT.hasOwnProperty(_getRoleArray[i])){
-									USER_ACCOUNT[_getRoleArray[i]] = true;
+								if(USER_ACCOUNT.hasOwnProperty(_roleList[_getRoleArray[i]-1])){
+									USER_ACCOUNT[_roleList[_getRoleArray[i]-1]] = true;
 								}
 							}
 
@@ -59,7 +58,7 @@ angular.module("loginControllerModule",[])
 							USER_ACCOUNT.accessToken = tokenObjList.accessToken;
 							USER_ACCOUNT.refreshToken = tokenObjList.refreshToken;
 							USER_ACCOUNT.accountId = tokenObjList.accountId;
-
+							USER_ACCOUNT.secondCompanyId = tokenObjList.secondCompanyId || '1';
 							localStorageFactory.remove('account');
 							localStorageFactory.setObject('account',USER_ACCOUNT);
 
@@ -99,15 +98,15 @@ angular.module("loginControllerModule",[])
 							break;
 						case LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200106.code:errorMessageFn(LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200106.message,responseData)
 							break;
-						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200108.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200108.message,responseData)
+						case LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200108.code:errorMessageFn(LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200108.message,responseData)
 							break;
-						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200109.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200109.message,responseData)
+						case LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200109.code:errorMessageFn(LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200109.message,responseData)
 							break;
-						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200110.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200110.message,responseData)
+						case LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200110.code:errorMessageFn(LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200110.message,responseData)
 							break;
-						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200111.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200111.message,responseData)
+						case LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200111.code:errorMessageFn(LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200111.message,responseData)
 							break;
-						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200112.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200112.message,responseData)
+						case LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200112.code:errorMessageFn(LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200112.message,responseData)
 							break;
 						default :alertify.alert(responseData.error.message)
 					}

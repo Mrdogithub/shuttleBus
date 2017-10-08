@@ -1,0 +1,21 @@
+<div class="subTitle-wrapper">
+	<div class="subTitle-content">
+<!-- 
+				<select class= "form-control"
+				required=""
+				name="busCompany" 
+				ng-options="item.routeName for item in params.routeList"
+				ng-model="params.routeName" ></select> -->
+	</div>
+	<div class="subTitle-operate">
+		<a ng-click="importData()">导出报表</a>
+	</div>	 	
+</div>
+
+<div class="right-content-wrapper container-shadow-border">
+	<table-component table-config = "tableConfig" table-data="pageConfigs.list"></table-component>
+</div>
+
+<div class="pagination-wrapper">
+	<pagination-component page-configs= "pageConfigs"></pagination-component>
+</div>
