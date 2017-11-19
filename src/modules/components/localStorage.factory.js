@@ -1,4 +1,5 @@
-angular.module('localStorageFactoryModule',[]).factory('localStorageFactory',function($window){
+angular.module('localStorageFactoryModule',[])
+.factory('localStorageFactory',function($window){
 	var $$localStorage = {};
 	
 	$$localStorage.set = function(key, value){

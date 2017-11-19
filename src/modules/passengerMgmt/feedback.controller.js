@@ -1,23 +1,17 @@
-'use strict'
 angular.module('feedbackControllerModule',[]).controller('feedbackController',function($scope,passengerHttpService,utilFactory){
 	$scope.pageConfigs={
-		params:{},
+		params:{
+			'hrId':utilFactory.getAccountId(),
+			'secondCompanyId':utilFactory.getSecondCompanyId(),
+			'pageSize':'20',
+			'pageNumber':'1'
+		},
 		list:null,
-		getList:function(){
-			return passengerHttpService.getPassengerFeedback({'hrId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId()})
+		getList:function(params){
+			return passengerHttpService.getPassengerFeedback(params)
 		},
-		loadData:function(){
-			console.log('load data')
-			
-		},
-		dataSet:function(result){
-			// if(result.value != null){
-			// 	var _result = result.value;
-			// 	for(var i=0;i<_result.length;i++){
-			// 		_result[i]['status'] =_result[i]['status'] == 0?'未激活':'已激活'
-			// 	}
-			// }
-		}
+		loadData:function(){},
+		dataSet:function(result){}
 		//extendParams:function(){}
 	}
 
@@ -40,9 +34,7 @@ angular.module('feedbackControllerModule',[]).controller('feedbackController',fu
 						'status': item.status,
 						'passengerId': item.partyId
 					}
-					console.log('------- params -----------')
-					console.log(1,_params)
-					$state.go('passenger.detail',_params);
+					$state.go('admin.passenger.detail',_params);
 				}
 			},
 			{
@@ -73,7 +65,7 @@ angular.module('feedbackControllerModule',[]).controller('feedbackController',fu
 					'checkFlag':true
 				},
 				{
-					'parentKey':'accountDTO',
+					'parentKey':'',
 					'selfKey':{'key':'phoneNumber','value':'员工姓名'},
 					'checkFlag':true
 				},

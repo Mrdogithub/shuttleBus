@@ -1,5 +1,3 @@
-'use strict'
-
 /**
  * @description
  * goback component works in html files
@@ -27,7 +25,7 @@ angular.module('breadcrumbModule',[]).directive('breadcrumbComponent',function($
 			}
 		},
 		link:function(scope,elements,attrs){
-
+			console.log(scope.breadcrumbText)
 			// elements.bind('click',function(){
 			// 	if(scope.gopath){
 			// 		$state.go(scope.gopath,scope.breadcrumbParams)	

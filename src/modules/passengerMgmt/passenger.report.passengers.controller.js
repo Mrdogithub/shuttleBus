@@ -1,4 +1,5 @@
-angular.module('passengerReportPassengersControllerModule',[]).controller('passengerReportPassengersController',function(passengerHttpService,utilFactory,$scope){
+angular.module('passengerReportPassengersControllerModule',[])
+.controller('passengerReportPassengersController',function(passengerHttpService,utilFactory,$scope){
 
 	$scope.params = {
 		'routeList':[{
@@ -65,8 +66,13 @@ angular.module('passengerReportPassengersControllerModule',[]).controller('passe
 					'selfKey':{'key':'name','value':'员工姓名'},
 					'checkFlag':true
 				},
+								{
+					'parentKey':'',
+					'selfKey':{'key':'phoneNumber','value':'员工工号'},
+					'checkFlag':true
+				},
 				{
-					'parentKey':'accountDTO',
+					'parentKey':'',
 					'selfKey':{'key':'phoneNumber','value':'联系方式'},
 					'checkFlag':true
 				},
@@ -78,11 +84,6 @@ angular.module('passengerReportPassengersControllerModule',[]).controller('passe
 				{
 					'parentKey':'',
 					'selfKey':{'key':'defautRouteName','value':'上车站点'},
-					'checkFlag':true
-				},
-				{
-					'parentKey':'',
-					'selfKey':{'key':'status','value':'乘车次数'},
 					'checkFlag':true
 				}
 			]

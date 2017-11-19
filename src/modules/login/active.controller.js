@@ -1,5 +1,5 @@
 angular.module("activeControllerModule",[])
-.controller("activeController",function(loginHttpService,REQUESTTYPE,localStorageFactory,USER_ACCOUNT,ACTIVE_ACCOUNT_ERROR,md5Service,$scope,$state,$stateParams){
+.controller("activeController",function(loginHttpService,ACTIVE_ACCOUNT_ERROR,REQUESTTYPE,utilFactory,localStorageFactory,USER_ACCOUNT,$scope,$state,$stateParams){
 
 	if(!$stateParams.phoneNumber){
 		$state.go('entry.check');
@@ -54,102 +54,68 @@ angular.module("activeControllerModule",[])
 			.then(function(result){
 				var responseData = result.data;
 				if(!responseData.error){
-
 					var tokenObjList = result.data.value;
-
 					if(tokenObjList.roles){
-							var _getRoleArray = tokenObjList.roles.split(":");
-							for(var i=0;i<_getRoleArray.length;i++){
-								if(USER_ACCOUNT.hasOwnProperty(_getRoleArray[i])){
-									USER_ACCOUNT[_getRoleArray[i]] = true;
-								}
-							}
-
-							if(USER_ACCOUNT.ROLE_DRIVER){
-								alertify.alert('未分配权限,请联系统管理员',function(){
-									$scope.activeText = "激活";
-									$scope.disabled = false;
-									$scope.$apply();
-								});
-								return
-							}
-
-							if(USER_ACCOUNT.ROLE_PASSENGER){
-								alertify.alert('未分配权限,请联系统管理员',function(){
-									$scope.activeText = "激活";
-									$scope.disabled = false;
-									$scope.$apply();
-								})
-								return
-							}
-						}
-
-
+						var _getRoleArray = tokenObjList.roles.split("$");
+						
+						USER_ACCOUNT.ROLE_HR = false;
+						USER_ACCOUNT.ROLE_SCHEDULER = false;
+						USER_ACCOUNT.ROLE_SECONDADMIN = false;
+						USER_ACCOUNT.ROLE_APPLICATIONADMIN = false;
+						USER_ACCOUNT.phoneNumber = $scope.phoneNumber;
 						USER_ACCOUNT.accessToken = tokenObjList.accessToken;
 						USER_ACCOUNT.refreshToken = tokenObjList.refreshToken;
 						USER_ACCOUNT.accountId = tokenObjList.accountId;
-
+						USER_ACCOUNT.secondCompanyId = tokenObjList.secondCompanyId;
+						utilFactory.assignRole(_getRoleArray);
 						localStorageFactory.remove('account');
 						localStorageFactory.setObject('account',USER_ACCOUNT);
 
-
-
-						//get role
-
-						var _roleList = localStorageFactory.getObject('account');
-
-
-						if(_roleList.ROLE_HR){
-							$state.go('passenger.list')
+						if(USER_ACCOUNT.ROLE_HR || USER_ACCOUNT.ROLE_SCHEDULER){
+							return $state.go('admin.passenger.list');
+						}
+						
+						if(USER_ACCOUNT.ROLE_SECONDADMIN){
+							return $state.go('companyAdmin.HR');
 						}
 
-						if(_roleList.ROLE_SCHEDULER){
-							$state.go('scheduler.route')
-						}else{
-							alertify.alertify('权限未开通',function(){})
+						if(USER_ACCOUNT.ROLE_APPLICATIONADMIN){
+							return $state.go('company.list')
 						}
-						// if(_roleList.ROLE_HR && _roleList.ROLE_SCHEDULER){
-						// 	//$state.go('admin')
-						// }
 
+						if(USER_ACCOUNT.ROLE_DRIVER){
+							return alertify.alert('未分配权限,请联系统管理员',function(){
+								$scope.activeText = "激活";
+								$scope.disabled = false;
+								$scope.$apply();
+							});
+						}
 
+						if(USER_ACCOUNT.ROLE_PASSENGER){
+							return alertify.alert('未分配权限,请联系统管理员',function(){
+								$scope.activeText = "激活";
+								$scope.disabled = false;
+								$scope.$apply();
+							})
+						}
+					}
 				}else{
-					switch(responseData.error.statusCode){
-						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0100113.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0100113.message,responseData)
-							break;
-						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0100115.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0100115.message,responseData)
-							break;
-						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0100106.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0100106.message,responseData)
-							break;
-						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0100109.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0100109.message,responseData)
-							break;
-						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0100112.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0100112.message,responseData)
-							break;
-						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200108.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200108.message,responseData)
-							break;
-						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200109.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200109.message,responseData)
-							break;
-						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200110.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200110.message,responseData)
-							break;
-						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200111.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200111.message,responseData)
-							break;
-						case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200112.code:errorMessageFn(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200112.message,responseData)
-							break;
-						default:errorMessageFn(responseData.error.message)
+					if (responseData.error.statusCode == ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0200104.code) {
+						alertify.alert('激活成功',function(){ $state.go('entry.login')})
+					}else{
+						utilFactory.checkErrorCode(responseData.error.statusCode,responseData.error.message)
 					}
-
-					function errorMessageFn(errorMessageText,responseDataObj){
-						alertify.alert(errorMessageText,function(){
-							$scope.activeText = "激活";
-							$scope.disabled = false;
-						})
-					}
+					
+					$scope.activeText = "激活";
+					$scope.disabled = false;
 				}
 			},function(error){
 				alertify.confirm(error.data.message,function(){})
+				$scope.activeText = "激活";
 			});	
 		}else {
-			alertify.alert('密码不一致')
+			alertify.alert('密码不一致');
+			$scope.activeText = "激活";
 		}
 	}
 });

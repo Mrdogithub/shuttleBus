@@ -1,5 +1,5 @@
 angular.module("forgetControllerModule",[])
-.controller("forgetController",function(loginHttpService,REQUESTTYPE,FORGET_ACCOUNT_ERROR,md5Service,$scope,$state,$stateParams){
+.controller("forgetController",function(utilFactory,loginHttpService,REQUESTTYPE,FORGET_ACCOUNT_ERROR,$scope,$state,$stateParams){
 
 	if(!$stateParams.phoneNumber){
 		$state.go('entry.check')
@@ -9,12 +9,13 @@ angular.module("forgetControllerModule",[])
 	$scope.phoneNumber=$stateParams.phoneNumber;
 	$scope.requestType=REQUESTTYPE.forgetAccount;
 	$scope.restText="重置密码";
-	$scope.disabled=false;
+	
 	$scope.pathParamsForGoBack={
 		phoneNumber:$scope.phoneNumber,
 		requestType:$scope.requestType
 	}
-
+	
+	$scope.disabled=false;
 	$scope.displayPasswordStatus = function(passwordPosition,passwordStatus){
 		if(passwordStatus){
 			passwordPosition == 'passwordSecond'?$scope.passwordSecond = false:$scope.passwordFirst=false;
@@ -61,37 +62,14 @@ angular.module("forgetControllerModule",[])
 						$state.go('entry.login',{"phoneNumber":$scope.phoneNumber})
 					})
 				}else{
-					switch(responseData.statusCode){
-						case FORGET_ACCOUNT_ERROR.STATUS_CODE_0100112.code:errorMessageFn(FORGET_ACCOUNT_ERROR.STATUS_CODE_0100112.message,responseData)
-							break;
-						case FORGET_ACCOUNT_ERROR.STATUS_CODE_0100109.code:errorMessageFn(FORGET_ACCOUNT_ERROR.STATUS_CODE_0100109.message,responseData)
-							break;
-						case FORGET_ACCOUNT_ERROR.STATUS_CODE_0200107.code:errorMessageFn(FORGET_ACCOUNT_ERROR.STATUS_CODE_0200107.message,responseData)
-							break;
-						case FORGET_ACCOUNT_ERROR.STATUS_CODE_0200106.code:errorMessageFn(FORGET_ACCOUNT_ERROR.STATUS_CODE_0200106.message,responseData)
-							break;
-						case FORGET_ACCOUNT_ERROR.STATUS_CODE_0200104.code:errorMessageFn(FORGET_ACCOUNT_ERROR.STATUS_CODE_0200104.message,responseData)
-							break;
-						case FORGET_ACCOUNT_ERROR.STATUS_CODE_0200108.code:errorMessageFn(FORGET_ACCOUNT_ERROR.STATUS_CODE_0200108.message,responseData)
-							break;
-						case FORGET_ACCOUNT_ERROR.STATUS_CODE_0200109.code:errorMessageFn(FORGET_ACCOUNT_ERROR.STATUS_CODE_0200109.message,responseData)
-							break;
-						case FORGET_ACCOUNT_ERROR.STATUS_CODE_0200110.code:errorMessageFn(FORGET_ACCOUNT_ERROR.STATUS_CODE_0200110.message,responseData)
-							break;
-						case FORGET_ACCOUNT_ERROR.STATUS_CODE_0200111.code:errorMessageFn(FORGET_ACCOUNT_ERROR.STATUS_CODE_0200111.message,responseData)
-							break;
-						case FORGET_ACCOUNT_ERROR.STATUS_CODE_0200112.code:errorMessageFn(FORGET_ACCOUNT_ERROR.STATUS_CODE_0200112.message,responseData)
-							break;
-						default:errorMessageFn(responseData.error.message)
+					if(responseData.error.statusCode == LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200104.code){
+						$state.go('entry.login')
+					}else{
+						utilFactory.checkErrorCode(responseData.error.statusCode,responseData.error.statusText)
 					}
-
-					function errorMessageFn(errorMessageText,responseDataObj){
-						alertify.alert(errorMessageText,function(){
-							$scope.restText="重置密码";
-							$scope.disabled = false;
-						})
-					}
-
+					
+					$scope.restText="重置密码";
+					$scope.disabled = false;
 				}
 			},function(error){
 					alertify.alert(error.data.message,function(){});
@@ -104,3 +82,5 @@ angular.module("forgetControllerModule",[])
 	}
 
 });
+
+

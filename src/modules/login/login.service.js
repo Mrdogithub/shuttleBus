@@ -1,10 +1,7 @@
 'use strict'
 angular.module('loginHttpServiceModule',[]).factory('loginHttpService',function($http,APISERVICEPATH){
 	var loginHttp = {};
-	var servicePath = APISERVICEPATH.dev;
-	// var servicePath_1 = APISERVICEPATH.dev_1;
-	// var loginAPI = APISERVICEPATH.login;
-
+	var auths = APISERVICEPATH.auths;
  
 	/**
 	 * @description
@@ -13,14 +10,46 @@ angular.module('loginHttpServiceModule',[]).factory('loginHttpService',function(
 	 */
 	loginHttp.account = function(paramsObj){ 
 		var paramsData = {
-			"apiPath":servicePath+'authService/account',
+			"apiPath":auths+paramsObj.phoneNumber+'/requestType/'+paramsObj.requestType,
 			paramsList:{
-				"phoneNumber":paramsObj.phoneNumber,
-				"requestType":paramsObj.requestType
+				// "phoneNumber":paramsObj.phoneNumber,
+				// "requestType":paramsObj.requestType
 			}
 		}
 
 		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
+	};
+
+
+	loginHttp.getTerms = function(){
+		var paramsData = {
+			"apiPath":'./data/terms.json'
+		}
+
+		return  $http({ method: 'GET',url:paramsData.apiPath});		
+	}
+
+	loginHttp.obtainSMSCode = function(paramsObj){ 
+		var paramsData = {
+			"apiPath":auths+'auth/smsCode',
+			paramsList:{
+				"phoneNumber":paramsObj.phoneNumber,
+				"requestType":'0',
+				"accountStatus":paramsObj.accountStatus
+			}
+		}
+		return $http({method: 'GET', url:paramsData.apiPath,params:paramsData.paramsList});
+	};
+	loginHttp.termcondition = function(paramsObj){ 
+		var paramsData = {
+			"apiPath":auths+'termcondition/'+paramsObj.phoneNumber+'/tcId/'+paramsObj.termAndConditionId+'/tcTime/'+paramsObj.lastUpdateTermAndConditionTime,
+			paramsList:{
+				//"phoneNumber":paramsObj.phoneNumber,
+				// "termAndConditionId":paramsObj.termAndConditionId,
+				// "latestUpdateTime":paramsObj.lastUpdateTermAndConditionTime
+			}
+		}
+		return $http({method: 'GET', url:paramsData.apiPath});
 	};
 
 	function randomNum(n){ 
@@ -37,7 +66,7 @@ angular.module('loginHttpServiceModule',[]).factory('loginHttpService',function(
 	 **/
 	loginHttp.login = function(paramsObj){
 		var paramsData = {
-			"apiPath":servicePath+'authService/authorization',
+			"apiPath":auths+'auth/authcode',
 			paramsList:{
 				"username":paramsObj.phoneNumber,
 				"password":paramsObj.password,
@@ -53,11 +82,28 @@ angular.module('loginHttpServiceModule',[]).factory('loginHttpService',function(
 		return $http({method: 'POST', url:paramsData.apiPath, data:paramsData.paramsList,headers:{'Content-type':'application/json','ApplicationId':'BACKGROUND','X-Requested-With':'XMLHttpRequest'}});
 	}
 
+	loginHttp.masterLogin = function(paramsObj){
+		var paramsData = {
+			"apiPath":auths+'auth/admin/login',
+			paramsList:{
+				"client_id":"client_auth_mode",
+				"grant_type":"password",
+				"password":paramsObj.password,
+				"redirect_uri":"http://f-shuttlebus-authentication-management.apps.cl-cn-north-preprod01.cf.ford.com/api/v1/",
+				"response_type":"token",
+				"scope":"read write",
+				"state":randomNum(5),
+				"username":paramsObj.userName
+			},
+			setHeader: {'ApplicationId':'BACKGROUND','X-Requested-With':'XMLHttpRequest'}
+		}
 
+		return $http({method: 'POST', url:paramsData.apiPath, data:paramsData.paramsList,headers:{'Content-type':'application/json','ApplicationId':'BACKGROUND','X-Requested-With':'XMLHttpRequest'}});
+	}
 
 	loginHttp.accessToken = function(paramsObj){
 		var paramsData = {
-			"apiPath":servicePath+'authService/accessToken',
+			"apiPath":auths+'accessToken',
 			paramsList:{
 				"client_id":"client_auth_mode",
 				"state":randomNum(5),
@@ -80,7 +126,7 @@ angular.module('loginHttpServiceModule',[]).factory('loginHttpService',function(
 	 **/
 	loginHttp.smsCode = function(paramsObj){
 		var paramsData = {
-			"apiPath":servicePath+'authService/smsCode',
+			"apiPath":auths+'auth/smsCode',
 			paramsList:{
 				// "phoneNumber":paramsObj.phoneNumber,
 				// "password":paramsObj.password,

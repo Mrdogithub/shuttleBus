@@ -1,13 +1,19 @@
-
-'use strict'
 angular.module('schedulerDriverControllerModule',[])
-.controller('schedulerDriverController',function(schedulerHttpService,utilFactory,$state,$scope){
+.controller('schedulerDriverController',function(loadData,schedulerHttpService,utilFactory,$state,$scope){
+	
+	// If data empty wil use empry page replace table.
+	$scope.dataIsEmpty = false;
+	console.log('xxxxx')
+	console.log(1,loadData)
+	if(!loadData.data.error &&(!loadData.data.value || !loadData.data.value.list.length)){
+		console.log('test test')
+		$scope.dataIsEmpty = true;
+	}else if(loadData.data.error){
+		utilFactory.checkErrorCode(loadData.data.error.statusCode)
+	}
 
 
 	$scope.selectAllStatus = false;
-
-	// search inpuut 
-
 	$scope.queryByKeyObj = {
 		'active':{'key':'name','value':'司机姓名'},
 		'list':[{'key':'phoneNumber','value':'手机号'}]
@@ -18,9 +24,7 @@ angular.module('schedulerDriverControllerModule',[])
 		$scope.queryByKeyObj.list.push( {'key':$scope.queryByKeyObj.active.key,'value':$scope.queryByKeyObj.active.value})
 		$scope.queryByKeyObj.active.key = activeObj.key;
 		$scope.queryByKeyObj.active.value = activeObj.value;
-
-
-		$('.dropdown-menu').css('display','none')
+		$('.dropdown-menu').css('display','none');
 	}
 
 	$scope.showQueryKeyList = function(){
@@ -28,34 +32,24 @@ angular.module('schedulerDriverControllerModule',[])
 	}
 
 	$scope.pageConfigs={
-		params:{},
+		params:{
+			'pageSize':'20',
+			'pageNumber':'1',
+			'accountId':utilFactory.getAccountId(),
+			'secondCompanyId':utilFactory.getSecondCompanyId()
+		},
 		list:null,
-		getList:function(){
-			return schedulerHttpService.getDriverList({'accountId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId()})
+		getList:function(params){
+			return schedulerHttpService.getDriverList(params)
 		},
-		loadData:function(){
-			console.log('load data')
-			
-		},
-		dataSet:function(result){
-			// var _result = result.data.value;
-			// for(var i=0;i<_result.length;i++){
-			// 	_result[i]['passengerProfileOutDTO']['status'] =_result[i]['passengerProfileOutDTO']['status'] == 0?'未激活':'已激活'
-			// }
-		}
+		loadData:function(){},
+		dataSet:function(result){}
 		//extendParams:function(){}
-	}
-
-	$scope.selectAll = function(){
-		//$scope.tableConfig.checkbox.selectAll = true;
-		var _selectAllStatus  = !$scope.selectAllStatus;
-		$scope.$broadcast('checkboxSelectAll',{'status':_selectAllStatus})
-
 	}
 
 	// add new driver
 	$scope.addDriver = function(){
-		$state.go('scheduler.addDriver',{'schedulerId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId()})
+		$state.go('admin.scheduler.addDriver',{'schedulerId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId()})
 	};
 
 	$scope.tableConfig={
@@ -72,7 +66,7 @@ angular.module('schedulerDriverControllerModule',[])
 						'schedulerId': utilFactory.getAccountId(),
 						'identityCard': item.identityCard,
 						'licenseExpirationDate': item.licenseExpirationDate,
-						'licenseId': item.name,
+						'licenseId': item.licenseId,
 						'name': item.name,
 						'driverId': item.partyId,
 						'phoneNumber': item.phoneNumber,
@@ -82,7 +76,7 @@ angular.module('schedulerDriverControllerModule',[])
 						'secondCompanyName': item.secondCompanyName
 					}
 
-					$state.go('scheduler.driverDetail',_params);
+					$state.go('admin.scheduler.driverDetail',_params);
 				}
 			},
 			{
@@ -93,7 +87,7 @@ angular.module('schedulerDriverControllerModule',[])
 						'schedulerId': utilFactory.getAccountId(),
 						'identityCard': item.identityCard,
 						'licenseExpirationDate': item.licenseExpirationDate,
-						'licenseId': item.name,
+						'licenseId': item.licenseId,
 						'name': item.name,
 						'driverId': item.partyId,
 						'phoneNumber': item.phoneNumber,
@@ -101,18 +95,18 @@ angular.module('schedulerDriverControllerModule',[])
 						'secondCompanyName': item.secondCompanyName,
 					}
 
-					alertify.confirm('确认删除'+_params.name+"?",function(){
+					alertify.confirm('该司机可能有排班任务，如继续删除，排班任务也将被清空！',function(){
 						schedulerHttpService.deleteDriverByID(_params).then(function(result){
 							var _resultData = result.data;
 
 							if(!_resultData.error){
-								$state.go('scheduler.driver',{},{reload:true})
+								$state.go('admin.scheduler.driver',{},{reload:true})
 							}else {
-								alertify.alert(_resultData.error.message)
+								utilFactory.checkErrorCode(_resultData.error.statusCode)
 							}
 							
 						});
-					},function(){})
+					},function(){}).set({labels:{cancel: '取消',ok:'坚持删除'}, padding: true});
 				}
 			},
 			]
@@ -151,7 +145,6 @@ angular.module('schedulerDriverControllerModule',[])
 	    }
 		// changeEnable:function(item){}
 	}
-
 
 	$scope.$watch('$viewContentLoaded',function(event){ 
   		$scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1'});

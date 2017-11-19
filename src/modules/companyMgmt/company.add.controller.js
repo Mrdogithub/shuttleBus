@@ -1,13 +1,11 @@
-
-'use strict'
 angular.module('companyAddControllerModule',[])
-.controller('companyAddController',function(companyHttpService,utilFactory,setDirty,$stateParams,$state,$scope){
+.controller('companyAddController',function(companyHttpService,utilFactory,$stateParams,$state,$scope){
 
 	if($stateParams.secondCompanyId){
-		// $scope.companyUuid = $stateParams.companyUuid;
 		$scope.params = {
 			'secondCompanyId': $stateParams.secondCompanyId,
 			'applicationAdminId': $stateParams.applicationAdminId,
+			'secondCompanyName':$stateParams.secondCompanyName
 			// 'name': $stateParams.name,
 			// 'phoneNumber': $stateParams.phoneNumber
 		};
@@ -44,7 +42,7 @@ angular.module('companyAddControllerModule',[])
 		// if all input filed empty and then user trigger submit button
 		// we will provide message for user to complete the requre filed.
 		
-		if(!formValidate) return setDirty($scope.formValidate)
+		if(!formValidate) return utilFactory.setDirty($scope.formValidate)
 		// alertify.confirm('确认新增名为'+$scope.params.name+'的这个乘客？',function(){
 			
 		// },function(){
@@ -53,13 +51,15 @@ angular.module('companyAddControllerModule',[])
 
 		var _params = {
 				'secondCompanyId': $scope.params.secondCompanyId,
-				'companyName': $scope.params.companyName,
+				'secondCompanyName':$scope.params.secondCompanyName,
+				'adminName':$scope.params.adminName,
 				'name': $scope.params.name,
 				'applicationAdminId': $scope.params.applicationAdminId,
 				'phoneNumber': $scope.params.phoneNumber
 		}
 
-		companyHttpService.addCompany(_params).then(function(result){
+		alertify.confirm('确认新增 "'+$scope.params.name+'"，并添加 "'+$scope.params.adminName+'" 为管理员吗？',function(){
+			companyHttpService.addCompany(_params).then(function(result){
 			var responseData = result.data;
 			if(!responseData.error){
 				$state.go('company.list')
@@ -68,17 +68,14 @@ angular.module('companyAddControllerModule',[])
 					$scope.active = true;
 					$state.go('company.list')
 				})
-			}else{
-				switch(responseData.error.statusCode){
-					case '500':alertify.alert(responseData.error.message+':'+responseData.error.statusCode)
-					break;
-					case '400':alertify.alert(responseData.error.message+':'+responseData.error.statusCode)
-					break;
-					default:alertify.alert(responseData.error.message+':'+responseData.error.statusCode)
+				}else{
+					utilFactory.checkErrorCode(responseData.error.statusCode,responseData.error.message)
 				}
-			}
-		},function(errorResult){
-			alertify.alert(errorResult.error.message)
+			},function(errorResult){
+				alertify.alert(errorResult.error.message)
+			})
+		},function(){
+
 		})
 	}
 })

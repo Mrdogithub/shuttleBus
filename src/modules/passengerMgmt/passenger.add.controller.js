@@ -1,7 +1,5 @@
-
-'use strict'
 angular.module('passengerAddControllerModule',[])
-.controller('passengerAddController',function(passengerHttpService,utilFactory,setDirty,$stateParams,$state,$scope){
+.controller('passengerAddController',function(passengerHttpService,utilFactory,$stateParams,$state,$scope){
 
 	if($stateParams.secondCompanyId){
 		// $scope.passengerUuid = $stateParams.passengerUuid;
@@ -20,7 +18,7 @@ angular.module('passengerAddControllerModule',[])
 			'lv2':'新增乘客'
 		}
 	}else{
-		$state.go('passenger.list')
+		$state.go('admin.passenger.list')
 	}
 
 	$scope.editPassengerProfile = function(flag){
@@ -32,7 +30,7 @@ angular.module('passengerAddControllerModule',[])
 	// we should provide messages for user
 	$scope.close = function(){
 		alertify.confirm('请确认是否离开该页面,未保存的数据将在离开之后丢失。',function(){
-			$state.go('passenger.list')
+			$state.go('admin.passenger.list')
 		},function(){
 
 		});
@@ -44,13 +42,8 @@ angular.module('passengerAddControllerModule',[])
 	$scope.addPassengerProfile = function(formValidate){
 		// if all input filed empty and then user trigger submit button
 		// we will provide message for user to complete the requre filed.
-		
-		if(!formValidate) return setDirty($scope.formValidate)
-		// alertify.confirm('确认新增名为'+$scope.params.name+'的这个乘客？',function(){
-			
-		// },function(){
-		// 	console.log('cancel')
-		// })
+		if(!formValidate) return utilFactory.setDirty($scope.formValidate)
+
 
 		var _params = {
 				'secondCompanyId': $scope.params.secondCompanyId,
@@ -59,28 +52,25 @@ angular.module('passengerAddControllerModule',[])
 				'phoneNumber': $scope.params.phoneNumber,
 				'schedulerId': $scope.params.schedulerId
 			}
-			console.log('passenger list')
-			console.log(1,_params)
-			passengerHttpService.addPassenger(_params).then(function(result){
-				var responseData = result.data;
-				if(!responseData.error){
-					$state.go('passenger.list',{'hrUuid':$scope.params.hrUuid})
-					alertify.alert('新增成功！',function(){
-						$scope.submitStatusText = '完成';
-						$scope.active = true;
-						$state.go('passenger.list')
-					})
-				}else{
-					switch(responseData.error.statusCode){
-						case '500':alertify.alert(responseData.error.message+':'+responseData.error.statusCode)
-						break;
-						case '400':alertify.alert(responseData.error.message+':'+responseData.error.statusCode)
-						break;
-						default:alertify.alert(responseData.error.message+':'+responseData.error.statusCode)
+
+			alertify.confirm('确认新增名为 "'+_params.name+'" 的这个乘客？',function(){
+				passengerHttpService.addPassenger(_params).then(function(result){
+					var responseData = result.data;
+					if(!responseData.error){
+						$state.go('admin.passenger.list',{'hrUuid':$scope.params.hrUuid})
+						alertify.alert('新增成功！',function(){
+							$scope.submitStatusText = '完成';
+							$scope.active = true;
+							$state.go('admin.passenger.list')
+						})
+					}else{
+						utilFactory.checkErrorCode(responseData.error.statusCode)
 					}
-				}
-			},function(errorResult){
-				alertify.alert(errorResult.error.message)
-		})
+				},function(errorResult){
+					alertify.alert(errorResult.error.message)
+				})
+			},function(){
+
+			}).set({labels:{ok:'确认', cancel: '取消'}, padding: true});
 	}
 })

@@ -1,4 +1,5 @@
-angular.module('passengerReportStationControllerModule',[]).controller('passengerReportStationController',function(passengerHttpService,utilFactory,$scope){
+angular.module('passengerReportStationControllerModule',[])
+.controller('passengerReportStationController',function(passengerHttpService,utilFactory,$scope){
 	$scope.pageConfigs={
 		params:{},
 		list:null,

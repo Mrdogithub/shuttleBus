@@ -1,11 +1,11 @@
 angular.module('paginationModule',[])
-.directive('paginationComponent',function(TOKEN_ERROR,getRefreshTokenFacotry,localStorageFactory,$state,$parse,$q){
+.directive('paginationComponent',function(TOKEN_ERROR,getRefreshTokenFacotry,utilFactory,localStorageFactory,$state,$parse,$q){
 	return{
 		restrict:'E',
-		template:'<div class="pagination-wrapper" ng-if="pageConfigs.list">' 
+		template:'<div class="pagination-wrapper" ng-if="pageConfigs.list.length">' 
 				+'	<div class="pagination-num">'
-				+'		<select ng-model="currentItemNumber" class="pagination-select" ng-options="s for s in [20,40,60,80,100]" ng-change="itemNumChange(currentItemNumber)"></select>'
-				+'		<span>条/页</span>'
+				+'		<select ng-model="currentItemNumber" ng-class="{sleep:pageList.length==1 &&pageConfigs.list.length<21}" ng-disabled="pageList.length==1 &&pageConfigs.list.length<21" class="pagination-select" ng-options="s for s in [20,40,60,80,100]" ng-change="itemNumChange(currentItemNumber,1)"></select>'
+				+'		<span>条/页</span>' 
 					// <!--
 					// 	<span>共{{pageTotal.length}页,<label>{{total}}</label>条</span>
 					// -->
@@ -14,9 +14,9 @@ angular.module('paginationModule',[])
 				+'	<ul class="pagination-operate">'
 			// <!-- 	<li ng-class="{no_active:pageListFlag.pre == false}"
 			// 		ng-click="goToFirstOrLast(1)">首页</li> -->
-				+'		<li ng-class="{no_active:pageListFlag.pre == false}" class="pageOperate" ng-click="prePageList()">上一页</li>'
+				+'		<li ng-class="{no_active:pageListFlag.pre == false,sleep:pageList.length==1 &&pageConfigs.list.length<21}" ng-disabled="pageList.length==1&&pageConfigs.list.length<21" class="pageOperate" ng-click="prePageList()">上一页</li>'
 				+'		<li ng-repeat="i in pageList" class="page_num {{i == currentPageIndex?\'active\':\' \'}}" ng-click="changePage(i)"> {{i}}</li>'
-				+'		<li ng-class="{no_active:pageListFlag.next == false}"  ng-click="nextPageList()">下一页</li>'
+				+'		<li ng-class="{no_active:pageListFlag.next == false,sleep:pageList.length==1 &&pageConfigs.list.length<21}" ng-disabled="pageList.length==1 &&pageConfigs.list.length<21"  ng-click="nextPageList()">下一页</li>'
 			// <!-- 		<li ng-class="{no_active:pageListFlag.next == false}"
 			// 				ng-click="goToFirstOrLast(pageTotal.length)"></li> -->
 				+'	</ul>'
@@ -34,19 +34,21 @@ angular.module('paginationModule',[])
 			// }
 		},
 		link:function(scope,elm,attrs){
+			scope.$on('refreshAPI',function(){
+				getListFun();
+			});
+			scope.currentItemNumber = '20';
 			function getListFun(){
 				var deffered = $q.defer();
 				scope.pageConfigs.list = null;
 				scope.pageConfigs.params.pageSize = scope.currentItemNumber;
-				if(scope.pageConfigs.params.pageNo){
-					scope.pageConfigs.params.pageNo = scope.currentPageIndex;
+				if(scope.pageConfigs.params.pageNumber){
+					scope.pageConfigs.params.pageNumber = scope.currentPageIndex;
 				}else if(scope.pageConfigs.params.curPage){
 					scope.pageConfigs.params.curPage = scope.currentPageIndex;
 				}
 
-				var temp = [];
-				var _params={};
-
+				var temp = [], _params={};
 				for(var key in scope.pageConfigs.params){
 					if(scope.pageConfigs.params[key]){
 						_params[key] = scope.pageConfigs.params[key];
@@ -55,27 +57,32 @@ angular.module('paginationModule',[])
 
 				var _params = angular.extend(_params,scope.pageConfigs.extendParams);
 				scope.pageConfigs.getList(_params).then(function(data){
-					console.log('list list')
-					console.log(1,data)
+
+					if(!data) return
+
 					if(data.data.error){
 						if(data.data.error.statusCode == TOKEN_ERROR.STATUS_CODE_0200102.code){
 							getRefreshTokenFacotry.getRefreshToken().then(function(result){
 								var _tokenRes = result.data;
+								console.log('refreshToken result')
+								console.log(1,_tokenRes)
 								if(!_tokenRes.error){
 									var _rewriteToken = localStorageFactory.getObject('account',null);
 									_rewriteToken.accessToken = _tokenRes.accessToken;
 									_rewriteToken.refreshToken = _tokenRes.refreshToken;
 									localStorageFactory.setObject('account',_rewriteToken);
-									getListFun();
+									scope.$broadcast('refreshAPI')
 								}else if(_tokenRes.error.statusCode == TOKEN_ERROR.STATUS_CODE_0200105.code){
 									localStorageFactory.remove('account');
 									$state.go('entry.check')
 								}else if(_tokenRes.error.statusCode == '0200104'){
 									alertify.alert(_tokenRes.error.message)
+								}else{
+									utilFactory.checkErrorCode(_tokenRes.error.statusCode)
 								}
 
 							},function(){
-								console.log('xxxxx')
+								
 							});
 						}else if(data.data.error.statusCode == TOKEN_ERROR.STATUS_CODE_0200105.code){
 							localStorageFactory.remove('account');
@@ -83,50 +90,32 @@ angular.module('paginationModule',[])
 						}else if( data.data.error.statusCode == '0200104'){
 							alertify.alert(data.data.error.message)
 						}else {
-							alertify.alert(data.data.error.statusCode+':'+data.data.error.statusContext)
+							console.log("data.data.error.statusCode:"+data.data.error.statusCode)
+							utilFactory.checkErrorCode(data.data.error.statusCode)
 						}
-					}
-					var _total;
-					var data = data.data;
-					if(scope.pageConfigs.dataSet){
-						scope.pageConfigs.dataSet(data)
-					}
-                    
+					}else{
+						var _total;
+						var data = data.data;
+						if(scope.pageConfigs.dataSet){
+							scope.pageConfigs.dataSet(data)
+						}
 
-					// if(!data.value.list){
-					// 	scope.pageConfigs.list = data.value;						
-					// }if(data.value.list){
-						
-					// }
-					// console.log('xxxx')
-					// console.log(1,data.value)
-					if(data.value.list) {
-						scope.pageConfigs.list = data.value.list;
-					}
-					if(data.value.totalNumber){
-						_total = data.value.totalNumber
-					}else if (data.value == undefined){
-						_total = data.value.length;
+						if(!data.value) {
+							scope.pageConfigs.list = null;
+						}else{
+							scope.pageConfigs.list = data.value.list;
+							_total = data.value.totalNumber
+							
+						}
+						if(!data.value.totalNumber){
+							_total = '1'
+						}else if (data.value == undefined){
+							_total = data.value.length;
+						}
+
+						deffered.resolve(_total);
 					}
 
-					// console.log(data.value['passengerOutDTO'])
-					// _total = data.data.value.totalNumber;
-		
-
-					// if(data.total != undefined){
-					// 	_total = data.total
-					// }else if(data.totalRows != undefined){
-					// 	_total = data.totalRows;
-					// }else if(data.totalNumber !=undefined){
-					// 	_total = data.totalNumber;
-					// }else{
-					// 	if(data.pageVO == null){
-					// 		_total = 0;
-					// 	}else{
-					// 		_total = data.pageVO.totalRows;
-					// 	}
-					// }
-					deffered.resolve(_total);
 				},function(errorMessage){
 					scope.pageConfigs.list = null
 				});
@@ -177,7 +166,6 @@ angular.module('paginationModule',[])
 			}
 
 			scope.nextPageList = function(){
-				console.log('nextPageList')
 				if(scope.currentPageIndex < scope.pageTotal.length){
 					var _num = scope.currentPageIndex +1;
 					if(parseInt(scope.pageToTotalStart) < 
@@ -206,8 +194,8 @@ angular.module('paginationModule',[])
 			};
 
 			scope.itemNumChange = function(num,page){
-				var _page = parseInt(page) ||1;
-				scope.currentItemNumber = parseInt(num) || 20;
+				var _page = parseInt(page);
+				scope.currentItemNumber = parseInt(num);
 				refreshData(_page);
 			}
 
@@ -236,9 +224,9 @@ angular.module('paginationModule',[])
 			scope.$on('refreshPageList',function(e,d){
 				if(d){
 					scope.pageConfigs.params = angular.extend(scope.pageConfigs.params,d);
+					var _obj = d ||{pageSize:scope.currentItemNumber,pageNo:1};
+					scope.itemNumChange(_obj.pageSize,_obj.pageNo)
 				}
-				var _obj = d ||{pageSize:scope.currentItemNumber,pageNo:1};
-				scope.itemNumChange(_obj.pageSize,_obj.pageNo)
 			});
 		}
 	}

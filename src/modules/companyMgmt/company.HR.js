@@ -1,11 +1,10 @@
 angular.module('HRControllerModule',[])
-.controller('HRController',function(companyHttpService,utilFactory,$stateParams,$state,$scope){
-	
+.controller('HRController',function(loadData,companyHttpService,utilFactory,$stateParams,$state,$scope){
 
-	$scope.params = {
-		'secondCompanyId':utilFactory.getSecondCompanyId(),
-		'secondCompanyAdminId':utilFactory.getAccountId()
-	};
+	// Init current user info
+	$scope.params = {'secondCompanyId':utilFactory.getSecondCompanyId(),'secondCompanyAdminId':utilFactory.getAccountId()};
+
+	// Init show/hide status for current view
 	$scope.active = false;
 	$scope.submitOnProgress = false;
 	$scope.breadcrumbText={ 'lv1':'乘客管理员'}
@@ -18,23 +17,25 @@ angular.module('HRControllerModule',[])
 		$scope.submitOnProgress = true;
 		var _params = {
 			'secondCompanyId':$scope.params.secondCompanyId,
-			'secondCompanyName': $scope.params.schedulerId,
 			'name': $scope.params.name,
 			'secondCompanyAdminId':$scope.params.secondCompanyAdminId,
 			'phoneNumber':$scope.params.phoneNumber
 		}
-
-		companyHttpService.addHR(_params).then(function(result){
-			var _resultData = result.data;
-			if(!_resultData.error){
-				alertify.alert('添加成功！',function(){
-					$state.go('company.HR',{},{reload:true});
-				})
-			}else{
-				alertify.alert(_resultData.error.message)
-			}
-			$scope.submitOnProgress = false;
-		},function(){})
+		alertify.confirm('确认新增名为"'+$scope.params.name+'"的这个乘客管理员？',function(){
+			companyHttpService.addHR(_params).then(function(result){
+				var _resultData = result.data;
+				if(!_resultData.error){
+					alertify.alert('新增成功！',function(){$state.go('companyAdmin.HR',{},{reload:true});})
+				}else{
+					utilFactory.checkErrorCode(_resultData.error.statusCode)
+				}
+				$scope.submitOnProgress = false;
+			},function(){
+				$scope.submitOnProgress = false;
+			})
+		},function(){
+				$scope.submitOnProgress = false;
+		}).set({labels:{ok:'确认', cancel: '取消'}, padding: true});
 	};
 
 
@@ -54,19 +55,17 @@ angular.module('HRControllerModule',[])
 			'secondCompanyAdminId': $scope.params.secondCompanyAdminId,
 			'name': $scope.updateParams.name,
 			'hrId': $scope.updateParams.partyId,
-			'phoneNumber': $scope.updateParams.phoneNumber,
-			//'roleCode':$scope.updateParams.roleCode,
-			//'status':$scope.updateParams.status
+			'phoneNumber': $scope.updateParams.phoneNumber
 		}
 		$('#myModal').modal('toggle');
 		companyHttpService.updateHrById(_params).then(function(result){
 			var _resultData = result.data;
 			if(!_resultData.error){
 				alertify.alert('更新成功！',function(){
-					$state.go('company.HR',{},{reload:true});
+					$state.go('companyAdmin.HR',{},{reload:true});
 				})
 			}else{
-				alertify.alert(_resultData.error.message)
+				utilFactory.checkErrorCode(_resultData.error.statusCode)
 			}
 			$scope.submitOnProgress = false;
 		},function(){})
@@ -74,26 +73,20 @@ angular.module('HRControllerModule',[])
 
 
 	$scope.pageConfigs={
-		params:{},
+		params:{
+			'secondCompanyAdminId': utilFactory.getAccountId(),
+			'secondCompanyId': utilFactory.getSecondCompanyId(),
+			'pageSize':'20',
+			'pageNumber':'1'
+		},
 		list:null,
-		getList:function(){
-			return companyHttpService.getHrList({
-				'secondCompanyAdminId': utilFactory.getAccountId(),
-				'secondCompanyId': utilFactory.getSecondCompanyId()
-			})
+		getList:function(params){
+			return companyHttpService.getHrList(params)
 		},
-		loadData:function(){
-			console.log('load data')
-		},
-		dataSet:function(result){
-			// var _result = result.data.value;
-			// for(var i=0;i<_result.length;i++){
-			// 	_result[i]['passengerProfileOutDTO']['status'] =_result[i]['passengerProfileOutDTO']['status'] == 0?'未激活':'已激活'
-			// }
-		}
+		loadData:function(){},
+		dataSet:function(result){}
 		//extendParams:function(){}
 	}
-
 
 	$scope.tableConfig={
 		stableFlag:{
@@ -113,13 +106,7 @@ angular.module('HRControllerModule',[])
 						'phoneNumber':item.phoneNumber,
 						'partyId':item.partyId
 					}
-
 					$('#myModal').modal('toggle');
-					// }
-					// $scope.tableConfig.operate[0].ngIf = function(){
-					// 	return false;
-					// }
-
 				}
 			},
 			{
@@ -134,18 +121,18 @@ angular.module('HRControllerModule',[])
 						'phoneNumber':item.phoneNumber,
 						'hrId':item.partyId
 					}
-					alertify.confirm('确认删除'+item.name+'?',function(){
+					alertify.confirm('确认删除"'+item.name+'"?',function(){
 						companyHttpService.deleteHrByID(_deleteParams).then(function(result){
 							var _resultData =result.data;
 							if(!_resultData.error){
-								$state.go('company.HR',{},{reload:true});
+								$state.go('companyAdmin.HR',{},{reload:true});
 							} else{
-								alertify.alert('服务器错误：'+_resultData.error.message)
+								utilFactory.checkErrorCode(_resultData.error.statusCode)
 							}
 						});
 					},function(){
 
-					});
+					}).set({labels:{ok:'确认', cancel: '取消'}, padding: true});
 		
 				}
 			}]
@@ -159,6 +146,7 @@ angular.module('HRControllerModule',[])
 			checkArray:[]
 		},
 		defaultValue:'——',
+		defaultEmptyText:'还未添加任何乘客管理员',
 		// radioSelect:function(){},
 		operateIfFlag:true,
 		setHeadOptional:{
@@ -178,7 +166,6 @@ angular.module('HRControllerModule',[])
 	    }
 		// changeEnable:function(item){}
 	}
-
 
 	$scope.$watch('$viewContentLoaded',function(event){ 
   		$scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1'});

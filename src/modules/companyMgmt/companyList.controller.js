@@ -1,17 +1,31 @@
-'use strict'
-angular.module('companyListControllerModule',[]).controller('companyListController',function(companyHttpService,utilFactory,$state,$scope){
+angular.module('companyListControllerModule',[])
+.controller('companyListController',function(loadData,companyHttpService,utilFactory,$state,$scope){
+	
+	// If data empty wil use empry page replace table.
+	$scope.dataIsEmpty = false;
+	if(!loadData.data.error &&(!loadData.data.value || !loadData.data.value.list.length)){
+		$scope.dataIsEmpty = true;
+	
+	}else if(loadData.data.error){
+		utilFactory.checkErrorCode(loadData.data.error.statusCode)
+		
+	}
+
 
 	$scope.selectAllStatus = false;
 	$scope.pageConfigs={
-		params:{},
+		params:{
+			'pageSize':'',
+			'pageNumber':'',
+			'applicationAdminId':utilFactory.getAccountId(),
+			'secondCompanyId':utilFactory.getSecondCompanyId(),
+			'secondCompanyName':utilFactory.getSecondCompanyName()
+		},
 		list:null,
-		getList:function(){
-			return companyHttpService.getCompanyList({'applicationAdminId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId()})
+		getList:function(params){
+			return companyHttpService.getCompanyList(params)
 		},
-		loadData:function(){
-			console.log('load data')
-			
-		},
+		loadData:function(){},
 		dataSet:function(result){
 			if(result.value != null){
 				var _result = result.value;
@@ -22,7 +36,13 @@ angular.module('companyListControllerModule',[]).controller('companyListControll
 		}
 		//extendParams:function(){}
 	}
-
+	var _params = {
+			'pageSize':'',
+			'pageNumber':'',
+			'applicationAdminId':utilFactory.getAccountId(),
+			'secondCompanyId':utilFactory.getSecondCompanyId()
+		};
+	$scope.pageConfigs.getList(_params)
 	$scope.queryByKeyObj = {
 		'active':{'key':'name','value':'管理员'},
 		'list':[{'key':'phoneNumber','value':'管理员手机'}]
@@ -41,9 +61,8 @@ angular.module('companyListControllerModule',[]).controller('companyListControll
 		$('.dropdown-menu').css('display','block')
 	}
 
-
 	$scope.addCompany = function(){
-		$state.go('company.add',{'applicationAdminId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId()})
+		$state.go('company.add',{'applicationAdminId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId(),'secondCompanyName':utilFactory.getSecondCompanyName()})
 	};
 
 	$scope.tableConfig={
@@ -53,18 +72,19 @@ angular.module('companyListControllerModule',[]).controller('companyListControll
 			checkbox:false,
 			radio:true,
 			operate:[{
-				name:'编辑',
+				name:'查看详情',
 				ngIf:function(){},
 				fun:function(item){
 					var _params = {
 						'secondCompanyId': item.secondCompanyId,
 						'companyName': item.name,
+						'adminName':item.adminName,
 						'companyId': item.partyId,
+						'userId':item.adminPartyId,
 						'applicationAdminId': utilFactory.getAccountId(),
-						'companyId': item.secondCompanyId,
-						'phoneNumber': item.phoneNumber
+						'secondCompanyName':utilFactory.getSecondCompanyName(),
+						'phoneNumber': item.adminPhoneNumber
 					}
-				
 					$state.go('company.detail',_params);
 				}
 			},
@@ -74,24 +94,28 @@ angular.module('companyListControllerModule',[]).controller('companyListControll
 				fun:function(item){
 
 					var _deleteParams = {
-						'companyName':item.name,
-						'secondCompanyId':item.secondCompanyId,
-						'companyId':item.partyId,
-						'applicationAdminId': item.operateAccountId
+						'secondCompanyId': item.secondCompanyId,
+						'companyName': item.name,
+						'adminName':item.adminName,
+						'companyId': item.partyId,
+						'userId':item.adminPartyId,
+						'applicationAdminId': utilFactory.getAccountId(),
+						'secondCompanyName':utilFactory.getSecondCompanyName(),
+						'phoneNumber': item.adminPhoneNumber
 					}
 
-					alertify.confirm('确认删除'+item.name+'?',function(){
-						schedulerHttpService.deleteCompanyByID(_deleteParams).then(function(result){
+					alertify.confirm('确认删除"'+item.name+'"吗?',function(){
+						companyHttpService.deleteCompanyByID(_deleteParams).then(function(result){
 							var _resultData =result.data;
 							if(!_resultData.error){
-								$state.go('scheduler.busCompany',{},{reload:true});
+								$state.go('company.list',{},{reload:true});
 							} else{
-								alertify.alert('服务器错误：'+_resultData.error.message)
+								utilFactory.checkErrorCode(_resultData.error.statusCode)
 							}
 						});
 					},function(){
 
-					});
+					}).set({labels:{ok:'确认', cancel: '取消'}, padding: true});
 		
 				}
 			}]
@@ -112,26 +136,26 @@ angular.module('companyListControllerModule',[]).controller('companyListControll
 			selectOptions:[
 				{
 					'parentKey':'',
-					'selfKey':{'key':'secondCompanyName','value':'公司姓名'},
+					'selfKey':{'key':'name','value':'公司名称'},
 					'checkFlag':true
 				},
 				{
 					'parentKey':'',
-					'selfKey':{'key':'name','value':'管理员'},
+					'selfKey':{'key':'adminName','value':'管理员'},
 					'checkFlag':true
 				},
 				{
 					'parentKey':'',
-					'selfKey':{'key':'phoneNumber','value':'管理员手机'},
+					'selfKey':{'key':'adminPhoneNumber','value':'管理员手机'},
 					'checkFlag':true
 				}
 			]
 		}
 		// changeEnable:function(item){}
 	}
-
-
+	
 	$scope.$watch('$viewContentLoaded',function(event){ 
-  		$scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1'});
+		$scope.pageConfigs.getList(_params)
+  		$scope.$broadcast('refreshPageList',{pageSize:'',pageNo:''});
 	});
 })

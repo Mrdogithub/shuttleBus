@@ -1,38 +1,37 @@
-
-'use strict'
 angular.module('schedulerBusControllerModule',[])
-.controller('schedulerBusController',function(utilFactory,schedulerHttpService,$state,$scope){
-
-
+.controller('schedulerBusController',function(loadData,utilFactory,schedulerHttpService,$state,$scope){
+	
+	
+	// If data empty wil use empry page replace table.
+	$scope.dataIsEmpty = false;
+	if(!loadData.data.error &&(!loadData.data.value || !loadData.data.value.list.length)){
+		$scope.dataIsEmpty = true;
+	}else if(loadData.data.error){
+		utilFactory.checkErrorCode(loadData.data.error.statusCode)
+	}
 
 	$scope.selectAllStatus = false;
 	$scope.pageConfigs={
-		params:{},
+		params:{
+			'pageSize':'20',
+			'pageNumber':'1',
+			'accountId':utilFactory.getAccountId(),
+			'secondCompanyId':utilFactory.getSecondCompanyId()
+		},
 		list:null,
-		getList:function(){
-			return schedulerHttpService.getBusList({'accountId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId()})
+		getList:function(params){
+			return schedulerHttpService.getBusList(params)
 		},
 		loadData:function(){
-			console.log('load data')
-			
 		},
 		dataSet:function(result){
-			// var _result = result.data.value;
-			// for(var i=0;i<_result.length;i++){
-			// 	_result[i]['passengerProfileOutDTO']['status'] =_result[i]['passengerProfileOutDTO']['status'] == 0?'未激活':'已激活'
-			// }
 		}
 		//extendParams:function(){}
 	}
 
-	$scope.selectAll = function(){
-		//$scope.tableConfig.checkbox.selectAll = true;
-		var _selectAllStatus  = !$scope.selectAllStatus;
-		$scope.$broadcast('checkboxSelectAll',{'status':_selectAllStatus})
-	}
 
 	$scope.addBus = function(){
-		$state.go('scheduler.addBus',{'schedulerId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId()})
+		$state.go('admin.scheduler.addBus',{'schedulerId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId()})
 	};
 
 	$scope.tableConfig={
@@ -42,11 +41,11 @@ angular.module('schedulerBusControllerModule',[])
 			checkbox:false,
 			radio:true,
 			operate:[{
-				name:'编辑',
+				name:'查看详情',
 				ngIf:function(){},
 				fun:function(item){
 					var paramsObj = item;
-					$state.go('scheduler.busDetail',{
+					$state.go('admin.scheduler.busDetail',{
 						'annualInspectionExpiration': item.annualInspectionExpiration,
 						'availableSeats': item.availableSeats,
 						'engineNumber': item.engineNumber,
@@ -68,33 +67,16 @@ angular.module('schedulerBusControllerModule',[])
 				ngIf:function(){},
 				fun:function(item){
 
-					alertify.confirm('确认删除车牌照'+item.licensePlate+'的车辆？',function(){
+					alertify.confirm('该车辆可能有排班任务，如继续删除，排班任务也将被清空！',function(){
 						schedulerHttpService.deleteBusByID({'schedulerId':utilFactory.getAccountId(),'vehicleId':item.vehicleId}).then(function(result){
 							var _resultData = result.data;
-
 							if(!_resultData.error) {
-								$state.go('scheduler.bus',{},{reload:true})
+								$state.go('admin.scheduler.bus',{},{reload:true})
 							}else{
-								alertify.alert(_resultData.error.message)
+								utilFactory.checkErrorCode(_resultData.error.statusCode,_resultData.error.statusText)
 							}
 						})
-					},function(){})
-
-					// $state.go('scheduler.busDetail',{
-					// 	'vehicleId':paramsObj.vehicleId,
-					// 	'schedulerId':paramsObj.schedulerId,
-					// 	'annualInspectionExpiration':paramsObj.annualInspectionExpiration,
-					// 	'availableSeats': paramsObj.availableSeats,
-					// 	'engineNumber': paramsObj.engineNumber,
-					// 	'insuranceExpiration': paramsObj.insuranceExpiration,
-					// 	'licensePlate': paramsObj.licensePlate,
-					// 	'schedulerId': paramsObj.schedulerId,
-					// 	'secondCompanyId': paramsObj.secondCompanyId,
-					// 	'shuttleCompanyId': paramsObj.shuttleCompanyId,
-					// 	'vehicleLicense': paramsObj.vehicleLicense,
-					// 	'vehicleModel': paramsObj.vehicleModel,
-					// 	'vin': paramsObj.vin
-					// });
+					},function(){}).set({labels:{cancel: '取消',ok:'坚持删除'}, padding: true});
 				}
 			}]
 		},
@@ -113,22 +95,22 @@ angular.module('schedulerBusControllerModule',[])
 			cancelSelectNum:5,
 	    	selectOptions:[
 				{
-					'parentKey':'baseProfileDTO',
+					'parentKey':'',
 					'selfKey':{'key':'licensePlate','value':'车辆牌照'},
 					'checkFlag':true
 				},
 				{
-					'parentKey':'accountDTO',
+					'parentKey':'',
 					'selfKey':{'key':'vehicleModel','value':'车辆类型'},
 					'checkFlag':true
 				},
 				{
-					'parentKey':'driverProfileDTO',
+					'parentKey':'',
 					'selfKey':{'key':'availableSeats','value':'座位数'},
 					'checkFlag':true
 				},
 				{
-					'parentKey':'driverProfileDTO',
+					'parentKey':'',
 					'selfKey':{'key':'shuttleCompanyName','value':'运营单位'},
 					'checkFlag':true
 				}

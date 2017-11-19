@@ -1,0 +1,53 @@
+{
+  "error": null,
+  "lastRequested": "0",
+  "requestStatus": "string",
+  "value": {
+    "drivers": [
+      {
+        "accountId": "0",
+        "driverId": "11",
+        "driverName": "舒马赫",
+        "shuttleCompanyId": "666"
+      },
+      {
+        "accountId": "0",
+        "driverId": "111",
+        "driverName": "韩寒",
+        "shuttleCompanyId": "666"
+      },
+      {
+        "accountId": "0",
+        "driverId": "1111",
+        "driverName": "莱科宁",
+        "shuttleCompanyId": "666"
+      }
+    ],
+    "routeTemplate": [
+      {
+        "routeTemplateId": "0",
+        "routeTemplateName": "张江线路1"
+      },
+      {
+        "routeTemplateId": "11111111",
+        "routeTemplateName": "张江线路2"
+      }
+    ],
+    "vehicles": [
+      {
+        "licensePlate": "沪A88888",
+        "shuttleCompanyID": "666",
+        "vehicleID": "1",
+        "vehicleModel": "string",
+        "vehicleSeats": "0"
+      },
+       {
+        "licensePlate": "沪A99999",
+        "shuttleCompanyID": "666",
+        "vehicleID": "2",
+        "vehicleModel": "string",
+        "vehicleSeats": "0"
+      }
+    ]
+  }
+}

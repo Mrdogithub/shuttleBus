@@ -45,6 +45,7 @@
 }
 .alertify .ajs-footer .ajs-buttons .ajs-button.ajs-ok {
   color: #fff;
+  float: right;
 }
 
 .alertify .ajs-footer .ajs-buttons .ajs-button.ajs-cancel {

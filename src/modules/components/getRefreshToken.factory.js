@@ -1,6 +1,6 @@
 angular.module('getRefreshTokenFacotryModule',[]).factory('getRefreshTokenFacotry',function(APISERVICEPATH,localStorageFactory,$http){
 	var $$token = {};
-	var _path = APISERVICEPATH.token+'authService/refreshToken';
+	var _path = APISERVICEPATH.auths+'auth/refreshToken';
 	
 	function randomNum(n){ 
 		 var t=''; 
@@ -8,7 +8,7 @@ angular.module('getRefreshTokenFacotryModule',[]).factory('getRefreshTokenFacotr
 			t+=Math.floor(Math.random()*10); 
 		 } 
 		 return t;
-	} 
+	}
 
 
 	$$token.getRefreshToken = function(paramsObj){
@@ -23,7 +23,7 @@ angular.module('getRefreshTokenFacotryModule',[]).factory('getRefreshTokenFacotr
 					"grant_type":"refresh_token",
 					"refresh_token":localStorageFactory.getObject('account',null).refreshToken
 				},
-			setHeader: {'Content-Type': 'application/json','X-Requested-With':'XMLHttpRequest'}
+			setHeader: {'ApplicationId':'BACKGROUND','X-Requested-With':'XMLHttpRequest'}
 		};
 
 		return $http({method: 'POST', url:paramsData.apiPath, data:paramsData.paramsList,headers:paramsData.setHeader});

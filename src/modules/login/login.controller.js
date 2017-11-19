@@ -1,7 +1,5 @@
 angular.module("loginControllerModule",[])
-.controller("loginController",function(loginHttpService,md5Service,USER_ACCOUNT,LOGIN_ACCOUNT_ERROR,localStorageFactory,$scope,$state,$stateParams){
-
-
+.controller("loginController",function(loginHttpService,USER_ACCOUNT,utilFactory,localStorageFactory,$scope,$state,$stateParams){
 
 	if($stateParams.phoneNumber){
 		$scope.phoneNumber = $stateParams.phoneNumber;	
@@ -24,108 +22,66 @@ angular.module("loginControllerModule",[])
 
 				if(!responseData.error){
 					loginHttpService.accessToken({'code':responseData.value.authCode}).then(function(result){
-
 						var tokenObjList = result.data.value;
-
+						console.log('role')
+						console.log(1,tokenObjList)
 						if(tokenObjList.roles){
-							var _getRoleArray = tokenObjList.roles.split("@");
-							var _roleList = ['ROLE_SYSADMIN','ROLE_APPLICATION_ADMIN','ROLE_SECOND_COMPANY_ADMIN','ROLE_HR','ROLE_SCHEDULER','ROLE_PASSENGER','ROLE_DRIVER','ROLE_COMPANY'];
+							var _getRoleArray = tokenObjList.roles.split("$");
+							USER_ACCOUNT.ROLE_HR = false;
+							USER_ACCOUNT.ROLE_SCHEDULER = false;
+							USER_ACCOUNT.ROLE_SECONDADMIN = false;
+							USER_ACCOUNT.ROLE_APPLICATIONADMIN = false;
+							USER_ACCOUNT.phoneNumber = $scope.phoneNumber;
+							USER_ACCOUNT.accessToken = tokenObjList.accessToken;
+							USER_ACCOUNT.refreshToken = tokenObjList.refreshToken;
+							USER_ACCOUNT.accountId = tokenObjList.accountId;
+							USER_ACCOUNT.secondCompanyId = tokenObjList.secondCompanyId;
+							USER_ACCOUNT.secondCompanyName = tokenObjList.secondCompanyName;
+							localStorageFactory.remove('account');
+							utilFactory.assignRole(_getRoleArray);
+							localStorageFactory.setObject('account',USER_ACCOUNT);
+							if(USER_ACCOUNT.ROLE_HR || USER_ACCOUNT.ROLE_SCHEDULER){
+								return $state.go('admin.cloudData');
+							}
+							
+							if(USER_ACCOUNT.ROLE_SECONDADMIN){
+								return $state.go('companyAdmin.HR');
+							}
 
-							for(var i=0;i<_getRoleArray.length;i++){
-								if(USER_ACCOUNT.hasOwnProperty(_roleList[_getRoleArray[i]-1])){
-									USER_ACCOUNT[_roleList[_getRoleArray[i]-1]] = true;
-								}
+							if(USER_ACCOUNT.ROLE_APPLICATIONADMIN){
+								return $state.go('company.list')
 							}
 
 							if(USER_ACCOUNT.ROLE_DRIVER){
-								alertify.alert('未分配权限,请联系统管理员',function(){
+								return alertify.alert('未分配权限,请联系统管理员',function(){
 									$scope.loginText = "登录";
 									$scope.disabled = false;
 									$scope.$apply();
 								});
-								return
+								
 							}
 
 							if(USER_ACCOUNT.ROLE_PASSENGER){
-								alertify.alert('未分配权限,请联系统管理员',function(){
+								return alertify.alert('未分配权限,请联系统管理员',function(){
 									$scope.loginText = "登录";
 									$scope.disabled = false;
 									$scope.$apply();
 								})
-								return
-							}
-
-							USER_ACCOUNT.accessToken = tokenObjList.accessToken;
-							USER_ACCOUNT.refreshToken = tokenObjList.refreshToken;
-							USER_ACCOUNT.accountId = tokenObjList.accountId;
-							USER_ACCOUNT.secondCompanyId = tokenObjList.secondCompanyId || '1';
-							localStorageFactory.remove('account');
-							localStorageFactory.setObject('account',USER_ACCOUNT);
-
-
-
-							//get role
-
-							var _roleList = localStorageFactory.getObject('account');
-
-
-							if(_roleList.ROLE_HR){
-								$state.go('passenger.list')
-							}
-
-							if(_roleList.ROLE_SCHEDULER){
-								$state.go('scheduler.route')
 							}
 						}
-
-
-
-						// if(_roleList.ROLE_HR && _roleList.ROLE_SCHEDULER){
-						// 	//$state.go('admin')
-						// }
-
-
 					})
 
 				}else{
-
-					switch(responseData.error.statusCode){
-						case LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200101.code:errorMessageFn(LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200101.message,responseData)
-							break;
-						case LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200104.code:errorMessageFn(LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200104.message,responseData)
-							break;
-						case LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200107.code:errorMessageFn(LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200107.message,responseData)
-							break;
-						case LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200106.code:errorMessageFn(LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200106.message,responseData)
-							break;
-						case LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200108.code:errorMessageFn(LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200108.message,responseData)
-							break;
-						case LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200109.code:errorMessageFn(LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200109.message,responseData)
-							break;
-						case LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200110.code:errorMessageFn(LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200110.message,responseData)
-							break;
-						case LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200111.code:errorMessageFn(LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200111.message,responseData)
-							break;
-						case LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200112.code:errorMessageFn(LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200112.message,responseData)
-							break;
-						default :alertify.alert(responseData.error.message)
-					}
-
-					function errorMessageFn(errorMessageText,responseDataObj){
-						alertify.alert(errorMessageText,function(){
-							$scope.loginText = "登录";
-							$scope.disabled = false;
-							$scope.$apply();
-						})
-					}
+					utilFactory.checkErrorCode(responseData.error.statusCode,responseData.error.message)
+					$scope.loginText = "登录";
+					$scope.disabled = false;
 				}
 
 			},function(errorResult){
 				var errorResponseData = errorResult.data.error;
-				alertify.alert(errorResponseData.message+":"+errorResponseData.statusCode,function(){
-					$scope.loginText = "登录";
-					$scope.disabled = false;
-				})
+				utilFactory.checkErrorCode(errorResponseData.statusCode,errorResponseData.message)
+				$scope.loginText = "登录";
+				$scope.disabled = false;
 			});
 		}else{
 			alertify.alert('请输入密码',function(){

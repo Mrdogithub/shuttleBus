@@ -1,5 +1,3 @@
-'use strict'
-
 /**
  * @description
  * goback component works in html files

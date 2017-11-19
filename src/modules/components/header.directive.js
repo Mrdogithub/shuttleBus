@@ -1,4 +1,3 @@
-'use strict';
 angular.module("headerModule",[]).directive('headerComponent',function(localStorageFactory,$state){
 	return {
 		restrict:"E",
@@ -11,11 +10,18 @@ angular.module("headerModule",[]).directive('headerComponent',function(localStor
 				 + '</div>'
 				 +'</div>',
 		controller:function($scope){
-			$scope.username = localStorageFactory.getObject('account',null).accountId;
+			$scope.username = localStorageFactory.getObject('account',null).phoneNumber;
 
 			$scope.loginOut = function(){
-				localStorageFactory.remove('account');
-				$state.go('entry.check')
+				var permissionRolesForCurrentAccount = localStorageFactory.getObject('account',null);
+				if(permissionRolesForCurrentAccount['ROLE_SYSADMIN']){
+					localStorageFactory.remove('account');
+					$state.go('entry.master');
+				}else{
+					localStorageFactory.remove('account');
+					$state.go('entry.check')
+				}
+				
 			}
 		}
 	}

@@ -1,21 +1,22 @@
-'use strict'
-angular.module('companyHttpServiceModule',[]).factory('companyHttpService',function($http,ROLE_CODE,APISERVICEPATH){
+angular.module('companyHttpServiceModule',[])
+.factory('companyHttpService',function($http,ROLE_CODE,localStorageFactory,APISERVICEPATH){
 	var companyHttp = {};
 	var companyAccount = APISERVICEPATH.companyAccount;
 	var hrService = APISERVICEPATH.hrService;
 	var schedulerService = APISERVICEPATH.schedulerService
+	var USER_ROLE = localStorageFactory.getObject('account',null);
 	
-
 	companyHttp.addCompany = function(paramsObj){
-		
 		var paramsData = {
-			'apiPath':companyAccount+'company',
+			'apiPath':companyAccount,
 			paramsList:{
 				'affiCompanyId': paramsObj.secondCompanyId,
-				'affiCompanyName':  paramsObj.companyName,
+				'affiCompanyName': paramsObj.secondCompanyName,
 				'name': paramsObj.name,
-				'operateAccountId': paramsObj.applicationAdminId,
-				'phoneNumber': paramsObj.phoneNumber
+				'adminName':paramsObj.adminName,
+				//'operateAccountId': paramsObj.applicationAdminId,
+				'phoneNumber': paramsObj.phoneNumber,
+				'companyCode':'9'
 			}
 		};
 		return  $http({ method: 'POST',url:paramsData.apiPath,headers:{'Content-type':'application/json'},data:paramsData.paramsList});
@@ -23,31 +24,35 @@ angular.module('companyHttpServiceModule',[]).factory('companyHttpService',funct
 	
 	companyHttp.getCompanyList = function(paramsObj){
 		var paramsData = {
-			'apiPath':companyAccount+'company',
+			'apiPath':companyAccount+paramsObj.applicationAdminId+'/parentCompanyId/'+paramsObj.secondCompanyId+'/companyCode/9',
 			paramsList:{
-				'schedulerId': paramsObj.applicationAdminId,
-				'parentCompanyId':paramsObj.secondCompanyId,
-				'pageNumber': paramsObj.pageNumber || '1',
-				'pageSize':paramsObj.pageSize || '10'
+				// 'schedulerId': paramsObj.applicationAdminId,
+				// 'parentCompanyId':paramsObj.secondCompanyId,
+				'pageNumber': paramsObj.pageNumber,
+				'pageSize':paramsObj.pageSize
+				// 'companyCode':'3'
 			}
 		};
+
+		console.log(1,paramsData)
 
 		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
 	}
 
-
-
 	companyHttp.updateCompanyByID = function(paramsObj){
 		var paramsData = {
-			'apiPath':companyAccount+'company',
+			'apiPath':companyAccount,
 			paramsList:{
 			  'affiCompanyId': paramsObj.secondCompanyId,
-			  'affiCompanyName': paramsObj.companyName,
-			  'name': paramsObj.name,
+			  'affiCompanyName': paramsObj.secondCompanyName,
+			  'name': paramsObj.companyName,
+			  'adminName':paramsObj.adminName,
+			  'adminPartyId':paramsObj.userId,
 			  'operateAccountId': paramsObj.applicationAdminId,
 			  'partyId': paramsObj.companyId,
 			  'phoneNumber': paramsObj.phoneNumber,
-			  'status': '1'
+			  'status': '1',
+			  'companyCode':'9'
 			}
 		};
 
@@ -56,27 +61,30 @@ angular.module('companyHttpServiceModule',[]).factory('companyHttpService',funct
 
 	companyHttp.deleteCompanyByID = function(paramsObj){
 		var paramsData = {
-			'apiPath':companyAccount+'company',
+			'apiPath':companyAccount,
 			paramsList:{
-				'operateAccountId':paramsObj.applicationAdminId,
-				'affiCompanyId': paramsObj.secondCompanyId,
-				'name': paramsObj.companyName,
-				// 'phoneNumber': paramsObj.phoneNumber,
-				'partyId': paramsObj.companyId,
-				'status':'2'
+			  'affiCompanyId': paramsObj.secondCompanyId,
+			  'affiCompanyName': paramsObj.secondCompanyName,
+			  'name': paramsObj.companyName,
+			  'adminName':paramsObj.adminName,
+			  'adminPartyId':paramsObj.userId,
+			  'operateAccountId': paramsObj.applicationAdminId,
+			  'partyId': paramsObj.companyId,
+			  'phoneNumber': paramsObj.phoneNumber,
+			  'status': '2',
+			  'companyCode':'9'
 			}
 		};
-		return  $http({ method: 'DELETE',url:paramsData.apiPath,params:paramsData.paramsList});
+		return  $http({ method: 'PUT',url:paramsData.apiPath,data:paramsData.paramsList,headers:{'Content-type':'application/json'}});
 	};
-
 
 	companyHttp.addHR = function(paramsObj){
 		
 		var paramsData = {
-			'apiPath':hrService+'hr',
+			'apiPath':hrService,
 			paramsList:{
 				'affiCompanyId': paramsObj.secondCompanyId,
-				'affiCompanyName': paramsObj.secondCompanyName,
+			//	'affiCompanyName': paramsObj.secondCompanyName,
 				'name': paramsObj.name,
 				'operateAccountId': paramsObj.secondCompanyAdminId,
 				'phoneNumber': paramsObj.phoneNumber
@@ -87,10 +95,10 @@ angular.module('companyHttpServiceModule',[]).factory('companyHttpService',funct
 
 	companyHttp.getHrList = function(paramsObj){
 		var paramsData = {
-			'apiPath':hrService+'hr',
+			'apiPath':hrService+'superAdminId/'+paramsObj.secondCompanyAdminId+'/userCompanyId/'+paramsObj.secondCompanyId,
 			paramsList:{
-				'superAdminId': paramsObj.secondCompanyAdminId,
-				'userCompanyId':paramsObj.secondCompanyId
+				'pageSize':paramsObj.pageSize,
+				'pageNumber':paramsObj.pageNumber
 			}
 		};
 
@@ -99,7 +107,7 @@ angular.module('companyHttpServiceModule',[]).factory('companyHttpService',funct
 
 	companyHttp.deleteHrByID = function(paramsObj){
 		var paramsData = {
-			'apiPath':hrService+'hr',
+			'apiPath':hrService,
 			paramsList:{
 				'affiCompanyId': paramsObj.secondCompanyId,
 				'affiCompanyName': paramsObj.secondCompanyName ||'111',
@@ -116,7 +124,7 @@ angular.module('companyHttpServiceModule',[]).factory('companyHttpService',funct
 
 	companyHttp.updateHrById = function(paramsObj){
 		var paramsData = {
-			'apiPath':hrService+'hr',
+			'apiPath':hrService,
 			paramsList:{
 				'affiCompanyId': paramsObj.secondCompanyId,
 				'affiCompanyName': paramsObj.secondCompanyName,
@@ -130,11 +138,10 @@ angular.module('companyHttpServiceModule',[]).factory('companyHttpService',funct
 		return  $http({ method: 'PUT',url:paramsData.apiPath,data:paramsData.paramsList,headers:{'Content-type':'application/json'}});
 	};
 
-
 	companyHttp.addScheduler = function(paramsObj){
 		
 		var paramsData = {
-			'apiPath':schedulerService+'scheduler',
+			'apiPath':schedulerService,
 			paramsList:{
 				'affiCompanyId': paramsObj.secondCompanyId,
 				'affiCompanyName': paramsObj.secondCompanyName,
@@ -145,12 +152,15 @@ angular.module('companyHttpServiceModule',[]).factory('companyHttpService',funct
 		};
 		return  $http({ method: 'POST',url:paramsData.apiPath,headers:{'Content-type':'application/json'},data:paramsData.paramsList});
 	};
+
 	companyHttp.getSchedulerList = function(paramsObj){
 		var paramsData = {
-			'apiPath':schedulerService+'scheduler',
+			'apiPath':schedulerService+'superAdminId/'+paramsObj.secondCompanyAdminId+'/userCompanyId/'+paramsObj.secondCompanyId,
 			paramsList:{
-				'superAdminId': paramsObj.secondCompanyAdminId,
-				'userCompanyId':paramsObj.secondCompanyId
+				'pageSize':paramsObj.pageSize,
+				'pageNumber':paramsObj.pageNumber
+				// 'superAdminId': paramsObj.secondCompanyAdminId,
+				// 'userCompanyId':paramsObj.secondCompanyId
 			}
 		};
 
@@ -159,14 +169,14 @@ angular.module('companyHttpServiceModule',[]).factory('companyHttpService',funct
 
 	companyHttp.deleteSchedulerByID = function(paramsObj){
 		var paramsData = {
-			'apiPath':schedulerService+'scheduler',
+			'apiPath':schedulerService,
 			paramsList:{
 				'affiCompanyId': paramsObj.secondCompanyId,
-				'affiCompanyName': paramsObj.secondCompanyName ||'111',
+				'affiCompanyName': paramsObj.secondCompanyName,
 				'name': paramsObj.name,
 				'operateAccountId': paramsObj.secondCompanyAdminId,
 				'phoneNumber': paramsObj.phoneNumber,
-				'partyId':paramsObj.schedulerId,
+				'partyId':paramsObj.partyId,
 				'status': '2'
 			}
 		};
@@ -176,14 +186,14 @@ angular.module('companyHttpServiceModule',[]).factory('companyHttpService',funct
 
 	companyHttp.updateSchedulerById = function(paramsObj){
 		var paramsData = {
-			'apiPath':schedulerService+'scheduler',
+			'apiPath':schedulerService,
 			paramsList:{
 				'affiCompanyId': paramsObj.secondCompanyId,
 				'affiCompanyName': paramsObj.secondCompanyName,
 				'name': paramsObj.name,
 				'operateAccountId': paramsObj.secondCompanyAdminId,
 				'phoneNumber': paramsObj.phoneNumber,
-				'partyId':paramsObj.schedulerId
+				'partyId':paramsObj.partyId
 			}
 		};
 

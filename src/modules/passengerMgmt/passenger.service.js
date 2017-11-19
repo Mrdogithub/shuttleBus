@@ -1,17 +1,16 @@
-'use strict'
-angular.module('passengerHttpServiceModule',['ngResource']).factory('passengerHttpService',function($http,ROLE_CODE,APISERVICEPATH){
+angular.module('passengerHttpServiceModule',[]).factory('passengerHttpService',function($http,ROLE_CODE,APISERVICEPATH){
 	var passengerHttp = {};
 	var passengerAccount = APISERVICEPATH.passengerAccount;
 	//var passengerAccount = APISERVICEPATH.prd;
-	var passengerProfile = APISERVICEPATH.passengerProfile;
+	//var passengerProfile = APISERVICEPATH.passengerProfile;
 	var passengerTrip    = APISERVICEPATH.passengerTrip;
-	
+	var uploadTripHistorysByExcelAPI = APISERVICEPATH.tripHistorysByExcel;
 	passengerHttp.getPassengerTrip = function(paramsObj){
 		var paramsData = {
-			'apiPath':passengerTrip+'passengerTrip/'+paramsObj.passengerId,
-			paramsList:{
-				'pageNumber': paramsObj.pageNumber || '1',
-				'pageSize': paramsObj.pageSize || '20'
+			'apiPath':passengerTrip+'web/'+paramsObj.passengerId,
+			'paramsList':{
+				'pageSize':paramsObj.pageSize,
+				'pageNumber':paramsObj.pageNumber
 			}
 		};
 
@@ -20,33 +19,40 @@ angular.module('passengerHttpServiceModule',['ngResource']).factory('passengerHt
 	
 	passengerHttp.passenger = function(paramsObj){
 		var paramsData = {
-			'apiPath':passengerAccount+'passenger',
+			'apiPath':passengerAccount+'pagination/'+paramsObj.hrId+'/secondCompanyId/'+paramsObj.secondCompanyId,
 			paramsList:{
-				'hrId': paramsObj.hrId,
-				'secondCompanyId':paramsObj.secondCompanyId,
-				'pageNumber': '1',
-				'pageSize':'10'
+				// 'hrId': paramsObj.hrId,
+				// 'secondCompanyId':paramsObj.secondCompanyId,
+				'pageSize':paramsObj.pageSize,
+				'pageNumber':paramsObj.pageNumber
 			}
 		};
 
 		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
 	}
-
-	passengerHttp.passengerByID = function(paramsObj){
-
+	passengerHttp.downloadTemplateFile = function(paramsObj){
 		var paramsData = {
-			'apiPath':passengerProfile+'passengerByID',
+			'apiPath':passengerAccount+'file'
+		};
+
+		return  $http({ method: 'GET',url:paramsData.apiPath,responseType:'arraybuffer'});
+	}
+
+	passengerHttp.tripHistorysByExcel = function(paramsObj){
+		var paramsData = {
+			'apiPath':uploadTripHistorysByExcelAPI+'tripHistorysByExcel',
 			paramsList:{
-				'passengerUUID':paramsObj.passengerUUID
+				'schedulerAccountId':paramsObj.schedulerAccountId
 			}
 		};
 
-		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
-	};
+		console.log(1,paramsObj)
+		return  $http({ method: 'GET',url:paramsData.apiPath,responseType:'arraybuffer',data:paramsData.paramsList});
+	}
 
 	passengerHttp.updatePassengerByID = function(paramsObj){
 		var paramsData = {
-			'apiPath':passengerAccount+'passenger',
+			'apiPath':passengerAccount,
 			paramsList:{
 				'affiCompanyId': paramsObj.secondCompanyId,
 				'employeeId': paramsObj.employeeId,
@@ -63,23 +69,25 @@ angular.module('passengerHttpServiceModule',['ngResource']).factory('passengerHt
 
 	passengerHttp.deletePassengerByID = function(paramsObj){
 		var paramsData = {
-			'apiPath':passengerAccount+'passenger',
+			'apiPath':passengerAccount,
 			paramsList:{
-				//'passengerUUID':'2329059612100608',
-				'passengerUUID':paramsObj.passengerUuid,
-				'hrUUID':paramsObj.hrUuid,
-				//'hrUUID':'666',
-				'roleType':'ROLE_PASSENGER',
+				'affiCompanyId': paramsObj.secondCompanyId,
+				'employeeId': paramsObj.employeeId,
+				'name': paramsObj.name,
+				'phoneNumber': paramsObj.phoneNumber,
+				'operateAccountId': paramsObj.schedulerId,
+				'partyId':  paramsObj.passengerId,
+				'status': '2'
 			}
 		};
-		return  $http({ method: 'DELETE',url:paramsData.apiPath,params:paramsData.paramsList});
+		return  $http({ method: 'PUT',url:paramsData.apiPath,data:paramsData.paramsList});
 	};
 
 
 	passengerHttp.addPassenger = function(paramsObj){
 		
 		var paramsData = {
-			'apiPath':passengerAccount+'passenger',
+			'apiPath':passengerAccount,
 			paramsList:{
 				'affiCompanyId': paramsObj.secondCompanyId,
 				'employeeId': paramsObj.employeeId,
@@ -92,17 +100,17 @@ angular.module('passengerHttpServiceModule',['ngResource']).factory('passengerHt
 		return  $http({ method: 'POST',url:paramsData.apiPath,headers:{'Content-type':'application/json'},data:paramsData.paramsList});
 	};
 
-	passengerHttp.getPassengerFeedback = function(){
+	// passengerHttp.getPassengerFeedback = function(){
 
-		var paramsData = {
-			// 'apiPath':passengerProfile+'passengerByID',
-			// paramsList:{
-			// 	'passengerUUID':paramsObj.passengerUUID
-			// }
-		};
+		// var paramsData = {
+	// 		// 'apiPath':passengerProfile+'passengerByID',
+	// 		// paramsList:{
+	// 		// 	'passengerUUID':paramsObj.passengerUUID
+	// 		// }
+	// 	};
 
-		//return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
-	}
+	// 	//return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
+	// }
 
 	return passengerHttp;
 });

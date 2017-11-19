@@ -1,12 +1,13 @@
-'use strict'
 angular.module('companyDetailControllerModule',[])
-.controller('companyDetailController',function(companyHttpService,$stateParams,$state,$scope){
-	if(true){
+.controller('companyDetailController',function(companyHttpService,utilFactory,$stateParams,$state,$scope){
+	if($stateParams.secondCompanyId){
 
 		$scope.params = {
 			'secondCompanyId': $stateParams.secondCompanyId,
 			'companyName': $stateParams.companyName,
+			'adminName':$stateParams.adminName,
 			'companyId': $stateParams.companyId,
+			'userId':$stateParams.userId,
 			'applicationAdminId': $stateParams.applicationAdminId,
 			'companyId': $stateParams.companyId,
 			'phoneNumber': $stateParams.phoneNumber
@@ -22,21 +23,18 @@ angular.module('companyDetailControllerModule',[])
 		$state.go('company.list')
 	}
 
-	$scope.editCompany = function(flag){
-		$scope.active = !flag;
-	};
+	$scope.editCompany = function(flag){ $scope.active = !flag; };
 
-	$scope.editCompanyName = function(flag){
-		$scope.active_one = !flag
-	}
+	$scope.editCompanyName = function(flag){ $scope.active_one = !flag }
 
 	$scope.updateCompany = function(){
 		$scope.submitOnProgress = true;
-		console.log('xxx')
 		var _params = {
 			'secondCompanyId': $scope.params.secondCompanyId,
 			'companyName': $scope.params.companyName,
+			'adminName':$scope.params.adminName,
 			'companyId': $scope.params.companyId,
+			'userId':$scope.params.userId,
 			'applicationAdminId': $scope.params.applicationAdminId,
 			'companyId': $scope.params.companyId,
 			'phoneNumber': $scope.params.phoneNumber
@@ -47,12 +45,11 @@ angular.module('companyDetailControllerModule',[])
 			var _resultData = result.data;
 			if(!_resultData.error){
 				alertify.alert('更新成功!',function(){
-					$state.go('passenger.list')
+					$state.go('company.list')
 				})
 			}else{
-				alertify.alert(_resultData.error.message)
+				utilFactory.checkErrorCode(_resultData.error.statusCode)
 			}
 		},function(){})
 	};
-
 })

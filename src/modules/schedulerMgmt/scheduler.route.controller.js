@@ -1,58 +1,37 @@
-
-'use strict'
 angular.module('schedulerRouteControllerModule',[])
-.controller('schedulerRouteController',function(utilFactory,schedulerHttpService,$state,$scope){
+.controller('schedulerRouteController',function(loadData,utilFactory,schedulerHttpService,$state,$scope){
 
-	//var _accountId = localStorageFactory.getObject('account',null).accountId;
+	// If data empty wil use empry page replace table.
+	$scope.dataIsEmpty = false;
+	console.log(1,loadData)
+	if(!loadData.data.error &&(!loadData.data.value || !loadData.data.value.list.length)){
+		$scope.dataIsEmpty = true;
+	}else if(loadData.data.error){
+		utilFactory.checkErrorCode(loadData.data.error.statusCode)
+	}
 
 	$scope.addRoute = function(){
-		$state.go('scheduler.addRoute',{'schedulerId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId()})
+		$state.go('admin.scheduler.addRoute',{'schedulerId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId()})
 	}
-
-	$scope.downLoadTemplte = function(){
-		alertify.alert('正在建设中...')
-	}
-
-	$scope.importSite = function(){
-		alertify.alert('正在建设中...')
-	}
-
-
-
-
+	$scope.downLoadTemplte = function(){ alertify.alert('正在建设中...')}
+	$scope.importSite = function(){ alertify.alert('正在建设中...')}
 
 	$scope.selectAllStatus = false;
 	$scope.pageConfigs={
-		params:{},
+		params:{
+			'pageNumber':'1',
+			'pageSize':'20',
+			'schedulerId':utilFactory.getAccountId(),
+			'secondCompanyId':utilFactory.getSecondCompanyId()
+		},
 		list:null,
-		getList:function(){
-			return schedulerHttpService.getRoute({'schedulerId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId(),'pageNumber':'1','pageSize':'20'})
+		getList:function(params){
+			return schedulerHttpService.getRoute(params)
 		},
-		loadData:function(){
-			console.log('load data')
-			
-		},
-		dataSet:function(result){
-			// var _result = result.data.value;
-			// for(var i=0;i<_result.length;i++){
-			// 	_result[i]['passengerProfileOutDTO']['status'] =_result[i]['passengerProfileOutDTO']['status'] == 0?'未激活':'已激活'
-			// }
-		}
+		loadData:function(){},
+		dataSet:function(result){}
 		//extendParams:function(){}
 	}
-
-	$scope.selectAll = function(){
-		//$scope.tableConfig.checkbox.selectAll = true;
-		var _selectAllStatus  = !$scope.selectAllStatus;
-		console.log(_selectAllStatus+':_selectAllStatus')
-		$scope.$broadcast('checkboxSelectAll',{'status':_selectAllStatus})
-
-	}
-
-	$scope.addDriver = function(){
-		$state.go('scheduler.addDriver',{
-			'schedulerUUID':'18','secondCompanyId':'18'})
-	};
 
 	$scope.tableConfig={
 		stableFlag:{
@@ -60,14 +39,30 @@ angular.module('schedulerRouteControllerModule',[])
 			index:true,
 			checkbox:false,
 			radio:true,
-			operate:[{
+			operate:[
+			{
 				name:'查看详情',
 				ngIf:function(){},
 				fun:function(item){
+					$state.go('admin.scheduler.updateRoute',{'routeId':item.routeId,'schedulerId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId()})
+				}
+			},
+			{
+				name:'删除',
+				ngIf:function(){},
+				fun:function(item){
+					console.log(1,item)
+					alertify.confirm('该线路可能有排班任务，如继续删除，排班任务也将被清空！',function(){
+						schedulerHttpService.deleteRouteById({'routeId':item.routeId}).then(function(result){
+							var _resultData = result.data;
 
-					$state.go('scheduler.routeDetail',{'routeId':item.routeId,'schedulerId':utilFactory.getAccountId()})
-					
-
+							if(!_resultData.error) {
+								$state.go('admin.scheduler.route',{},{reload:true})
+							}else{
+								utilFactory.checkErrorCode(_resultData.error.statusCode,_resultData.error.statusText)
+							}
+						})
+					},function(){}).set({labels:{cancel: '取消',ok:'坚持删除'}, padding: true});
 				}
 			}]
 		},
@@ -90,31 +85,12 @@ angular.module('schedulerRouteControllerModule',[])
 					'selfKey':{'key':'routeName','value':'线路名称'},
 					'checkFlag':true
 				}
-				// ,
-				// {
-				// 	'parentKey':'accountDTO',
-				// 	'selfKey':{'key':'stationType','value':'线路类型'},
-				// 	'checkFlag':true
-				// },
-				// {
-				// 	'parentKey':'driverProfileDTO',
-				// 	'selfKey':{'key':'address','value':'起点站'},
-				// 	'checkFlag':true
-				// },
-				// {
-				// 	'parentKey':'driverProfileDTO',
-				// 	'selfKey':{'key':'address','value':'终点站'},
-				// 	'checkFlag':true
-				// }
 	    	]
 	    }
 		// changeEnable:function(item){}
 	}
 
-
 	$scope.$watch('$viewContentLoaded',function(event){ 
   		$scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1'});
 	});
-
-
 })

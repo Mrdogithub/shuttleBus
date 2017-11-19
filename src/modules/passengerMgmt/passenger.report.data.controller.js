@@ -1,14 +1,16 @@
 angular.module('passengerReportDataControllerModule',[]).controller('passengerReportDataController',function(passengerHttpService,utilFactory,$scope){
 	$scope.pageConfigs={
-		params:{},
+		params:{
+			'hrId':utilFactory.getAccountId(),
+			'secondCompanyId':utilFactory.getSecondCompanyId(),
+			'pageSize':'20',
+			'pageNumber':'1'
+		},
 		list:null,
-		getList:function(){
-			return passengerHttpService.passenger({'hrId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId()})
+		getList:function(params){
+			return passengerHttpService.passenger(params)
 		},
-		loadData:function(){
-			console.log('load data')
-			
-		},
+		loadData:function(){},
 		dataSet:function(result){
 			if(result.value != null){
 				var _result = result.value;
@@ -40,7 +42,19 @@ angular.module('passengerReportDataControllerModule',[]).controller('passengerRe
 
 
 	$scope.importData = function(){
-		alertify.alert('正在建设中...')
+
+		passengerHttpService.tripHistorysByExcel({'schedulerAccountId':utilFactory.getAccountId()}).then(function(data){
+			var blob = new Blob([data.data], {type: "application/vnd.ms-excel;charset=utf-8"});
+			var objectUrl = URL.createObjectURL(blob);
+			var a = document.createElement('a');
+			document.body.appendChild(a);
+			a.setAttribute('style', 'display:none');
+			a.setAttribute('href', objectUrl);
+			a.setAttribute('download', '乘客记录数据报表');
+			a.click();
+			URL.revokeObjectURL(objectUrl);
+		})
+
 	}
 
 

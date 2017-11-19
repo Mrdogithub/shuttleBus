@@ -9,6 +9,13 @@ ul{
 	margin: 0;
 	padding: 0;
 }
+input, button, select, textarea{
+	padding: 5px;
+}
+.emptyTitle{
+	color:#999;
+}
+select:invalid { color: gray; }
 li{
 list-style: none;
 }
@@ -33,6 +40,10 @@ button{
     color: inherit;
     border: none;
     background: none;
+}
+.sleep{
+	background: #eee;
+	cursor: not-allowed;
 }
 .content-border-bottom{
 	border-bottom:1px solid #d9dadc;
@@ -258,7 +269,7 @@ input:focus { outline: none; }
 
 
 /**main content style**/
-    .selected{
+    .activeSelected{
     	background: #047190;
     }
     .main-wrapper,.main-content{
@@ -288,7 +299,7 @@ input:focus { outline: none; }
 	.main-wrapper .menu-icon{
 		position: absolute;
 	    left: 20px;
-	    top: 1px;
+	    top: 5px;
 	}
 	.main-wrapper .title-wrapper{
 		position: relative;
@@ -301,13 +312,12 @@ input:focus { outline: none; }
 	}
 	.main-wrapper .menu-list ul li{
 		position: relative;
-		height: 30px;
 		line-height: 30px;
 		margin-bottom: 4px;
 		cursor: pointer;
 	}
 
-	.main-wrapper .menu-list ul li:hover{
+	.main-wrapper .menuItemList ul li:hover{
 		background: #047190;
 	}
 
@@ -372,6 +382,7 @@ input:focus { outline: none; }
 }
 .btn{
 	line-height: auto;
+	border-radius: 0px;
 }
 a.btn-confirm:hover{
 	color: #fff;

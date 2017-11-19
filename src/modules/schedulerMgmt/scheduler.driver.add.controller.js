@@ -1,6 +1,5 @@
-'use strict'
 angular.module('schedulerAddDriverControllerModule',[])
-.controller('schedulerAddDriverController',function(schedulerHttpService,utilFactory,setDirty,$stateParams,$state,$scope){
+.controller('schedulerAddDriverController',function(schedulerHttpService,utilFactory,$stateParams,$state,$scope){
 
 	if($stateParams.schedulerId  &&$stateParams.secondCompanyId){
 		$scope.params = {
@@ -24,7 +23,8 @@ angular.module('schedulerAddDriverControllerModule',[])
 
 			if(!_resultData.error){
 				$scope.params.busCompany.length = 0;
-				_resultData.value.list.length? $scope.params.busCompany = _resultData.value.list :$scope.params.busCompany.push({'name':'暂无数据','id':null});
+				_resultData.value.list.length? $scope.params.busCompany = _resultData.value.list :$scope.params.busCompany.push({'name':'暂无数据','partyId':null});
+				//$scope.params.busCompany.unshift({'name':'请选择运营单位','partyId':'?'})
 			} else{
 				alertify.aleret(_resultData.error.message)
 			}
@@ -54,14 +54,14 @@ angular.module('schedulerAddDriverControllerModule',[])
 			'lv2':'新增司机'
 		}
 	}else{
-		//$state.go('scheduler.addBus',$scope.breadcrumbParams)
+		$state.go('admin.scheduler.driver')
 	}
 
 	// form information haven't been completed by user and then user trigger ‘取消’
 	// we should provide messages for user
 	$scope.close = function(){
 		alertify.confirm('请确认是否离开该页面,未保存的数据将在离开之后丢失。',function(){
-			$state.go('scheduler.driver')
+			$state.go('admin.scheduler.driver')
 		},function(){
 
 		});
@@ -72,11 +72,14 @@ angular.module('schedulerAddDriverControllerModule',[])
 	// invoke API, before invoke api we need to check all filed's status by 'setDirty'
 	// services.
 	$scope.submitDriverProfile = function(formValidateIsInvalid){
-
+		var currentTimestamp=new Date().getTime();
+		var selectedTimestamp = utilFactory.getTimestamp($scope.params.licenseExpirationDate);
 		// if all input filed empty and then user trigger submit button
 		// we will provide message for user to complete the requre filed.
-		if(formValidateIsInvalid) return setDirty($scope.formValidate);
-
+		if(formValidateIsInvalid) return utilFactory.setDirty($scope.formValidate);
+		if(currentTimestamp > selectedTimestamp){
+			return alertify.alert('驾照已过期',function(){})
+		}
 		alertify.confirm('确认新增名为"'+$scope.params.name+'"的司机？',function(){	
 			$scope.submitOnProgress = true;
 			$scope.submitStatusText = '正在创建中';
@@ -89,28 +92,23 @@ angular.module('schedulerAddDriverControllerModule',[])
 				'name': $scope.params.name,
 				'phoneNumber': $scope.params.phoneNumber,
 				'schedulerId': $scope.params.schedulerId,
-				'shuttleCompanyId': $scope.params.busCompanyObj.secondCompanyId
+				'shuttleCompanyId': $scope.params.busCompanyObj.partyId,
+				'shuttleCompanyName':$scope.params.busCompanyObj.name
 			}
 
 
 			schedulerHttpService.addDriver(_params).then(function(result){
 				var responseData = result.data;
 				if(!responseData.error){
-					$state.go('scheduler.driver')
-					// alertify.alert('新增成功！',function(){
-					// 	$scope.submitStatusText = '完成';
-					// 	$scope.active = true;
-					// 	$state.go('scheduler.driver',{'schedulerUUID':_params.schedulerUUID,'secondCompanyID':_params.shuttleCompanyId})
-					// })
+					//$state.go('admin.scheduler.driver')
+					alertify.alert('新增成功！',function(){
+						$scope.submitStatusText = '完成';
+						$scope.active = true;
+						$state.go('admin.scheduler.driver')
+					})
 				}else{
 					$scope.submitStatusText = '完成';
-					switch(responseData.error.statusCode){
-						case '500':alertify.alert(responseData.error.message+":"+responseData.error.statusCode)
-						break;
-						case '400':alertify.alert(responseData.error.message+":"+responseData.error.statusCode)
-						break;
-						default:alertify.alert(responseData.error.message+":"+responseData.error.statusCode)
-					}
+					utilFactory.checkErrorCode(responseData.error.statusCode)
 					$scope.submitOnProgress = false;
 				}
 			
@@ -119,7 +117,7 @@ angular.module('schedulerAddDriverControllerModule',[])
 				$scope.active = true;
 				alertify.alert(errorResult.error.message)
 			});
-		});
+		}).set({labels:{ok:'确认', cancel: '取消'}, padding: true});
 	};
 
 })

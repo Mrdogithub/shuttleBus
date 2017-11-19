@@ -4,13 +4,13 @@
 <form  enctype="multipart/form-data" novalidate>
 	<div class="content-wrapper">
 		<div class="form-input-common-wrapper">
-			<input ng-model="phoneNumber" type="text" class="form-control form-input-common form-input-phonenumber" placeholder="手机号" ng-disabled="true">
+			<input ng-model="phoneNumber" type="text" class=" form-input-common form-input-phonenumber" placeholder="手机号" ng-disabled="true">
 			<div class="switchAccount" style="position: absolute;bottom: 11px;margin: auto;right: 0px;">
 	 			<a ui-sref="entry.check"> 切换账号</a>	
 			</div>
 		</div>
 		<div class="form-input-common-wrapper">
-			<input ng-model="password" type="password" class="form-control form-input-common form-input-password" placeholder="密码">
+			<input ng-model="password" type="password" class=" form-input-common form-input-password" placeholder="密码">
 		</div>
 		<div class="form-input-common-wrapper">
 			<!--<div class="rememberpassword">
@@ -23,6 +23,6 @@
 		</div>
 	</div>
 	<div class="submit-wrapper">
-		<button ng-click="login()"  class="form-control submit-btn" ng-disabled="disabled" style="letter-spacing: 10px">{{loginText}}</button>
+		<button ng-click="login()"  class=" submit-btn" ng-disabled="disabled" style="letter-spacing: 10px">{{loginText}}</button>
 	</div>
 </form>

@@ -1,16 +1,14 @@
 angular.module('companySchedulerControllerModule',[])
 .controller('companySchedulerController',function(companyHttpService,utilFactory,$stateParams,$state,$scope){
-	
 
 	$scope.params = {
 		'secondCompanyId':utilFactory.getSecondCompanyId(),
-		'secondCompanyAdminId':utilFactory.getAccountId()
+		'secondCompanyAdminId':utilFactory.getAccountId(),
+		'secondCompanyName':utilFactory.getSecondCompanyName()
 	};
 	$scope.active = false;
 	$scope.submitOnProgress = false;
-
 	$scope.breadcrumbText={ 'lv1':'班车管理员'};
-
 
 	$scope.addScheduler = function(formValidateIsInvalid){
 		if(formValidateIsInvalid){
@@ -19,23 +17,27 @@ angular.module('companySchedulerControllerModule',[])
 		$scope.submitOnProgress = true;
 		var _params = {
 			'secondCompanyId':$scope.params.secondCompanyId,
-			'secondCompanyName': $scope.params.schedulerId,
+			'secondCompanyName': $scope.params.secondCompanyName,
 			'name': $scope.params.name,
 			'secondCompanyAdminId':$scope.params.secondCompanyAdminId,
 			'phoneNumber':$scope.params.phoneNumber
 		}
 
-		companyHttpService.addScheduler(_params).then(function(result){
-			var _resultData = result.data;
-			if(!_resultData.error){
-				alertify.alert('添加成功！',function(){
-					$state.go('company.scheduler',{},{reload:true});
-				})
-			}else{
-				alertify.alert(_resultData.error.message)
-			}
+		alertify.confirm('确认新增名为"'+$scope.params.name+'"的这个班车管理员?',function(){
+			companyHttpService.addScheduler(_params).then(function(result){
+				var _resultData = result.data;
+				if(!_resultData.error){
+					alertify.alert('新增成功！',function(){
+						$state.go('companyAdmin.scheduler',{},{reload:true});
+					})
+				}else{
+					utilFactory.checkErrorCode(_resultData.error.statusCode)
+				}
+				$scope.submitOnProgress = false;
+			},function(){})
+		},function(){
 			$scope.submitOnProgress = false;
-		},function(){})
+		}).set({labels:{ok:'确认', cancel: '取消'}, padding: true});
 	};
 
 	$scope.close = function(){ $('#myModal').modal('toggle');}
@@ -51,7 +53,7 @@ angular.module('companySchedulerControllerModule',[])
 			'secondCompanyId':$scope.updateParams.secondCompanyId,
 			'secondCompanyAdminId': $scope.params.secondCompanyAdminId,
 			'name': $scope.updateParams.name,
-			'hrId': $scope.updateParams.partyId,
+			'partyId': $scope.updateParams.partyId,
 			'phoneNumber': $scope.updateParams.phoneNumber,
 			//'roleCode':$scope.updateParams.roleCode,
 			//'status':$scope.updateParams.status
@@ -61,37 +63,32 @@ angular.module('companySchedulerControllerModule',[])
 			var _resultData = result.data;
 			if(!_resultData.error){
 				alertify.alert('更新成功！',function(){
-					$state.go('company.scheduler',{},{reload:true});
+					$state.go('companyAdmin.scheduler',{},{reload:true});
 				})
 			}else{
-				alertify.alert(_resultData.error.message)
+				utilFactory.checkErrorCode(_resultData.error.statusCode)
 			}
 			$scope.submitOnProgress = false;
-		},function(){})
+		},function(){
+			$scope.submitOnProgress = false;
+		})
 	};	
 
-
 	$scope.pageConfigs={
-		params:{},
+		params:{
+			'pageSize':'20',
+			'pageNumber':'1',
+			'secondCompanyAdminId': utilFactory.getAccountId(),
+			'secondCompanyId': utilFactory.getSecondCompanyId()
+		},
 		list:null,
-		getList:function(){
-			return companyHttpService.getSchedulerList({
-				'secondCompanyAdminId': utilFactory.getAccountId(),
-				'secondCompanyId': utilFactory.getSecondCompanyId()
-			})
+		getList:function(params){
+			return companyHttpService.getSchedulerList(params)
 		},
-		loadData:function(){
-			console.log('load data')
-		},
-		dataSet:function(result){
-			// var _result = result.data.value;
-			// for(var i=0;i<_result.length;i++){
-			// 	_result[i]['passengerProfileOutDTO']['status'] =_result[i]['passengerProfileOutDTO']['status'] == 0?'未激活':'已激活'
-			// }
-		}
+		loadData:function(){},
+		dataSet:function(result){}
 		//extendParams:function(){}
 	}
-
 
 	$scope.tableConfig={
 		stableFlag:{
@@ -111,39 +108,34 @@ angular.module('companySchedulerControllerModule',[])
 						'phoneNumber':item.phoneNumber,
 						'partyId':item.partyId
 					}
-
 					$('#myModal').modal('toggle');
-					// }
-					// $scope.tableConfig.operate[0].ngIf = function(){
-					// 	return false;
-					// }
-
 				}
 			},
 			{
 				name:'删除',
 				ngIf:function(){},
 				fun:function(item){
+					console.log(1,item)
 					var _deleteParams = {
 						'name':item.name,
 						'secondCompanyId':item.secondCompanyId,
 						'senondCompanyName':item.secondCompanyName,
 						'secondCompanyAdminId':$scope.params.secondCompanyAdminId,
 						'phoneNumber':item.phoneNumber,
-						'hrId':item.partyId
+						'partyId':item.partyId
 					}
-					alertify.confirm('确认删除'+item.name+'?',function(){
-						companyHttpService.deleteHrByID(_deleteParams).then(function(result){
+					alertify.confirm('确认删除"'+item.name+'"?',function(){
+						companyHttpService.deleteSchedulerByID(_deleteParams).then(function(result){
 							var _resultData =result.data;
 							if(!_resultData.error){
-								$state.go('company.HR',{},{reload:true});
+								$state.go('companyAdmin.scheduler',{},{reload:true});
 							} else{
-								alertify.alert('服务器错误：'+_resultData.error.message)
+								utilFactory.checkErrorCode(_resultData.error.statusCode)
 							}
 						});
 					},function(){
 
-					});
+					}).set({labels:{ok:'确认', cancel: '取消'}, padding: true});
 		
 				}
 			}]
@@ -157,6 +149,7 @@ angular.module('companySchedulerControllerModule',[])
 			checkArray:[]
 		},
 		defaultValue:'——',
+		defaultEmptyText:'还未添加任何班车管理员',
 		// radioSelect:function(){},
 		operateIfFlag:true,
 		setHeadOptional:{

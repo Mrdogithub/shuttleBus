@@ -1,10 +1,11 @@
-
-angular.module('schedulerHttpServiceModule',['ngResource']).factory('schedulerHttpService',function($http,USER_ACCOUNT,ROLE_CODE,APISERVICEPATH){
+angular.module('schedulerHttpServiceModule',[])
+.factory('schedulerHttpService',function($http,USER_ACCOUNT,ROLE_CODE,APISERVICEPATH){
 	var schedulerHttp = {};
 	var driverAccount = APISERVICEPATH.driverAccount;
 	var vehicleService = APISERVICEPATH.vehicleService;
 	//var vehicleService = APISERVICEPATH.busAPI;
 	var stationService = APISERVICEPATH.stationService;
+	var templateFile   = APISERVICEPATH.templateFile;
 	var companyAccount = APISERVICEPATH.companyAccount;
 	var routeService	= APISERVICEPATH.routeService;
 
@@ -12,10 +13,12 @@ angular.module('schedulerHttpServiceModule',['ngResource']).factory('schedulerHt
 	var assignmentService = APISERVICEPATH.assignmentService;
 	schedulerHttp.getDriverList = function(paramsObj){
 		var paramsData = {
-			'apiPath':driverAccount+'driver',
+			'apiPath':driverAccount+'driver/'+paramsObj.accountId+'/secondCompanyId/'+paramsObj.secondCompanyId,
 			paramsList:{
-				'schedulerId':paramsObj.accountId,
-				'secondCompanyId':paramsObj.secondCompanyId
+				'pageNumber':paramsObj.pageNumber,
+				'pageSize':paramsObj.pageSize
+				// 'schedulerId':paramsObj.accountId,
+				// 'secondCompanyId':paramsObj.secondCompanyId
 			}
 		};
 		
@@ -29,7 +32,7 @@ angular.module('schedulerHttpServiceModule',['ngResource']).factory('schedulerHt
 				'affiCompanyId': paramsObj.secondCompanyId,
 				'identityCard': paramsObj.identityCard,
 				'licenseExpirationDate': paramsObj.licenseExpirationDate,
-				'licenseID': paramsObj.licenseID,
+				'licenseID': paramsObj.licenseId,
 				'name': paramsObj.name,
 				'operateAccountId': paramsObj.schedulerId,
 				'partyId': paramsObj.driverId,
@@ -83,8 +86,9 @@ angular.module('schedulerHttpServiceModule',['ngResource']).factory('schedulerHt
 		var paramsData = {
 			'apiPath':vehicleService+'vehicles',
 			paramsList:{
+				'pageSize':paramsObj.pageSize,
+				'pageNumber':paramsObj.pageNumber,
 				'schedulerId':paramsObj.accountId,
-				//'secondCompanyId': '555'
 				'secondCompanyId':paramsObj.secondCompanyId
 			}
 		};
@@ -94,7 +98,7 @@ angular.module('schedulerHttpServiceModule',['ngResource']).factory('schedulerHt
 
 	schedulerHttp.getSiteList = function(paramsObj){
 		var paramsData = {
-			'apiPath':stationService+'stations',
+			'apiPath':stationService+'web/',
 			paramsList:{
 				'schedulerId':paramsObj.accountId,
 				'secondCompanyId':paramsObj.secondCompanyId,
@@ -106,7 +110,6 @@ angular.module('schedulerHttpServiceModule',['ngResource']).factory('schedulerHt
 		};
 		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
 	}
-
 	schedulerHttp.addSite = function(paramsObj){
 		var paramsData = {
 			'apiPath':stationService+'station',
@@ -122,7 +125,18 @@ angular.module('schedulerHttpServiceModule',['ngResource']).factory('schedulerHt
 		return  $http({ method: 'POST',url:paramsData.apiPath,headers:{'Content-type':'application/json'},data:paramsData.paramsList});
 	}
 
+
+
+	schedulerHttp.downloadTemplateFile = function(paramsObj){
+		var paramsData = {
+			'apiPath':templateFile
+		};
+
+		return  $http({ method: 'GET',url:paramsData.apiPath,responseType:'arraybuffer'});
+	}
+
 	schedulerHttp.updateSite = function(paramsObj){
+		
 		var paramsData = {
 			'apiPath':stationService+'station',
 			paramsList:{
@@ -140,7 +154,7 @@ angular.module('schedulerHttpServiceModule',['ngResource']).factory('schedulerHt
 
 	schedulerHttp.deleteSiteByID = function(paramsObj){
 		var paramsData = {
-			'apiPath':stationService+'/'+paramsObj.stationId,
+			'apiPath':stationService+'station/'+paramsObj.stationId,
 			paramsList:{
 	            'schedulerId':paramsObj.schedulerId
 			}
@@ -148,17 +162,17 @@ angular.module('schedulerHttpServiceModule',['ngResource']).factory('schedulerHt
 		return  $http({ method: 'DELETE',url:paramsData.apiPath,params:paramsData.paramsList});
 	};
 
-	schedulerHttp.getBusDetail = function(paramsObj){
-		var paramsData = {
-			'apiPath':vehicleService+'vehicle',
-			paramsList:{
-				'schedulerUUID':paramsObj.schedulerUUID,
-				'vehicleID':paramsObj.vehicleID
-			}
-		};
+	// schedulerHttp.getBusDetail = function(paramsObj){
+	// 	var paramsData = {
+	// 		'apiPath':vehicleService+'vehicle',
+	// 		paramsList:{
+	// 			'schedulerUUID':paramsObj.schedulerUUID,
+	// 			'vehicleID':paramsObj.vehicleID
+	// 		}
+	// 	};
 
-		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
-	};
+	// 	return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
+	// };
 
 	schedulerHttp.addBus = function(paramsObj){
 		var paramsData = {
@@ -194,6 +208,7 @@ angular.module('schedulerHttpServiceModule',['ngResource']).factory('schedulerHt
 				'licensePlate': paramsObj.licensePlate,
 				'schedulerId': paramsObj.schedulerId,
 				'shuttleCompanyId': paramsObj.shuttleCompanyId,
+				'shuttleCompanyName': paramsObj.shuttleCompanyName,
 				'vehicleId': paramsObj.vehicleId,
 				'vehicleLicense': paramsObj.vehicleLicense,
 				'vehicleModel': paramsObj.vehicleModel,
@@ -221,7 +236,7 @@ angular.module('schedulerHttpServiceModule',['ngResource']).factory('schedulerHt
 	// Get scheduler's calendar result list
 	schedulerHttp.assignmentService = function(paramsObj){
 		var paramsData = {
-			'apiPath':assignmentService+'count/'+paramsObj.schedulerId+'/555',
+			'apiPath':assignmentService+'count/'+paramsObj.schedulerId+'/'+paramsObj.secondCompanyId,
 			//'apiPath':APISERVICEPATH.passengerDev+'assignments.json',
 			paramsList:{
 				'beginDate':paramsObj.beginDate,
@@ -233,10 +248,8 @@ angular.module('schedulerHttpServiceModule',['ngResource']).factory('schedulerHt
 	};
 
 	schedulerHttp.getAssignmentsByDay = function(paramsObj){
-		console.log('-- paramsObj ---')
-		console.log(1,paramsObj)
 		var paramsData = {
-			'apiPath':assignmentService+'assignments/'+paramsObj.schedulerId+'/'+paramsObj.secondCompanyId,
+			'apiPath':assignmentService+paramsObj.schedulerId+'/'+paramsObj.secondCompanyId,
 			//'apiPath':APISERVICEPATH.passengerDev+'assignments.json',
 			paramsList:{
 				'date':paramsObj.date
@@ -251,12 +264,14 @@ angular.module('schedulerHttpServiceModule',['ngResource']).factory('schedulerHt
 	// Add schuttle bus company 
     schedulerHttp.addBusCompany = function(paramsObj){
 		var paramsData = {
-			'apiPath':companyAccount+'company',
+			'apiPath':companyAccount,
 			//'apiPath':APISERVICEPATH.passengerDev+'company.json',
 			paramsList:{
 				'affiCompanyId': paramsObj.secondCompanyId,
 				//'operateAccountId':paramsObj.schedulerId,
 				'name': paramsObj.name,
+				'companyCode':'10',
+				'status':'1'
 				// 'phoneNumber': paramsObj.phoneNumber,
 				//'roleCode': ROLE_CODE.COMPANY,
 			}
@@ -269,12 +284,13 @@ angular.module('schedulerHttpServiceModule',['ngResource']).factory('schedulerHt
 	schedulerHttp.getBusCompany = function(paramsObj){
 		var paramsData = {
 			//'apiPath':APISERVICEPATH.passengerDev+'company.json',
-			'apiPath':companyAccount+'company',
+			'apiPath':companyAccount+paramsObj.schedulerId+'/parentCompanyId/'+paramsObj.secondCompanyId+'/companyCode/10',
 			'paramsList':{
-				'schedulerId': paramsObj.schedulerId,
-				'parentCompanyId': paramsObj.secondCompanyId,
-				'pageSize': paramsObj.pageSize || '',
-				'pageNumber': paramsObj.pageNumber || ''
+				//'schedulerId': paramsObj.schedulerId,
+				//'parentCompanyId': paramsObj.secondCompanyId,
+				'pageSize': paramsObj.pageSize,
+				'pageNumber': paramsObj.pageNumber
+				//'companyCode':'8'
 			}
 		};
 
@@ -284,12 +300,14 @@ angular.module('schedulerHttpServiceModule',['ngResource']).factory('schedulerHt
 	// Update schuttle bus company 
 	schedulerHttp.updateBusCompany = function(paramsObj){
 		var paramsData = {
-			'apiPath':companyAccount+'company',
+			'apiPath':companyAccount,
 			'paramsList':{
 				'operateAccountId':paramsObj.schedulerId,
 				'affiCompanyId': paramsObj.secondCompanyId,
 				'partyId': paramsObj.partyId,
 				'name': paramsObj.name,
+				'companyCode':'10',
+				'status':'1'
 				// 'phoneNumber': paramsObj.phoneNumber,
 				// 'roleCode': paramsObj.roleCode,
 				// 'status':paramsObj.status
@@ -301,11 +319,12 @@ angular.module('schedulerHttpServiceModule',['ngResource']).factory('schedulerHt
 
 	schedulerHttp.deleteBusCompany = function(paramsObj){
 		var paramsData = {
-			'apiPath':companyAccount+'company',
+			'apiPath':companyAccount,
 			'paramsList':{
 				'operateAccountId':paramsObj.schedulerId,
 				'affiCompanyId': paramsObj.secondCompanyId,
 				'name': paramsObj.name,
+				'companyCode':'10',
 				// 'phoneNumber': paramsObj.phoneNumber,
 				'partyId': paramsObj.partyId,
 				'status':'2'
@@ -320,6 +339,12 @@ angular.module('schedulerHttpServiceModule',['ngResource']).factory('schedulerHt
 
 	// Add Rote
 	schedulerHttp.addRoute = function(paramsObj){
+
+		for(var i=0;i<paramsObj.stationList.length;i++){
+			console.log()
+			paramsObj.stationList[i].departureTime = paramsObj.stationList[i].departureTime *60*1000;
+		}
+
 		var paramsData = {
 			'apiPath':routeService+'route',
 			paramsList:{
@@ -330,18 +355,34 @@ angular.module('schedulerHttpServiceModule',['ngResource']).factory('schedulerHt
 			}
 		};
 
-		console.log(1,paramsData.paramsList)
 		return	$http({ method: 'POST',url:paramsData.apiPath,headers:{'Content-type':'application/json'},data:paramsData.paramsList});
+	};
+
+
+	schedulerHttp.updateRoute = function(paramsObj){
+
+		for(var i=0;i<paramsObj.stationList.length;i++){
+			console.log()
+			paramsObj.stationList[i].departureTime = paramsObj.stationList[i].departureTime *60*1000;
+		}
+		
+		var paramsData = {
+			'apiPath':routeService+'route',
+			paramsList:{
+				'routeName': paramsObj.routeName,
+				'schedulerId': paramsObj.schedulerId,
+				'routeId': paramsObj.routeId,
+				'stationList': paramsObj.stationList
+			}
+		};
+		return	$http({ method: 'PUT',url:paramsData.apiPath,headers:{'Content-type':'application/json'},data:paramsData.paramsList});
 	};
 
 	// Get Route List
 	schedulerHttp.getRoute = function(paramsObj){
 		var paramsData = {
-			'apiPath':routeService+'route/secondCompany',
-			//'apiPath':APISERVICEPATH.passengerDev+'schedulingelements.json'
+			'apiPath':routeService+'secondCompany/'+paramsObj.secondCompanyId+'/scheduler/'+paramsObj.schedulerId,
 			'paramsList':{
-				'secondCompanyId': paramsObj.secondCompanyId,
-				'schedulerId': paramsObj.schedulerId,
 				'routeName': paramsObj.routeName,
 				'pageNumber': paramsObj.pageNumber,
 				'pageSize': paramsObj.pageSize

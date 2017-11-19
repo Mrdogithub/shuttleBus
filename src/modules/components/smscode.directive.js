@@ -1,4 +1,3 @@
-'use strict'
 /**
  * @description
  * smsCode component works in login/forget.html and login/active.html
@@ -9,7 +8,7 @@
  * @sleep={booleans}: true => init component status by "获取验证码",false => init component status by "重新获取"
  *
  */
-angular.module('smsCodeModule',[]).directive('smsCodeComponent',function(loginHttpService,REQUESTTYPE,SMSCODE_ERROR,$state){
+angular.module('smsCodeModule',[]).directive('smsCodeComponent',function(loginHttpService,REQUESTTYPE,$state){
 	return {
 		restrict:"EA",
 		template:'<button  id="smsCodeBtn" class="btn-normal" ng-class="{\'smsActive\': isActive,\'smsSheep\': !isActive}"  ng-click="invokeSmsCode()">{{defaultValue}}</button>',
@@ -39,33 +38,12 @@ angular.module('smsCodeModule',[]).directive('smsCodeComponent',function(loginHt
 						scope.smsCode = responseData.value.smsCode;
 						scope.codeStatus = "验证码已发送至"+scope.phoneNumber
 					}else{
-						switch(responseData.error.statusCode){
-							case SMSCODE_ERROR.STATUS_CODE_0100108.code:errorMessageFn(SMSCODE_ERROR.STATUS_CODE_0100108.message,responseData)
-								break;
-							case SMSCODE_ERROR.SMSCODE_ERROR_0100110.code:errorMessageFn(SMSCODE_ERROR.STATUS_CODE_0100108.message,responseData)
-								break;
-							case SMSCODE_ERROR.STATUS_CODE_0200108.code:errorMessageFn(SMSCODE_ERROR.STATUS_CODE_0200108.message,responseData)
-							break;
-							case SMSCODE_ERROR.STATUS_CODE_0200109.code:errorMessageFn(SMSCODE_ERROR.STATUS_CODE_0200109.message,responseData)
-								break;
-							case SMSCODE_ERROR.STATUS_CODE_0200110.code:errorMessageFn(SMSCODE_ERROR.STATUS_CODE_0200110.message,responseData)
-								break;
-							case SMSCODE_ERROR.STATUS_CODE_0200111.code:errorMessageFn(SMSCODE_ERROR.STATUS_CODE_0200111.message,responseData)
-								break;
-							case SMSCODE_ERROR.STATUS_CODE_0200112.code:errorMessageFn(SMSCODE_ERROR.STATUS_CODE_0200112.message,responseData)
-								break;
-							default:errorMessageFn(responseData.error.message)
-						}
-						
-						function errorMessageFn(errorMessageText,responseDataObj){
-							alertify.alert(errorMessageText,function(){
-								scope.activeText = "激活";
-								scope.disabled = false;
-							})
-						}
+						utilFactory.checkErrorCode(responseData.error.statusCode,responseData.error.message)
+						scope.activeText = "激活";
+						scope.disabled = false;
 					}
 				},function(error){
-					alertify.alert('可能遇到问题,请稍后再试。',function(){})
+					alertify.alert('可能遇到问题,请稍侯再试',function(){})
 					scope.activeText = "激活";
 					scope.disabled = false;
 				});

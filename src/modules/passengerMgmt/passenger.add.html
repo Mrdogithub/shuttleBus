@@ -1,14 +1,7 @@
 <div class="title-wrapper breadcrumb-wrapper">
 	<breadcrumb-component breadcrumb-params="breadcrumbParams" breadcrumb-text="breadcrumbText"></breadcrumb-component>
 </div>
-<div class="subTitle-wrapper">
- 	<div class="subTitle-content">
- 		<p ng-if ="!active">{{params.passengerName}}</p>
- 	</div>
- 	<div class="subTitle-operate">
-		<!-- <a ng-click="deletePassenger()">删除乘客</a> -->
- 	</div>
-</div>
+
 <div class="right-content-wrapper container-shadow-border">
 	<div class="inner-content">
 		<div class="info-wrapper">
@@ -50,7 +43,7 @@
 								   ng-maxlength="11" 
 								   ng-minlength="11"  
 								   maxlength="11" 
-								   ng-pattern ="/^[1][0,1,2,3,4,5,6,7,8,9][0-9]{9}$/" 
+								   ng-pattern ="/^[0-9][0,1,2,3,4,5,6,7,8,9][0-9]{9}$/" 
 								   name="phoneNumber" 
 								   ng-disabled="!active" 
 								   ng-class="{'edit':active,'preview':!active}" 
@@ -80,7 +73,7 @@
 					</div>
 					<div class="content-inline" >
 						<div class="content-inline-item">
-							<label class="control-label">员工ID:</label>
+							<label class="control-label">员工工号:</label>
 							<input type="text" 
 								   class= "form-control"  
 								   name="employeeId" 

@@ -1,4 +1,3 @@
-'use strict'
 /**
  * @description
  * smsCode component works in login/forget.html and login/active.html
@@ -32,16 +31,19 @@ angular.module('tableComponentModule',[]).directive('tableComponent',function(lo
 				+'				</span>'
 				+'			</li>'
 				+'		</ul>'
-				+'	</div>'
-				+'  <div ng-if="tableData.length === 0 || tableData.length == null " style="text-align: center;margin-top: 50px;">暂无数据</div>',
+				// +'  <div ng-if="tableData.length == null" style="text-align: center;margin-top: 50px;">数据加载中...</div>'
+				+'  <div ng-if="tableData.length==0" style="text-align: center;margin-top: 50px;"><h3 class="emptyTitle">{{tableConfig.defaultEmptyText}}</h3></div>'
+				+'  <div ng-if="!tableData==null" style="text-align: center;margin-top: 50px;">数据加载中...</div>',
 		scope:{
 			tableConfig:'=',
 			tableData:'='
 		},
 		link:function(scope,elements,attrs){
+
 			scope.headOptional = scope.tableConfig.setHeadOptional;
 			scope.stableFlag = scope.tableConfig.stableFlag;
 			scope.tableConfig.defaultValue = scope.tableConfig.defaultValue || null;
+			scope.tableConfig.defaultEmptyText = scope.tableConfig.defaultEmptyText || '暂无数据';
 			if(scope.headOptional){ //generate head title for table component
 				scope.setHeadOptionalFn={
 					checkArray:scope.headOptional.selectOptions,
@@ -73,7 +75,6 @@ angular.module('tableComponentModule',[]).directive('tableComponent',function(lo
 							_element = "#item"+i;
 							this.checkArray[i]=this.allSelecteFlag;
                             var _status = angular.element(document.getElementById(_element)).data('disable')
-							console.log(_status+"xxx ststu")
 							if(_status == true &&this.allSelecteFlag){
 
 								this.checkArray[i] = false;
@@ -109,13 +110,10 @@ angular.module('tableComponentModule',[]).directive('tableComponent',function(lo
 
 
 			scope.$watch('tableData',function(n,o){
-				console.log(1,n)
 				if(n === null) return;
 				if(scope.stableFlag.checkbox){
 					scope.selectObj.allSelectFlag =false;
 					//scope.selectObj.checkArray = scope.tableConfig.checkbox.checkArray;
-					console.log('checkArray')
-					console.log(scope.selectObj.checkArray)
 				}
 				// if(_beginWidth == 0){
 				// 	scope.autoColumnWidth = computeFun.getAutoWidth(n,scope.tableConfig.head)
