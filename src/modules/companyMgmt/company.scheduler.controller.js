@@ -28,7 +28,7 @@ angular.module('companySchedulerControllerModule',[])
 				var _resultData = result.data;
 				if(!_resultData.error){
 					alertify.alert('新增成功！',function(){
-						$state.go('companyAdmin.scheduler',{},{reload:true});
+						$state.go('admin.companyAdminScheduler',{},{reload:true});
 					})
 				}else{
 					utilFactory.checkErrorCode(_resultData.error.statusCode)
@@ -63,7 +63,7 @@ angular.module('companySchedulerControllerModule',[])
 			var _resultData = result.data;
 			if(!_resultData.error){
 				alertify.alert('更新成功！',function(){
-					$state.go('companyAdmin.scheduler',{},{reload:true});
+					$state.go('admin.companyAdminScheduler',{},{reload:true});
 				})
 			}else{
 				utilFactory.checkErrorCode(_resultData.error.statusCode)
@@ -128,7 +128,7 @@ angular.module('companySchedulerControllerModule',[])
 						companyHttpService.deleteSchedulerByID(_deleteParams).then(function(result){
 							var _resultData =result.data;
 							if(!_resultData.error){
-								$state.go('companyAdmin.scheduler',{},{reload:true});
+								$state.go('admin.companyAdminScheduler',{},{reload:true});
 							} else{
 								utilFactory.checkErrorCode(_resultData.error.statusCode)
 							}

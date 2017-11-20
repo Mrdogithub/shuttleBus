@@ -40,17 +40,17 @@ angular.module("loginControllerModule",[])
 							localStorageFactory.remove('account');
 							utilFactory.assignRole(_getRoleArray);
 							localStorageFactory.setObject('account',USER_ACCOUNT);
-							if(USER_ACCOUNT.ROLE_HR || USER_ACCOUNT.ROLE_SCHEDULER){
+							if(USER_ACCOUNT.ROLE_HR || USER_ACCOUNT.ROLE_SCHEDULER || USER_ACCOUNT.ROLE_APPLICATIONADMIN || USER_ACCOUNT.ROLE_SECONDADMIN){
 								return $state.go('admin.cloudData');
 							}
 							
-							if(USER_ACCOUNT.ROLE_SECONDADMIN){
-								return $state.go('companyAdmin.HR');
-							}
+							// if(USER_ACCOUNT.ROLE_SECONDADMIN){
+							// 	return $state.go('companyAdmin.HR');
+							// }
 
-							if(USER_ACCOUNT.ROLE_APPLICATIONADMIN){
-								return $state.go('company.list')
-							}
+							// if(USER_ACCOUNT.ROLE_APPLICATIONADMIN){
+							// 	return $state.go('company.list')
+							// }
 
 							if(USER_ACCOUNT.ROLE_DRIVER){
 								return alertify.alert('未分配权限,请联系统管理员',function(){

@@ -345,12 +345,12 @@ angular.module('app',['injectModules'])
 		templateUrl:'modules/schedulerMgmt/scheduler.busCompany.html',
 		controller:'schedulerbusCompanyController'
 	})
-	.state('company',{
-		url:'/company',
-		templateUrl:'modules/companyMgmt/company.html',
-		controller:'companyController'
-	})
-	.state('company.list',{
+	// .state('admin.company',{
+	// 	url:'/company',
+	// 	templateUrl:'modules/companyMgmt/company.html',
+	// 	controller:'companyController'
+	// })
+	.state('admin.companyList',{
 		url:'/companyList',
 		templateUrl:'modules/companyMgmt/company.companyList.html',
 		controller:'companyListController',
@@ -360,7 +360,7 @@ angular.module('app',['injectModules'])
 			}
 		}
 	})
-	.state('company.add',{
+	.state('admin.companyAdd',{
 		url:'/addCompany',
 		templateUrl:'modules/companyMgmt/company.addCompany.html',
 		params:{
@@ -371,7 +371,7 @@ angular.module('app',['injectModules'])
 		},
 		controller:'companyAddController'
 	})
-	.state('company.detail',{
+	.state('admin.companyDetail',{
 		url:'/detailCompany',
 		templateUrl:'modules/companyMgmt/company.detailCompany.html',
 		params:{
@@ -387,12 +387,12 @@ angular.module('app',['injectModules'])
 		},
 		controller:'companyDetailController'
 	})
-	.state('companyAdmin',{
-		url:'/companyAdmin',
-		templateUrl:'modules/companyMgmt/companyAdmin.html',
-		controller:'companyAdminController'
-	})
-	.state('companyAdmin.HR',{
+	// .state('admin.companyAdmin',{
+	// 	url:'companyAdmin',
+	// 	templateUrl:'modules/companyMgmt/companyAdmin.html',
+	// 	controller:'companyAdminController'
+	// })
+	.state('admin.companyAdminHR',{
 		url:'/hr',
 		templateUrl:'modules/companyMgmt/company.hr.html',
 		controller:'HRController',
@@ -402,7 +402,7 @@ angular.module('app',['injectModules'])
 			}
 		}
 	})
-	.state('companyAdmin.scheduler',{
+	.state('admin.companyAdminScheduler',{
 		url:'/scheduler',
 		templateUrl:'modules/companyMgmt/company.scheduler.html',
 		controller:'companySchedulerController'

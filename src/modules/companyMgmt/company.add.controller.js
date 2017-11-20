@@ -17,7 +17,7 @@ angular.module('companyAddControllerModule',[])
 			'lv2':'新增公司'
 		}
 	}else{
-		$state.go('company.list')
+		$state.go('admin.companyList')
 	}
 
 	$scope.editcompanyProfile = function(flag){
@@ -29,7 +29,7 @@ angular.module('companyAddControllerModule',[])
 	// we should provide messages for user
 	$scope.close = function(){
 		alertify.confirm('请确认是否离开该页面,未保存的数据将在离开之后丢失。',function(){
-			$state.go('company.list')
+			$state.go('admin.companyList')
 		},function(){
 
 		});
@@ -62,11 +62,11 @@ angular.module('companyAddControllerModule',[])
 			companyHttpService.addCompany(_params).then(function(result){
 			var responseData = result.data;
 			if(!responseData.error){
-				$state.go('company.list')
+				// $state.go('admin.companyList')
 				alertify.alert('新增成功！',function(){
 					$scope.submitStatusText = '完成';
 					$scope.active = true;
-					$state.go('company.list')
+					$state.go('admin.companyList')
 				})
 				}else{
 					utilFactory.checkErrorCode(responseData.error.statusCode,responseData.error.message)

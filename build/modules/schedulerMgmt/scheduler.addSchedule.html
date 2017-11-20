@@ -136,7 +136,8 @@
 						<div class="content-inline-item" style="width: 100%;" ng-class="{'has-error':formValidateTwo.routeTemplateName.$dirty && formValidateTwo.routeTemplateName.$invalid,'has-success':formValidateTwo.routeTemplateName.$dirty && !formValidateTwo.routeTemplateName.$invalid}">
 							<label for="routeTemplateName" class="control-label" >线路名称:</label>
 							<div class="input-group">
-								<select ng-options="item as item.routeTemplateName for item in params.routeTemplate track by item.routeTemplateId" name="routeTemplateName" required="" ng-model="params.routeTemplateObj">
+								<select ng-options="item as item.routeTemplateName for item in params.routeTemplate track by item.routeTemplateId" name="routeTemplateName" required="" ng-model="params.routeTemplateObj" >
+								<option value="">请选择线路</option>  
 								</select>
 							</div>
 							<sup class="requireMark">*</sup>
@@ -155,6 +156,7 @@
 							<label class=" control-label" for="licensePlate" >牌照信息:</label>
 							<div class="input-group">
 								<select ng-options="item.licensePlate for item in params.vehicles track by item.vehicleId" ng-model="params.vehicleObj" required="" name="licensePlate">
+								<option value="">请选择车辆</option> 
 								</select>
 							</div>
 							<sup class="requireMark">*</sup>
@@ -173,6 +175,7 @@
 							<label class=" control-label" for="driverName" >司机姓名:</label>
 							<div class="input-group">
 								<select ng-options="item.driverName for item in params.drivers track by item.driverId" ng-model="params.driverObj" name="driverName" required="">
+								<option value="">请选择司机</option> 
 								</select>
 							</div>
 							<sup class="requireMark">*</sup>

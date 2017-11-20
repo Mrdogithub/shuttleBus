@@ -13,7 +13,7 @@ angular.module("leftNavModule",[])
 				+					'<span style = "width:70px;display:inline-block;text-align:left;">{{menuItem.title.name}}</span>'
 				+				'</div>'
 				+   			'<ul class="menuItemList {{menuItem.title.class}}">'
-				+					'<li class="{{childMenuItem.href}}" ng-repeat="childMenuItem in menuItem.menuList" ng-click="goTo(childMenuItem.uiSref,menuItem,$event)" data-link = "{{childMenuItem.uiSref}}">'
+				+					'<li class="{{childMenuItem.href}}" has-permission="{{childMenuItem.permission}}" ng-repeat="childMenuItem in menuItem.menuList" ng-click="goTo(childMenuItem.uiSref,menuItem,$event)" data-link = "{{childMenuItem.uiSref}}">'
 				+                    '{{childMenuItem.name}}'
 				+					'</li>'
 				+				'</ul>'
@@ -96,8 +96,13 @@ angular.module("leftNavModule",[])
 								$('.menuItemList li').removeClass('activeSelected')
 								$('.'+currentActiveTab).addClass('activeSelected')
 							},200)
+
+							return
 						}
+						return
 					}
+					return
+					
 				}
 			}
         })

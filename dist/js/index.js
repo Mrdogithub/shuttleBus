@@ -1,3 +1,190 @@
+angular.module('cloudDataControllerModule',[]).controller('cloudDataController',function($scope){
+	
+	// $scope.leftSideTitle = "首页";
+	// $scope.icon ='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAASCAYAAABrXO8xAAAAAXNSR0IArs4c6QAAAR5JREFUOBGlk89KAlEUh+eWK90EuRBx1SKIwB5BXCTi2jdo7Sp6gla+Qy/gC7hQCRSC1oKbQJI2QRBtRILK6fvdjnoJlFEPfHP+/c7MYe6Mi8ziOC4Q1qEMZ5AD2RuM4RF68OCcmzsGaiQNqMABXMEQQrsgubPCK/5Wg1OCjBXlOvAc5ApP4DKoTTX4TeEwKCYJf1KmusYPkkygKUEz0hOhmHBI+qJm9DJ2sr0H81s81mt3fqt7rzph1Ru437CyetJMvMaOo6qEOA2f8N9US5umSrw8jqy/SxQd4RcfhZW8U0092Z9W0zCDFrzAOlNPGmm/tN4AtrW+jkNrjOBUe2D6C959tLocE3YtfcKf+5jhNszhA8JfbNHPWE+atoq/NQP1DeFlCFoAAAAASUVORK5CYII=';
+
+	// $scope.menuArray =[
+	// 	{
+	// 		'title':{'name':'首页','icon':$scope.icon,'class':'clouddata','uiSref':'admin.clouddata','href':'clouddata'}
+	// 	}
+	// ];
+
+	var map = new AMap.Map("container", {
+		resizeEnable: true,
+		center: [121.339766,31.196099],//地图中心点
+		zoom: 12 //地图显示的缩放级别
+	});		
+	addCloudLayer();  //叠加云数据图层
+
+	function addCloudLayer() {
+
+		var searchOptions = {};
+		var marker;
+		var icon;
+ 		var center = [121.339766,31.196099]
+		AMap.service(["AMap.CloudDataSearch"], function() {
+			
+				var search = new AMap.CloudDataSearch('598a6898305a2a4ed76a78e8', searchOptions); 
+				setInterval(randerData,10000)
+				function randerData(){
+		          	search.searchNearBy(center, 40000, function(status,result){
+		          		//console.log('xxxsafsfdasssdfasdf')
+		          					if(marker != null){
+						marker = null;
+						icon = null;
+					}
+		        	   if(result.datas){
+		        		    for (var i = 0; i < result.datas.length; i++) {
+		        				icon = new AMap.Icon({
+		        				    image: '../images/bus.png',
+		        				    size: new AMap.Size(50, 50),
+		        				    imageSize: new AMap.Size(50, 50)
+		        				});
+								var infoWindow = new AMap.InfoWindow({
+									isCustom: true,  //使用自定义窗体
+						       		offset: new AMap.Pixel(10, -15)
+					       		});
+		        				marker = new AMap.Marker({
+		        					icon: icon,
+		        					position: [result.datas[i]._location.lng,result.datas[i]._location.lat],
+		        					offset: new AMap.Pixel(-12,-12),
+		        					zIndex: 101,
+		        					title: result.datas[i]._name,
+		        					extData:{'bus_plate':result.datas[i].bus_plate,'_name':result.datas[i]._name,'_address':result.datas[i]._address,'id':result.datas[i]._id,'area_id':result.datas[i].area_id,'gps':result.datas[i]._location,'ismetro':result.datas[i].ismetro},
+		        					map: map
+		        				});
+
+
+		        				marker.on('click', markerClick);
+		       					marker.emit('click', {target: marker});
+		       					function markerClick(e) {
+							       infoWindow.setContent(createInfoWindow(e.target.G.extData.bus_plate,e.target.G.extData._name,e.target.G.extData._address));
+							       infoWindow.open(map, e.target.getPosition());
+		    					}
+		        		    }
+		        	   	}
+		        	});
+		        }
+		});
+
+
+ // AMapUI.load(['ui/misc/PathSimplifier', 'lib/$'], function(PathSimplifier, $) {
+ //        if (!PathSimplifier.supportCanvas) {
+ //            alert('当前环境不支持 Canvas！');
+ //            return;
+ //        }
+
+ //        var emptyLineStyle = {
+ //            lineWidth: 0,
+ //            fillStyle: null,
+ //            strokeStyle: null,
+ //            borderStyle: null
+ //        };
+
+ //        var pathSimplifierIns = new PathSimplifier({
+ //            zIndex: 100,
+ //            //autoSetFitView:false,
+ //            map: map, //所属的地图实例
+
+ //            getPath: function(pathData, pathIndex) {
+
+ //                return pathData.path;
+ //            },
+ //            getHoverTitle: function(pathData, pathIndex, pointIndex) {
+
+ //                return null;
+ //            },
+ //            renderOptions: {
+ //                //将点、线相关的style全部置emptyLineStyle
+ //                pathLineStyle: emptyLineStyle,
+ //                pathLineSelectedStyle: emptyLineStyle,
+ //                pathLineHoverStyle: emptyLineStyle,
+ //                keyPointStyle: emptyLineStyle,
+ //                startPointStyle: emptyLineStyle,
+ //                endPointStyle: emptyLineStyle,
+ //                keyPointHoverStyle: emptyLineStyle,
+ //                keyPointOnSelectedPathLineStyle: emptyLineStyle
+ //            }
+ //        });
+
+ //        window.pathSimplifierIns = pathSimplifierIns;
+ //        var path = [[116.41, 39.90],
+ //                [113.96, 40.55],
+ //                [111.48, 41.14],
+ //                [108.95, 41.67],
+ //                [106.38, 42.15],
+ //                [103.77, 42.57],
+ //                [101.14, 42.93],
+ //                [98.47, 43.23],
+ //                [95.78, 43.47],
+ //                [93.07, 43.64],
+ //                [90.35, 43.75],
+ //                [87.62, 43.79]]
+
+ //        var currentPath = [];
+ //        setInterval(function(){
+ //        	for(var i=0;i<path.length-i)
+ //        },1000)
+ //        for(var i =0;i<path.length;path++){
+
+ //        }
+ //        pathSimplifierIns.setData([{
+ //            name: '测试',
+ //            path: [
+                
+ //            ]
+ //        }]);
+
+ //        //initRoutesContainer(d);
+
+ //        function onload() {
+ //            pathSimplifierIns.renderLater();
+ //        }
+
+ //        function onerror(e) {
+ //            alert('图片加载失败！');
+ //        }
+
+ //        var navg1 = pathSimplifierIns.createPathNavigator(0, {
+ //            loop: true,
+ //            speed: 1000000,
+ //            pathNavigatorStyle: {
+ //                width: 50,
+ //                height: 50,
+ //                //使用图片
+ //                content: PathSimplifier.Render.Canvas.getImageContent('../images/bus.png', onload, onerror),
+ //                strokeStyle: null,
+ //                fillStyle: null,
+ //                //经过路径的样式
+ //                pathLinePassedStyle: {
+ //                    lineWidth: 0,
+ //                    strokeStyle: 'none',
+ //                    dirArrowStyle: {
+ //                        stepSpace: 1,
+ //                        strokeStyle: 'none'
+ //                    }
+ //                }
+ //            }
+ //        });
+
+ //        navg1.start();
+
+ //    });
+
+
+		function createInfoWindow (bus_plate,_name,_address){
+			var addSitePop = document.createElement("div"),formContent = document.createElement("div");
+			formContent.innerHTML = '<div class="busInfo-wrapper container-shadow-border">'
+									+'<p>'+_address+'</p>'
+									+'<p>司机姓名：'+_name+'</p>'
+									+'<p>驾照信息：'+bus_plate+'</p>'
+									+'</div>';
+			addSitePop.appendChild(formContent);
+			return addSitePop;
+		}
+
+    }    
+})
 'use strict'
 angular.module('adminControllerModule',[])
 .controller('adminController',function($scope){
@@ -9,36 +196,45 @@ angular.module('adminControllerModule',[])
 
 	$scope.menuArray =[
 		{
-			'title':{'name':'首页','icon':$scope.cloudDataIcon,'class':'clouddata','uiSref':'admin.cloudData','href':'clouddata'},
-			//'permission':'ROLE_HR&ROLE_SCHEDULER'
-			'permission':'ROLE_SYSADMIN'
+			'title':{'name':'首页','icon':$scope.cloudDataIcon,'class':'clouData','uiSref':'admin.cloudData','href':'clouData'},
+			'permission':'ROLE_HR&ROLE_SCHEDULER'
+			//'permission':'ROLE_SYSADMIN'
 		},
 		{
 			'title':{'name':'乘客管理','icon':$scope.passengerIcon,'class':'passenger','uiSref':'admin.passenger.list'},
 			'permission':'ROLE_HR',
 			'menuList':[
-				{'name':'乘客列表','class':'','uiSref':'admin.passenger.list','href':'list'},
-				{'name':'乘客反馈','class':'','permission':'','uiSref':'admin.passenger.feedback','href':'feedback'},
-				{'name':'乘坐情况','class':'','permission':'','uiSref':'admin.passenger.report.data','href':'data'}
+				{'name':'乘客列表','class':'','permission':'ROLE_HR','uiSref':'admin.passenger.list','href':'list'},
+				{'name':'乘客反馈','class':'','permission':'ROLE_HR','uiSref':'admin.passenger.feedback','href':'feedback'},
+				{'name':'乘坐情况','class':'','permission':'ROLE_HR','uiSref':'admin.passenger.report.data','href':'data'}
 			]
 		},
 		{
 			'title':{'name':'班车管理','icon':$scope.schedulerIcon,'class':'scheduler','uiSref':'admin.scheduler.route'},
 			'permission':'ROLE_SCHEDULER',
 			'menuList':[
-				{'name':'线路管理','class':'','permission':'','uiSref':'admin.scheduler.route','href':'route'},
-				{'name':'站点管理','class':'','permission':'','uiSref':'admin.scheduler.site','href':'site'},
-				{'name':'运营单位','class':'','permission':'','uiSref':'admin.scheduler.busCompany','href':'busCompany'},
-				{'name':'司机管理','class':'','permission':'','uiSref':'admin.scheduler.driver','href':'driver'},
-				{'name':'车辆管理','class':'','permission':'','uiSref':'admin.scheduler.bus','href':'bus'},
-				{'name':'排班管理','class':'','permission':'','uiSref':'admin.scheduler.calendar','href':'calendar'}
+				{'name':'线路管理','class':'','permission':'ROLE_SCHEDULER','uiSref':'admin.scheduler.route','href':'route'},
+				{'name':'站点管理','class':'','permission':'ROLE_SCHEDULER','uiSref':'admin.scheduler.site','href':'site'},
+				{'name':'运营单位','class':'','permission':'ROLE_SCHEDULER','uiSref':'admin.scheduler.busCompany','href':'busCompany'},
+				{'name':'司机管理','class':'','permission':'ROLE_SCHEDULER','uiSref':'admin.scheduler.driver','href':'driver'},
+				{'name':'车辆管理','class':'','permission':'ROLE_SCHEDULER','uiSref':'admin.scheduler.bus','href':'bus'},
+				{'name':'排班管理','class':'','permission':'ROLE_SCHEDULER','uiSref':'admin.scheduler.calendar','href':'calendar'}
 			]
 		},
 		{
 			'title':{'name':'公司管理','icon':$scope.icon,'class':'masterTab',},
 			'permission':'ROLE_SYSADMIN',
 			'menuList':[
-				{'name':'公司列表','class':'','permission':'','uiSref':'admin.master','href':'master'}
+				{'name':'公司列表','class':'','permission':'ROLE_SYSADMIN','uiSref':'admin.master','href':'master'}
+			]
+		},
+		{
+			'title':{'name':'公司管理','icon':$scope.icon,'class':'secondAdmin'},
+			'permission':'ROLE_SECONDADMIN',
+			'menuList':[
+				{'name':'公司列表','class':'','permission':'ROLE_APPLICATIONADMIN','uiSref':'admin.companyList','href':'companyList'},
+				{'name':'乘客管理员','class':'','permission':'ROLE_SECONDADMIN','uiSref':'admin.companyAdminHR','href':'hrAdmin'},
+				{'name':'班车管理员','class':'','permission':'ROLE_SECONDADMIN','uiSref':'admin.companyAdminScheduler','href':'schedulerAdmin'}
 			]
 		}
 	];
@@ -427,1070 +623,6 @@ angular.module('applicationAdminHttpServiceModule',[])
 
 	return masterHttp;
 });
-angular.module('cloudDataControllerModule',[]).controller('cloudDataController',function($scope){
-	
-	// $scope.leftSideTitle = "首页";
-	// $scope.icon ='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAASCAYAAABrXO8xAAAAAXNSR0IArs4c6QAAAR5JREFUOBGlk89KAlEUh+eWK90EuRBx1SKIwB5BXCTi2jdo7Sp6gla+Qy/gC7hQCRSC1oKbQJI2QRBtRILK6fvdjnoJlFEPfHP+/c7MYe6Mi8ziOC4Q1qEMZ5AD2RuM4RF68OCcmzsGaiQNqMABXMEQQrsgubPCK/5Wg1OCjBXlOvAc5ApP4DKoTTX4TeEwKCYJf1KmusYPkkygKUEz0hOhmHBI+qJm9DJ2sr0H81s81mt3fqt7rzph1Ru437CyetJMvMaOo6qEOA2f8N9US5umSrw8jqy/SxQd4RcfhZW8U0092Z9W0zCDFrzAOlNPGmm/tN4AtrW+jkNrjOBUe2D6C959tLocE3YtfcKf+5jhNszhA8JfbNHPWE+atoq/NQP1DeFlCFoAAAAASUVORK5CYII=';
-
-	// $scope.menuArray =[
-	// 	{
-	// 		'title':{'name':'首页','icon':$scope.icon,'class':'clouddata','uiSref':'admin.clouddata','href':'clouddata'}
-	// 	}
-	// ];
-
-	var map = new AMap.Map("container", {
-		resizeEnable: true,
-		center: [121.339766,31.196099],//地图中心点
-		zoom: 12 //地图显示的缩放级别
-	});		
-	addCloudLayer();  //叠加云数据图层
-
-	function addCloudLayer() {
-
-		var searchOptions = {};
-		var marker;
-		var icon;
- 		var center = [121.339766,31.196099]
-		AMap.service(["AMap.CloudDataSearch"], function() {
-			
-				var search = new AMap.CloudDataSearch('598a6898305a2a4ed76a78e8', searchOptions); 
-				setInterval(randerData,10000)
-				function randerData(){
-		          	search.searchNearBy(center, 40000, function(status,result){
-		          		//console.log('xxxsafsfdasssdfasdf')
-		          					if(marker != null){
-						marker = null;
-						icon = null;
-					}
-		        	   if(result.datas){
-		        		    for (var i = 0; i < result.datas.length; i++) {
-		        				icon = new AMap.Icon({
-		        				    image: '../images/bus.png',
-		        				    size: new AMap.Size(50, 50),
-		        				    imageSize: new AMap.Size(50, 50)
-		        				});
-								var infoWindow = new AMap.InfoWindow({
-									isCustom: true,  //使用自定义窗体
-						       		offset: new AMap.Pixel(10, -15)
-					       		});
-		        				marker = new AMap.Marker({
-		        					icon: icon,
-		        					position: [result.datas[i]._location.lng,result.datas[i]._location.lat],
-		        					offset: new AMap.Pixel(-12,-12),
-		        					zIndex: 101,
-		        					title: result.datas[i]._name,
-		        					extData:{'bus_plate':result.datas[i].bus_plate,'_name':result.datas[i]._name,'_address':result.datas[i]._address,'id':result.datas[i]._id,'area_id':result.datas[i].area_id,'gps':result.datas[i]._location,'ismetro':result.datas[i].ismetro},
-		        					map: map
-		        				});
-
-
-		        				marker.on('click', markerClick);
-		       					marker.emit('click', {target: marker});
-		       					function markerClick(e) {
-							       infoWindow.setContent(createInfoWindow(e.target.G.extData.bus_plate,e.target.G.extData._name,e.target.G.extData._address));
-							       infoWindow.open(map, e.target.getPosition());
-		    					}
-		        		    }
-		        	   	}
-		        	});
-		        }
-		});
-
-
- // AMapUI.load(['ui/misc/PathSimplifier', 'lib/$'], function(PathSimplifier, $) {
- //        if (!PathSimplifier.supportCanvas) {
- //            alert('当前环境不支持 Canvas！');
- //            return;
- //        }
-
- //        var emptyLineStyle = {
- //            lineWidth: 0,
- //            fillStyle: null,
- //            strokeStyle: null,
- //            borderStyle: null
- //        };
-
- //        var pathSimplifierIns = new PathSimplifier({
- //            zIndex: 100,
- //            //autoSetFitView:false,
- //            map: map, //所属的地图实例
-
- //            getPath: function(pathData, pathIndex) {
-
- //                return pathData.path;
- //            },
- //            getHoverTitle: function(pathData, pathIndex, pointIndex) {
-
- //                return null;
- //            },
- //            renderOptions: {
- //                //将点、线相关的style全部置emptyLineStyle
- //                pathLineStyle: emptyLineStyle,
- //                pathLineSelectedStyle: emptyLineStyle,
- //                pathLineHoverStyle: emptyLineStyle,
- //                keyPointStyle: emptyLineStyle,
- //                startPointStyle: emptyLineStyle,
- //                endPointStyle: emptyLineStyle,
- //                keyPointHoverStyle: emptyLineStyle,
- //                keyPointOnSelectedPathLineStyle: emptyLineStyle
- //            }
- //        });
-
- //        window.pathSimplifierIns = pathSimplifierIns;
- //        var path = [[116.41, 39.90],
- //                [113.96, 40.55],
- //                [111.48, 41.14],
- //                [108.95, 41.67],
- //                [106.38, 42.15],
- //                [103.77, 42.57],
- //                [101.14, 42.93],
- //                [98.47, 43.23],
- //                [95.78, 43.47],
- //                [93.07, 43.64],
- //                [90.35, 43.75],
- //                [87.62, 43.79]]
-
- //        var currentPath = [];
- //        setInterval(function(){
- //        	for(var i=0;i<path.length-i)
- //        },1000)
- //        for(var i =0;i<path.length;path++){
-
- //        }
- //        pathSimplifierIns.setData([{
- //            name: '测试',
- //            path: [
-                
- //            ]
- //        }]);
-
- //        //initRoutesContainer(d);
-
- //        function onload() {
- //            pathSimplifierIns.renderLater();
- //        }
-
- //        function onerror(e) {
- //            alert('图片加载失败！');
- //        }
-
- //        var navg1 = pathSimplifierIns.createPathNavigator(0, {
- //            loop: true,
- //            speed: 1000000,
- //            pathNavigatorStyle: {
- //                width: 50,
- //                height: 50,
- //                //使用图片
- //                content: PathSimplifier.Render.Canvas.getImageContent('../images/bus.png', onload, onerror),
- //                strokeStyle: null,
- //                fillStyle: null,
- //                //经过路径的样式
- //                pathLinePassedStyle: {
- //                    lineWidth: 0,
- //                    strokeStyle: 'none',
- //                    dirArrowStyle: {
- //                        stepSpace: 1,
- //                        strokeStyle: 'none'
- //                    }
- //                }
- //            }
- //        });
-
- //        navg1.start();
-
- //    });
-
-
-		function createInfoWindow (bus_plate,_name,_address){
-			var addSitePop = document.createElement("div"),formContent = document.createElement("div");
-			formContent.innerHTML = '<div class="busInfo-wrapper container-shadow-border">'
-									+'<p>'+_address+'</p>'
-									+'<p>司机姓名：'+_name+'</p>'
-									+'<p>驾照信息：'+bus_plate+'</p>'
-									+'</div>';
-			addSitePop.appendChild(formContent);
-			return addSitePop;
-		}
-
-    }    
-})
-angular.module('HRControllerModule',[])
-.controller('HRController',function(loadData,companyHttpService,utilFactory,$stateParams,$state,$scope){
-
-	// Init current user info
-	$scope.params = {'secondCompanyId':utilFactory.getSecondCompanyId(),'secondCompanyAdminId':utilFactory.getAccountId()};
-
-	// Init show/hide status for current view
-	$scope.active = false;
-	$scope.submitOnProgress = false;
-	$scope.breadcrumbText={ 'lv1':'乘客管理员'}
-
-
-	$scope.addHR = function(formValidateIsInvalid){
-		if(formValidateIsInvalid){
-			return utilFactory.setDirty($scope.formValidate);
-		}
-		$scope.submitOnProgress = true;
-		var _params = {
-			'secondCompanyId':$scope.params.secondCompanyId,
-			'name': $scope.params.name,
-			'secondCompanyAdminId':$scope.params.secondCompanyAdminId,
-			'phoneNumber':$scope.params.phoneNumber
-		}
-		alertify.confirm('确认新增名为"'+$scope.params.name+'"的这个乘客管理员？',function(){
-			companyHttpService.addHR(_params).then(function(result){
-				var _resultData = result.data;
-				if(!_resultData.error){
-					alertify.alert('新增成功！',function(){$state.go('companyAdmin.HR',{},{reload:true});})
-				}else{
-					utilFactory.checkErrorCode(_resultData.error.statusCode)
-				}
-				$scope.submitOnProgress = false;
-			},function(){
-				$scope.submitOnProgress = false;
-			})
-		},function(){
-				$scope.submitOnProgress = false;
-		}).set({labels:{ok:'确认', cancel: '取消'}, padding: true});
-	};
-
-
-	$scope.close = function(){
-		$('#myModal').modal('toggle');
-	}
-
-	$scope.updateHR = function(updateFormValidateIsInvalid){
-
-		if(updateFormValidateIsInvalid){
-			return utilFactory.setDirty($scope.updateFormValidate);
-		}
-
-		$scope.submitOnProgress = true;
-		var _params = {
-			'secondCompanyId':$scope.updateParams.secondCompanyId,
-			'secondCompanyAdminId': $scope.params.secondCompanyAdminId,
-			'name': $scope.updateParams.name,
-			'hrId': $scope.updateParams.partyId,
-			'phoneNumber': $scope.updateParams.phoneNumber
-		}
-		$('#myModal').modal('toggle');
-		companyHttpService.updateHrById(_params).then(function(result){
-			var _resultData = result.data;
-			if(!_resultData.error){
-				alertify.alert('更新成功！',function(){
-					$state.go('companyAdmin.HR',{},{reload:true});
-				})
-			}else{
-				utilFactory.checkErrorCode(_resultData.error.statusCode)
-			}
-			$scope.submitOnProgress = false;
-		},function(){})
-	};	
-
-
-	$scope.pageConfigs={
-		params:{
-			'secondCompanyAdminId': utilFactory.getAccountId(),
-			'secondCompanyId': utilFactory.getSecondCompanyId(),
-			'pageSize':'20',
-			'pageNumber':'1'
-		},
-		list:null,
-		getList:function(params){
-			return companyHttpService.getHrList(params)
-		},
-		loadData:function(){},
-		dataSet:function(result){}
-		//extendParams:function(){}
-	}
-
-	$scope.tableConfig={
-		stableFlag:{
-			arrow:true,
-			index:true,
-			checkbox:false,
-			radio:true,
-			operateIfFlag:true,
-			operate:[{
-				name:'编辑',
-				ngIf:function(){},
-				fun:function(item,event){
-
-					$scope.updateParams = {
-						'name':item.name,
-						'secondCompanyId':item.secondCompanyId,
-						'phoneNumber':item.phoneNumber,
-						'partyId':item.partyId
-					}
-					$('#myModal').modal('toggle');
-				}
-			},
-			{
-				name:'删除',
-				ngIf:function(){},
-				fun:function(item){
-					var _deleteParams = {
-						'name':item.name,
-						'secondCompanyId':item.secondCompanyId,
-						'senondCompanyName':item.secondCompanyName,
-						'secondCompanyAdminId':$scope.params.secondCompanyAdminId,
-						'phoneNumber':item.phoneNumber,
-						'hrId':item.partyId
-					}
-					alertify.confirm('确认删除"'+item.name+'"?',function(){
-						companyHttpService.deleteHrByID(_deleteParams).then(function(result){
-							var _resultData =result.data;
-							if(!_resultData.error){
-								$state.go('companyAdmin.HR',{},{reload:true});
-							} else{
-								utilFactory.checkErrorCode(_resultData.error.statusCode)
-							}
-						});
-					},function(){
-
-					}).set({labels:{ok:'确认', cancel: '取消'}, padding: true});
-		
-				}
-			}]
-		},
-		// height:290,
-		// head:[{name:'文件名',key:'filename'}],
-		// className:function(flag){},
-		// clickFun:function(){},
-		// rowClickFun:function(item){},
-		checkbox:{
-			checkArray:[]
-		},
-		defaultValue:'——',
-		defaultEmptyText:'还未添加任何乘客管理员',
-		// radioSelect:function(){},
-		operateIfFlag:true,
-		setHeadOptional:{
-			cancelSelectNum:5,
-	    	selectOptions:[
-				{
-					'parentKey':'',
-					'selfKey':{'key':'name','value':'姓名'},
-					'checkFlag':true
-				},
-				{
-					'parentKey':'',
-					'selfKey':{'key':'phoneNumber','value':'手机号'},
-					'checkFlag':true
-				}
-	    	]
-	    }
-		// changeEnable:function(item){}
-	}
-
-	$scope.$watch('$viewContentLoaded',function(event){ 
-  		$scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1'});
-	});
-})
-angular.module('companyAddControllerModule',[])
-.controller('companyAddController',function(companyHttpService,utilFactory,$stateParams,$state,$scope){
-
-	if($stateParams.secondCompanyId){
-		$scope.params = {
-			'secondCompanyId': $stateParams.secondCompanyId,
-			'applicationAdminId': $stateParams.applicationAdminId,
-			'secondCompanyName':$stateParams.secondCompanyName
-			// 'name': $stateParams.name,
-			// 'phoneNumber': $stateParams.phoneNumber
-		};
-		$scope.active = true;
-		$scope.submitOnProgress = false;
-		$scope.submitStatusText = '完成';
-		$scope.breadcrumbText={
-			'lv1':'公司列表',
-			'lv2':'新增公司'
-		}
-	}else{
-		$state.go('company.list')
-	}
-
-	$scope.editcompanyProfile = function(flag){
-		$scope.active = !flag;
-	};
-
-
-	// form information haven't been completed by user and then user trigger ‘取消’
-	// we should provide messages for user
-	$scope.close = function(){
-		alertify.confirm('请确认是否离开该页面,未保存的数据将在离开之后丢失。',function(){
-			$state.go('company.list')
-		},function(){
-
-		});
-	}
-
-	// form information completed by user and the group params whin _params obj
-	// invoke API.Before invoke api we need to check all filed's status by 'setDirty'
-	// services.
-	$scope.addcompanyProfile = function(formValidate){
-		// if all input filed empty and then user trigger submit button
-		// we will provide message for user to complete the requre filed.
-		
-		if(!formValidate) return utilFactory.setDirty($scope.formValidate)
-		// alertify.confirm('确认新增名为'+$scope.params.name+'的这个乘客？',function(){
-			
-		// },function(){
-		// 	console.log('cancel')
-		// })
-
-		var _params = {
-				'secondCompanyId': $scope.params.secondCompanyId,
-				'secondCompanyName':$scope.params.secondCompanyName,
-				'adminName':$scope.params.adminName,
-				'name': $scope.params.name,
-				'applicationAdminId': $scope.params.applicationAdminId,
-				'phoneNumber': $scope.params.phoneNumber
-		}
-
-		alertify.confirm('确认新增 "'+$scope.params.name+'"，并添加 "'+$scope.params.adminName+'" 为管理员吗？',function(){
-			companyHttpService.addCompany(_params).then(function(result){
-			var responseData = result.data;
-			if(!responseData.error){
-				$state.go('company.list')
-				alertify.alert('新增成功！',function(){
-					$scope.submitStatusText = '完成';
-					$scope.active = true;
-					$state.go('company.list')
-				})
-				}else{
-					utilFactory.checkErrorCode(responseData.error.statusCode,responseData.error.message)
-				}
-			},function(errorResult){
-				alertify.alert(errorResult.error.message)
-			})
-		},function(){
-
-		})
-	}
-})
-angular.module('companyControllerModule',[])
-.controller('companyController',function($scope){
-	$scope.icon ='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAASCAYAAABrXO8xAAAAAXNSR0IArs4c6QAAAR5JREFUOBGlk89KAlEUh+eWK90EuRBx1SKIwB5BXCTi2jdo7Sp6gla+Qy/gC7hQCRSC1oKbQJI2QRBtRILK6fvdjnoJlFEPfHP+/c7MYe6Mi8ziOC4Q1qEMZ5AD2RuM4RF68OCcmzsGaiQNqMABXMEQQrsgubPCK/5Wg1OCjBXlOvAc5ApP4DKoTTX4TeEwKCYJf1KmusYPkkygKUEz0hOhmHBI+qJm9DJ2sr0H81s81mt3fqt7rzph1Ru437CyetJMvMaOo6qEOA2f8N9US5umSrw8jqy/SxQd4RcfhZW8U0092Z9W0zCDFrzAOlNPGmm/tN4AtrW+jkNrjOBUe2D6C959tLocE3YtfcKf+5jhNszhA8JfbNHPWE+atoq/NQP1DeFlCFoAAAAASUVORK5CYII=';
-
-	$scope.menuArray =[
-		{
-			'title':{'name':'公司管理','icon':$scope.icon},
-			'permission':'ROLE_APPLICATIONADMIN',
-			'menuList':[
-				{'name':'公司列表','class':'','permission':'','uiSref':'admin.company.list','href':'companyList'}
-			]
-		}
-	];
-});
-angular.module('companySchedulerControllerModule',[])
-.controller('companySchedulerController',function(companyHttpService,utilFactory,$stateParams,$state,$scope){
-
-	$scope.params = {
-		'secondCompanyId':utilFactory.getSecondCompanyId(),
-		'secondCompanyAdminId':utilFactory.getAccountId(),
-		'secondCompanyName':utilFactory.getSecondCompanyName()
-	};
-	$scope.active = false;
-	$scope.submitOnProgress = false;
-	$scope.breadcrumbText={ 'lv1':'班车管理员'};
-
-	$scope.addScheduler = function(formValidateIsInvalid){
-		if(formValidateIsInvalid){
-			return utilFactory.setDirty($scope.formValidate);
-		}
-		$scope.submitOnProgress = true;
-		var _params = {
-			'secondCompanyId':$scope.params.secondCompanyId,
-			'secondCompanyName': $scope.params.secondCompanyName,
-			'name': $scope.params.name,
-			'secondCompanyAdminId':$scope.params.secondCompanyAdminId,
-			'phoneNumber':$scope.params.phoneNumber
-		}
-
-		alertify.confirm('确认新增名为"'+$scope.params.name+'"的这个班车管理员?',function(){
-			companyHttpService.addScheduler(_params).then(function(result){
-				var _resultData = result.data;
-				if(!_resultData.error){
-					alertify.alert('新增成功！',function(){
-						$state.go('companyAdmin.scheduler',{},{reload:true});
-					})
-				}else{
-					utilFactory.checkErrorCode(_resultData.error.statusCode)
-				}
-				$scope.submitOnProgress = false;
-			},function(){})
-		},function(){
-			$scope.submitOnProgress = false;
-		}).set({labels:{ok:'确认', cancel: '取消'}, padding: true});
-	};
-
-	$scope.close = function(){ $('#myModal').modal('toggle');}
-
-	$scope.updateScheduler = function(updateFormValidateIsInvalid){
-
-		if(updateFormValidateIsInvalid){
-			return utilFactory.setDirty($scope.updateFormValidate);
-		}
-
-		$scope.submitOnProgress = true;
-		var _params = {
-			'secondCompanyId':$scope.updateParams.secondCompanyId,
-			'secondCompanyAdminId': $scope.params.secondCompanyAdminId,
-			'name': $scope.updateParams.name,
-			'partyId': $scope.updateParams.partyId,
-			'phoneNumber': $scope.updateParams.phoneNumber,
-			//'roleCode':$scope.updateParams.roleCode,
-			//'status':$scope.updateParams.status
-		}
-		$('#myModal').modal('toggle');
-		companyHttpService.updateSchedulerById(_params).then(function(result){
-			var _resultData = result.data;
-			if(!_resultData.error){
-				alertify.alert('更新成功！',function(){
-					$state.go('companyAdmin.scheduler',{},{reload:true});
-				})
-			}else{
-				utilFactory.checkErrorCode(_resultData.error.statusCode)
-			}
-			$scope.submitOnProgress = false;
-		},function(){
-			$scope.submitOnProgress = false;
-		})
-	};	
-
-	$scope.pageConfigs={
-		params:{
-			'pageSize':'20',
-			'pageNumber':'1',
-			'secondCompanyAdminId': utilFactory.getAccountId(),
-			'secondCompanyId': utilFactory.getSecondCompanyId()
-		},
-		list:null,
-		getList:function(params){
-			return companyHttpService.getSchedulerList(params)
-		},
-		loadData:function(){},
-		dataSet:function(result){}
-		//extendParams:function(){}
-	}
-
-	$scope.tableConfig={
-		stableFlag:{
-			arrow:true,
-			index:true,
-			checkbox:false,
-			radio:true,
-			operateIfFlag:true,
-			operate:[{
-				name:'编辑',
-				ngIf:function(){},
-				fun:function(item,event){
-
-					$scope.updateParams = {
-						'name':item.name,
-						'secondCompanyId':item.secondCompanyId,
-						'phoneNumber':item.phoneNumber,
-						'partyId':item.partyId
-					}
-					$('#myModal').modal('toggle');
-				}
-			},
-			{
-				name:'删除',
-				ngIf:function(){},
-				fun:function(item){
-					console.log(1,item)
-					var _deleteParams = {
-						'name':item.name,
-						'secondCompanyId':item.secondCompanyId,
-						'senondCompanyName':item.secondCompanyName,
-						'secondCompanyAdminId':$scope.params.secondCompanyAdminId,
-						'phoneNumber':item.phoneNumber,
-						'partyId':item.partyId
-					}
-					alertify.confirm('确认删除"'+item.name+'"?',function(){
-						companyHttpService.deleteSchedulerByID(_deleteParams).then(function(result){
-							var _resultData =result.data;
-							if(!_resultData.error){
-								$state.go('companyAdmin.scheduler',{},{reload:true});
-							} else{
-								utilFactory.checkErrorCode(_resultData.error.statusCode)
-							}
-						});
-					},function(){
-
-					}).set({labels:{ok:'确认', cancel: '取消'}, padding: true});
-		
-				}
-			}]
-		},
-		// height:290,
-		// head:[{name:'文件名',key:'filename'}],
-		// className:function(flag){},
-		// clickFun:function(){},
-		// rowClickFun:function(item){},
-		checkbox:{
-			checkArray:[]
-		},
-		defaultValue:'——',
-		defaultEmptyText:'还未添加任何班车管理员',
-		// radioSelect:function(){},
-		operateIfFlag:true,
-		setHeadOptional:{
-			cancelSelectNum:5,
-	    	selectOptions:[
-				{
-					'parentKey':'',
-					'selfKey':{'key':'name','value':'姓名'},
-					'checkFlag':true
-				},
-				{
-					'parentKey':'',
-					'selfKey':{'key':'phoneNumber','value':'手机号'},
-					'checkFlag':true
-				}
-	    	]
-	    }
-		// changeEnable:function(item){}
-	}
-
-	$scope.$watch('$viewContentLoaded',function(event){ 
-  		$scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1'});
-	});
-})
-angular.module('companyHttpServiceModule',[])
-.factory('companyHttpService',function($http,ROLE_CODE,localStorageFactory,APISERVICEPATH){
-	var companyHttp = {};
-	var companyAccount = APISERVICEPATH.companyAccount;
-	var hrService = APISERVICEPATH.hrService;
-	var schedulerService = APISERVICEPATH.schedulerService
-	var USER_ROLE = localStorageFactory.getObject('account',null);
-	
-	companyHttp.addCompany = function(paramsObj){
-		var paramsData = {
-			'apiPath':companyAccount,
-			paramsList:{
-				'affiCompanyId': paramsObj.secondCompanyId,
-				'affiCompanyName': paramsObj.secondCompanyName,
-				'name': paramsObj.name,
-				'adminName':paramsObj.adminName,
-				//'operateAccountId': paramsObj.applicationAdminId,
-				'phoneNumber': paramsObj.phoneNumber,
-				'companyCode':'9'
-			}
-		};
-		return  $http({ method: 'POST',url:paramsData.apiPath,headers:{'Content-type':'application/json'},data:paramsData.paramsList});
-	};
-	
-	companyHttp.getCompanyList = function(paramsObj){
-		var paramsData = {
-			'apiPath':companyAccount+paramsObj.applicationAdminId+'/parentCompanyId/'+paramsObj.secondCompanyId+'/companyCode/9',
-			paramsList:{
-				// 'schedulerId': paramsObj.applicationAdminId,
-				// 'parentCompanyId':paramsObj.secondCompanyId,
-				'pageNumber': paramsObj.pageNumber,
-				'pageSize':paramsObj.pageSize
-				// 'companyCode':'3'
-			}
-		};
-
-		console.log(1,paramsData)
-
-		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
-	}
-
-	companyHttp.updateCompanyByID = function(paramsObj){
-		var paramsData = {
-			'apiPath':companyAccount,
-			paramsList:{
-			  'affiCompanyId': paramsObj.secondCompanyId,
-			  'affiCompanyName': paramsObj.secondCompanyName,
-			  'name': paramsObj.companyName,
-			  'adminName':paramsObj.adminName,
-			  'adminPartyId':paramsObj.userId,
-			  'operateAccountId': paramsObj.applicationAdminId,
-			  'partyId': paramsObj.companyId,
-			  'phoneNumber': paramsObj.phoneNumber,
-			  'status': '1',
-			  'companyCode':'9'
-			}
-		};
-
-		return  $http({ method: 'PUT',url:paramsData.apiPath,data:paramsData.paramsList,headers:{'Content-type':'application/json'}});
-	};
-
-	companyHttp.deleteCompanyByID = function(paramsObj){
-		var paramsData = {
-			'apiPath':companyAccount,
-			paramsList:{
-			  'affiCompanyId': paramsObj.secondCompanyId,
-			  'affiCompanyName': paramsObj.secondCompanyName,
-			  'name': paramsObj.companyName,
-			  'adminName':paramsObj.adminName,
-			  'adminPartyId':paramsObj.userId,
-			  'operateAccountId': paramsObj.applicationAdminId,
-			  'partyId': paramsObj.companyId,
-			  'phoneNumber': paramsObj.phoneNumber,
-			  'status': '2',
-			  'companyCode':'9'
-			}
-		};
-		return  $http({ method: 'PUT',url:paramsData.apiPath,data:paramsData.paramsList,headers:{'Content-type':'application/json'}});
-	};
-
-	companyHttp.addHR = function(paramsObj){
-		
-		var paramsData = {
-			'apiPath':hrService,
-			paramsList:{
-				'affiCompanyId': paramsObj.secondCompanyId,
-			//	'affiCompanyName': paramsObj.secondCompanyName,
-				'name': paramsObj.name,
-				'operateAccountId': paramsObj.secondCompanyAdminId,
-				'phoneNumber': paramsObj.phoneNumber
-			}
-		};
-		return  $http({ method: 'POST',url:paramsData.apiPath,headers:{'Content-type':'application/json'},data:paramsData.paramsList});
-	};
-
-	companyHttp.getHrList = function(paramsObj){
-		var paramsData = {
-			'apiPath':hrService+'superAdminId/'+paramsObj.secondCompanyAdminId+'/userCompanyId/'+paramsObj.secondCompanyId,
-			paramsList:{
-				'pageSize':paramsObj.pageSize,
-				'pageNumber':paramsObj.pageNumber
-			}
-		};
-
-		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
-	}
-
-	companyHttp.deleteHrByID = function(paramsObj){
-		var paramsData = {
-			'apiPath':hrService,
-			paramsList:{
-				'affiCompanyId': paramsObj.secondCompanyId,
-				'affiCompanyName': paramsObj.secondCompanyName ||'111',
-				'name': paramsObj.name,
-				'operateAccountId': paramsObj.secondCompanyAdminId,
-				'phoneNumber': paramsObj.phoneNumber,
-				'partyId':paramsObj.hrId,
-				'status': '2'
-			}
-		};
-
-		return  $http({ method: 'PUT',url:paramsData.apiPath,data:paramsData.paramsList,headers:{'Content-type':'application/json'}});
-	};
-
-	companyHttp.updateHrById = function(paramsObj){
-		var paramsData = {
-			'apiPath':hrService,
-			paramsList:{
-				'affiCompanyId': paramsObj.secondCompanyId,
-				'affiCompanyName': paramsObj.secondCompanyName,
-				'name': paramsObj.name,
-				'operateAccountId': paramsObj.secondCompanyAdminId,
-				'phoneNumber': paramsObj.phoneNumber,
-				'partyId':paramsObj.hrId
-			}
-		};
-
-		return  $http({ method: 'PUT',url:paramsData.apiPath,data:paramsData.paramsList,headers:{'Content-type':'application/json'}});
-	};
-
-	companyHttp.addScheduler = function(paramsObj){
-		
-		var paramsData = {
-			'apiPath':schedulerService,
-			paramsList:{
-				'affiCompanyId': paramsObj.secondCompanyId,
-				'affiCompanyName': paramsObj.secondCompanyName,
-				'name': paramsObj.name,
-				'operateAccountId': paramsObj.secondCompanyAdminId,
-				'phoneNumber': paramsObj.phoneNumber
-			}
-		};
-		return  $http({ method: 'POST',url:paramsData.apiPath,headers:{'Content-type':'application/json'},data:paramsData.paramsList});
-	};
-
-	companyHttp.getSchedulerList = function(paramsObj){
-		var paramsData = {
-			'apiPath':schedulerService+'superAdminId/'+paramsObj.secondCompanyAdminId+'/userCompanyId/'+paramsObj.secondCompanyId,
-			paramsList:{
-				'pageSize':paramsObj.pageSize,
-				'pageNumber':paramsObj.pageNumber
-				// 'superAdminId': paramsObj.secondCompanyAdminId,
-				// 'userCompanyId':paramsObj.secondCompanyId
-			}
-		};
-
-		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
-	}
-
-	companyHttp.deleteSchedulerByID = function(paramsObj){
-		var paramsData = {
-			'apiPath':schedulerService,
-			paramsList:{
-				'affiCompanyId': paramsObj.secondCompanyId,
-				'affiCompanyName': paramsObj.secondCompanyName,
-				'name': paramsObj.name,
-				'operateAccountId': paramsObj.secondCompanyAdminId,
-				'phoneNumber': paramsObj.phoneNumber,
-				'partyId':paramsObj.partyId,
-				'status': '2'
-			}
-		};
-
-		return  $http({ method: 'PUT',url:paramsData.apiPath,data:paramsData.paramsList,headers:{'Content-type':'application/json'}});
-	};
-
-	companyHttp.updateSchedulerById = function(paramsObj){
-		var paramsData = {
-			'apiPath':schedulerService,
-			paramsList:{
-				'affiCompanyId': paramsObj.secondCompanyId,
-				'affiCompanyName': paramsObj.secondCompanyName,
-				'name': paramsObj.name,
-				'operateAccountId': paramsObj.secondCompanyAdminId,
-				'phoneNumber': paramsObj.phoneNumber,
-				'partyId':paramsObj.partyId
-			}
-		};
-
-		return  $http({ method: 'PUT',url:paramsData.apiPath,data:paramsData.paramsList,headers:{'Content-type':'application/json'}});
-	};
-	return companyHttp;
-});
-angular.module('companyAdminControllerModule',[])
-.controller('companyAdminController',function($scope){
-	$scope.icon ='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAASCAYAAABrXO8xAAAAAXNSR0IArs4c6QAAAR5JREFUOBGlk89KAlEUh+eWK90EuRBx1SKIwB5BXCTi2jdo7Sp6gla+Qy/gC7hQCRSC1oKbQJI2QRBtRILK6fvdjnoJlFEPfHP+/c7MYe6Mi8ziOC4Q1qEMZ5AD2RuM4RF68OCcmzsGaiQNqMABXMEQQrsgubPCK/5Wg1OCjBXlOvAc5ApP4DKoTTX4TeEwKCYJf1KmusYPkkygKUEz0hOhmHBI+qJm9DJ2sr0H81s81mt3fqt7rzph1Ru437CyetJMvMaOo6qEOA2f8N9US5umSrw8jqy/SxQd4RcfhZW8U0092Z9W0zCDFrzAOlNPGmm/tN4AtrW+jkNrjOBUe2D6C959tLocE3YtfcKf+5jhNszhA8JfbNHPWE+atoq/NQP1DeFlCFoAAAAASUVORK5CYII=';
-	$scope.menuArray =[
-		{
-			'title':{'name':'公司管理','icon':$scope.icon,'class':'secondAdmin'},
-			'permission':'ROLE_SECONDADMIN',
-			'menuList':[
-				{'name':'乘客管理员','class':'','permission':'','uiSref':'companyAdmin.HR','href':'hr'},
-				{'name':'班车管理员','class':'','permission':'','uiSref':'companyAdmin.scheduler','href':'scheduler'}
-			]
-		}
-	];
-});
-angular.module('companyDetailControllerModule',[])
-.controller('companyDetailController',function(companyHttpService,utilFactory,$stateParams,$state,$scope){
-	if($stateParams.secondCompanyId){
-
-		$scope.params = {
-			'secondCompanyId': $stateParams.secondCompanyId,
-			'companyName': $stateParams.companyName,
-			'adminName':$stateParams.adminName,
-			'companyId': $stateParams.companyId,
-			'userId':$stateParams.userId,
-			'applicationAdminId': $stateParams.applicationAdminId,
-			'companyId': $stateParams.companyId,
-			'phoneNumber': $stateParams.phoneNumber
-		};
-		$scope.active = false;
-		$scope.active_one = false;
-		$scope.submitOnProgress = false;
-		$scope.breadcrumbText={
-			'lv1':'公司列表',
-			'lv2':'公司详情'
-		}
-	}else{
-		$state.go('company.list')
-	}
-
-	$scope.editCompany = function(flag){ $scope.active = !flag; };
-
-	$scope.editCompanyName = function(flag){ $scope.active_one = !flag }
-
-	$scope.updateCompany = function(){
-		$scope.submitOnProgress = true;
-		var _params = {
-			'secondCompanyId': $scope.params.secondCompanyId,
-			'companyName': $scope.params.companyName,
-			'adminName':$scope.params.adminName,
-			'companyId': $scope.params.companyId,
-			'userId':$scope.params.userId,
-			'applicationAdminId': $scope.params.applicationAdminId,
-			'companyId': $scope.params.companyId,
-			'phoneNumber': $scope.params.phoneNumber
-		}
-
-		companyHttpService.updateCompanyByID(_params).then(function(result){
-			$scope.submitOnProgress = false;
-			var _resultData = result.data;
-			if(!_resultData.error){
-				alertify.alert('更新成功!',function(){
-					$state.go('company.list')
-				})
-			}else{
-				utilFactory.checkErrorCode(_resultData.error.statusCode)
-			}
-		},function(){})
-	};
-})
-angular.module('companyListControllerModule',[])
-.controller('companyListController',function(loadData,companyHttpService,utilFactory,$state,$scope){
-	
-	// If data empty wil use empry page replace table.
-	$scope.dataIsEmpty = false;
-	if(!loadData.data.error &&(!loadData.data.value || !loadData.data.value.list.length)){
-		$scope.dataIsEmpty = true;
-	
-	}else if(loadData.data.error){
-		utilFactory.checkErrorCode(loadData.data.error.statusCode)
-		
-	}
-
-
-	$scope.selectAllStatus = false;
-	$scope.pageConfigs={
-		params:{
-			'pageSize':'',
-			'pageNumber':'',
-			'applicationAdminId':utilFactory.getAccountId(),
-			'secondCompanyId':utilFactory.getSecondCompanyId(),
-			'secondCompanyName':utilFactory.getSecondCompanyName()
-		},
-		list:null,
-		getList:function(params){
-			return companyHttpService.getCompanyList(params)
-		},
-		loadData:function(){},
-		dataSet:function(result){
-			if(result.value != null){
-				var _result = result.value;
-				for(var i=0;i<_result.length;i++){
-					_result[i]['status'] =_result[i]['status'] == 0?'未激活':'已激活'
-				}
-			}
-		}
-		//extendParams:function(){}
-	}
-	var _params = {
-			'pageSize':'',
-			'pageNumber':'',
-			'applicationAdminId':utilFactory.getAccountId(),
-			'secondCompanyId':utilFactory.getSecondCompanyId()
-		};
-	$scope.pageConfigs.getList(_params)
-	$scope.queryByKeyObj = {
-		'active':{'key':'name','value':'管理员'},
-		'list':[{'key':'phoneNumber','value':'管理员手机'}]
-	}
-
-	$scope.selectKey = function(activeObj){
-		$scope.queryByKeyObj.list.length = 0;
-		$scope.queryByKeyObj.list.push( {'key':$scope.queryByKeyObj.active.key,'value':$scope.queryByKeyObj.active.value})
-		$scope.queryByKeyObj.active.key = activeObj.key;
-		$scope.queryByKeyObj.active.value = activeObj.value;
-
-		$('.dropdown-menu').css('display','none')
-	}
-
-	$scope.showQueryKeyList = function(){
-		$('.dropdown-menu').css('display','block')
-	}
-
-	$scope.addCompany = function(){
-		$state.go('company.add',{'applicationAdminId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId(),'secondCompanyName':utilFactory.getSecondCompanyName()})
-	};
-
-	$scope.tableConfig={
-		stableFlag:{
-			arrow:true,
-			index:true,
-			checkbox:false,
-			radio:true,
-			operate:[{
-				name:'查看详情',
-				ngIf:function(){},
-				fun:function(item){
-					var _params = {
-						'secondCompanyId': item.secondCompanyId,
-						'companyName': item.name,
-						'adminName':item.adminName,
-						'companyId': item.partyId,
-						'userId':item.adminPartyId,
-						'applicationAdminId': utilFactory.getAccountId(),
-						'secondCompanyName':utilFactory.getSecondCompanyName(),
-						'phoneNumber': item.adminPhoneNumber
-					}
-					$state.go('company.detail',_params);
-				}
-			},
-			{
-				name:'删除',
-				ngIf:function(){},
-				fun:function(item){
-
-					var _deleteParams = {
-						'secondCompanyId': item.secondCompanyId,
-						'companyName': item.name,
-						'adminName':item.adminName,
-						'companyId': item.partyId,
-						'userId':item.adminPartyId,
-						'applicationAdminId': utilFactory.getAccountId(),
-						'secondCompanyName':utilFactory.getSecondCompanyName(),
-						'phoneNumber': item.adminPhoneNumber
-					}
-
-					alertify.confirm('确认删除"'+item.name+'"吗?',function(){
-						companyHttpService.deleteCompanyByID(_deleteParams).then(function(result){
-							var _resultData =result.data;
-							if(!_resultData.error){
-								$state.go('company.list',{},{reload:true});
-							} else{
-								utilFactory.checkErrorCode(_resultData.error.statusCode)
-							}
-						});
-					},function(){
-
-					}).set({labels:{ok:'确认', cancel: '取消'}, padding: true});
-		
-				}
-			}]
-		},
-		// height:290,
-		// head:[{name:'文件名',key:'filename'}],
-		// className:function(flag){},
-		// clickFun:function(){},
-		// rowClickFun:function(item){},
-		checkbox:{
-			checkArray:[]
-		},
-		defaultValue:'——',
-		// radioSelect:function(){},
-		operateIfFlag:true,
-		setHeadOptional:{
-			cancelSelectNum:5,
-			selectOptions:[
-				{
-					'parentKey':'',
-					'selfKey':{'key':'name','value':'公司名称'},
-					'checkFlag':true
-				},
-				{
-					'parentKey':'',
-					'selfKey':{'key':'adminName','value':'管理员'},
-					'checkFlag':true
-				},
-				{
-					'parentKey':'',
-					'selfKey':{'key':'adminPhoneNumber','value':'管理员手机'},
-					'checkFlag':true
-				}
-			]
-		}
-		// changeEnable:function(item){}
-	}
-	
-	$scope.$watch('$viewContentLoaded',function(event){ 
-		$scope.pageConfigs.getList(_params)
-  		$scope.$broadcast('refreshPageList',{pageSize:'',pageNo:''});
-	});
-})
 angular.module('constModule',[])
 
 .constant('APISERVICEPATH',{
@@ -2115,12 +1247,12 @@ angular.module('app',['injectModules'])
 		templateUrl:'modules/schedulerMgmt/scheduler.busCompany.html',
 		controller:'schedulerbusCompanyController'
 	})
-	.state('company',{
-		url:'/company',
-		templateUrl:'modules/companyMgmt/company.html',
-		controller:'companyController'
-	})
-	.state('company.list',{
+	// .state('admin.company',{
+	// 	url:'/company',
+	// 	templateUrl:'modules/companyMgmt/company.html',
+	// 	controller:'companyController'
+	// })
+	.state('admin.companyList',{
 		url:'/companyList',
 		templateUrl:'modules/companyMgmt/company.companyList.html',
 		controller:'companyListController',
@@ -2130,7 +1262,7 @@ angular.module('app',['injectModules'])
 			}
 		}
 	})
-	.state('company.add',{
+	.state('admin.companyAdd',{
 		url:'/addCompany',
 		templateUrl:'modules/companyMgmt/company.addCompany.html',
 		params:{
@@ -2141,7 +1273,7 @@ angular.module('app',['injectModules'])
 		},
 		controller:'companyAddController'
 	})
-	.state('company.detail',{
+	.state('admin.companyDetail',{
 		url:'/detailCompany',
 		templateUrl:'modules/companyMgmt/company.detailCompany.html',
 		params:{
@@ -2157,12 +1289,12 @@ angular.module('app',['injectModules'])
 		},
 		controller:'companyDetailController'
 	})
-	.state('companyAdmin',{
-		url:'/companyAdmin',
-		templateUrl:'modules/companyMgmt/companyAdmin.html',
-		controller:'companyAdminController'
-	})
-	.state('companyAdmin.HR',{
+	// .state('admin.companyAdmin',{
+	// 	url:'companyAdmin',
+	// 	templateUrl:'modules/companyMgmt/companyAdmin.html',
+	// 	controller:'companyAdminController'
+	// })
+	.state('admin.companyAdminHR',{
 		url:'/hr',
 		templateUrl:'modules/companyMgmt/company.hr.html',
 		controller:'HRController',
@@ -2172,7 +1304,7 @@ angular.module('app',['injectModules'])
 			}
 		}
 	})
-	.state('companyAdmin.scheduler',{
+	.state('admin.companyAdminScheduler',{
 		url:'/scheduler',
 		templateUrl:'modules/companyMgmt/company.scheduler.html',
 		controller:'companySchedulerController'
@@ -2180,6 +1312,883 @@ angular.module('app',['injectModules'])
 	$urlRouterProvider.otherwise('entry/check')
 
 }]);
+angular.module('HRControllerModule',[])
+.controller('HRController',function(loadData,companyHttpService,utilFactory,$stateParams,$state,$scope){
+
+	// Init current user info
+	$scope.params = {'secondCompanyId':utilFactory.getSecondCompanyId(),'secondCompanyAdminId':utilFactory.getAccountId()};
+
+	// Init show/hide status for current view
+	$scope.active = false;
+	$scope.submitOnProgress = false;
+	$scope.breadcrumbText={ 'lv1':'乘客管理员'}
+
+
+	$scope.addHR = function(formValidateIsInvalid){
+		if(formValidateIsInvalid){
+			return utilFactory.setDirty($scope.formValidate);
+		}
+		$scope.submitOnProgress = true;
+		var _params = {
+			'secondCompanyId':$scope.params.secondCompanyId,
+			'name': $scope.params.name,
+			'secondCompanyAdminId':$scope.params.secondCompanyAdminId,
+			'phoneNumber':$scope.params.phoneNumber
+		}
+		alertify.confirm('确认新增名为"'+$scope.params.name+'"的这个乘客管理员？',function(){
+			companyHttpService.addHR(_params).then(function(result){
+				var _resultData = result.data;
+				if(!_resultData.error){
+					alertify.alert('新增成功！',function(){$state.go('admin.companyAdminHR',{},{reload:true});})
+				}else{
+					utilFactory.checkErrorCode(_resultData.error.statusCode)
+				}
+				$scope.submitOnProgress = false;
+			},function(){
+				$scope.submitOnProgress = false;
+			})
+		},function(){
+				$scope.submitOnProgress = false;
+		}).set({labels:{ok:'确认', cancel: '取消'}, padding: true});
+	};
+
+
+	$scope.close = function(){
+		$('#myModal').modal('toggle');
+	}
+
+	$scope.updateHR = function(updateFormValidateIsInvalid){
+
+		if(updateFormValidateIsInvalid){
+			return utilFactory.setDirty($scope.updateFormValidate);
+		}
+
+		$scope.submitOnProgress = true;
+		var _params = {
+			'secondCompanyId':$scope.updateParams.secondCompanyId,
+			'secondCompanyAdminId': $scope.params.secondCompanyAdminId,
+			'name': $scope.updateParams.name,
+			'hrId': $scope.updateParams.partyId,
+			'phoneNumber': $scope.updateParams.phoneNumber
+		}
+		$('#myModal').modal('toggle');
+		companyHttpService.updateHrById(_params).then(function(result){
+			var _resultData = result.data;
+			if(!_resultData.error){
+				alertify.alert('更新成功！',function(){
+					$state.go('admin.companyAdminHR',{},{reload:true});
+				})
+			}else{
+				utilFactory.checkErrorCode(_resultData.error.statusCode)
+			}
+			$scope.submitOnProgress = false;
+		},function(){})
+	};	
+
+
+	$scope.pageConfigs={
+		params:{
+			'secondCompanyAdminId': utilFactory.getAccountId(),
+			'secondCompanyId': utilFactory.getSecondCompanyId(),
+			'pageSize':'20',
+			'pageNumber':'1'
+		},
+		list:null,
+		getList:function(params){
+			return companyHttpService.getHrList(params)
+		},
+		loadData:function(){},
+		dataSet:function(result){}
+		//extendParams:function(){}
+	}
+
+	$scope.tableConfig={
+		stableFlag:{
+			arrow:true,
+			index:true,
+			checkbox:false,
+			radio:true,
+			operateIfFlag:true,
+			operate:[{
+				name:'编辑',
+				ngIf:function(){},
+				fun:function(item,event){
+
+					$scope.updateParams = {
+						'name':item.name,
+						'secondCompanyId':item.secondCompanyId,
+						'phoneNumber':item.phoneNumber,
+						'partyId':item.partyId
+					}
+					$('#myModal').modal('toggle');
+				}
+			},
+			{
+				name:'删除',
+				ngIf:function(){},
+				fun:function(item){
+					var _deleteParams = {
+						'name':item.name,
+						'secondCompanyId':item.secondCompanyId,
+						'senondCompanyName':item.secondCompanyName,
+						'secondCompanyAdminId':$scope.params.secondCompanyAdminId,
+						'phoneNumber':item.phoneNumber,
+						'hrId':item.partyId
+					}
+					alertify.confirm('确认删除"'+item.name+'"?',function(){
+						companyHttpService.deleteHrByID(_deleteParams).then(function(result){
+							var _resultData =result.data;
+							if(!_resultData.error){
+								$state.go('admin.companyAdminHR',{},{reload:true});
+							} else{
+								utilFactory.checkErrorCode(_resultData.error.statusCode)
+							}
+						});
+					},function(){
+
+					}).set({labels:{ok:'确认', cancel: '取消'}, padding: true});
+		
+				}
+			}]
+		},
+		// height:290,
+		// head:[{name:'文件名',key:'filename'}],
+		// className:function(flag){},
+		// clickFun:function(){},
+		// rowClickFun:function(item){},
+		checkbox:{
+			checkArray:[]
+		},
+		defaultValue:'——',
+		defaultEmptyText:'还未添加任何乘客管理员',
+		// radioSelect:function(){},
+		operateIfFlag:true,
+		setHeadOptional:{
+			cancelSelectNum:5,
+	    	selectOptions:[
+				{
+					'parentKey':'',
+					'selfKey':{'key':'name','value':'姓名'},
+					'checkFlag':true
+				},
+				{
+					'parentKey':'',
+					'selfKey':{'key':'phoneNumber','value':'手机号'},
+					'checkFlag':true
+				}
+	    	]
+	    }
+		// changeEnable:function(item){}
+	}
+
+	$scope.$watch('$viewContentLoaded',function(event){ 
+  		$scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1'});
+	});
+})
+angular.module('companyAddControllerModule',[])
+.controller('companyAddController',function(companyHttpService,utilFactory,$stateParams,$state,$scope){
+
+	if($stateParams.secondCompanyId){
+		$scope.params = {
+			'secondCompanyId': $stateParams.secondCompanyId,
+			'applicationAdminId': $stateParams.applicationAdminId,
+			'secondCompanyName':$stateParams.secondCompanyName
+			// 'name': $stateParams.name,
+			// 'phoneNumber': $stateParams.phoneNumber
+		};
+		$scope.active = true;
+		$scope.submitOnProgress = false;
+		$scope.submitStatusText = '完成';
+		$scope.breadcrumbText={
+			'lv1':'公司列表',
+			'lv2':'新增公司'
+		}
+	}else{
+		$state.go('admin.companyList')
+	}
+
+	$scope.editcompanyProfile = function(flag){
+		$scope.active = !flag;
+	};
+
+
+	// form information haven't been completed by user and then user trigger ‘取消’
+	// we should provide messages for user
+	$scope.close = function(){
+		alertify.confirm('请确认是否离开该页面,未保存的数据将在离开之后丢失。',function(){
+			$state.go('admin.companyList')
+		},function(){
+
+		});
+	}
+
+	// form information completed by user and the group params whin _params obj
+	// invoke API.Before invoke api we need to check all filed's status by 'setDirty'
+	// services.
+	$scope.addcompanyProfile = function(formValidate){
+		// if all input filed empty and then user trigger submit button
+		// we will provide message for user to complete the requre filed.
+		
+		if(!formValidate) return utilFactory.setDirty($scope.formValidate)
+		// alertify.confirm('确认新增名为'+$scope.params.name+'的这个乘客？',function(){
+			
+		// },function(){
+		// 	console.log('cancel')
+		// })
+
+		var _params = {
+				'secondCompanyId': $scope.params.secondCompanyId,
+				'secondCompanyName':$scope.params.secondCompanyName,
+				'adminName':$scope.params.adminName,
+				'name': $scope.params.name,
+				'applicationAdminId': $scope.params.applicationAdminId,
+				'phoneNumber': $scope.params.phoneNumber
+		}
+
+		alertify.confirm('确认新增 "'+$scope.params.name+'"，并添加 "'+$scope.params.adminName+'" 为管理员吗？',function(){
+			companyHttpService.addCompany(_params).then(function(result){
+			var responseData = result.data;
+			if(!responseData.error){
+				// $state.go('admin.companyList')
+				alertify.alert('新增成功！',function(){
+					$scope.submitStatusText = '完成';
+					$scope.active = true;
+					$state.go('admin.companyList')
+				})
+				}else{
+					utilFactory.checkErrorCode(responseData.error.statusCode,responseData.error.message)
+				}
+			},function(errorResult){
+				alertify.alert(errorResult.error.message)
+			})
+		},function(){
+
+		})
+	}
+})
+angular.module('companyControllerModule',[])
+.controller('companyController',function($scope){
+	$scope.icon ='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAASCAYAAABrXO8xAAAAAXNSR0IArs4c6QAAAR5JREFUOBGlk89KAlEUh+eWK90EuRBx1SKIwB5BXCTi2jdo7Sp6gla+Qy/gC7hQCRSC1oKbQJI2QRBtRILK6fvdjnoJlFEPfHP+/c7MYe6Mi8ziOC4Q1qEMZ5AD2RuM4RF68OCcmzsGaiQNqMABXMEQQrsgubPCK/5Wg1OCjBXlOvAc5ApP4DKoTTX4TeEwKCYJf1KmusYPkkygKUEz0hOhmHBI+qJm9DJ2sr0H81s81mt3fqt7rzph1Ru437CyetJMvMaOo6qEOA2f8N9US5umSrw8jqy/SxQd4RcfhZW8U0092Z9W0zCDFrzAOlNPGmm/tN4AtrW+jkNrjOBUe2D6C959tLocE3YtfcKf+5jhNszhA8JfbNHPWE+atoq/NQP1DeFlCFoAAAAASUVORK5CYII=';
+
+	$scope.menuArray =[
+		{
+			'title':{'name':'公司管理','icon':$scope.icon},
+			'permission':'ROLE_APPLICATIONADMIN',
+			'menuList':[
+				{'name':'公司列表','class':'','permission':'','uiS `ref':'admin.company.list','href':'companyList'}
+			]
+		}
+	];
+});
+angular.module('companySchedulerControllerModule',[])
+.controller('companySchedulerController',function(companyHttpService,utilFactory,$stateParams,$state,$scope){
+
+	$scope.params = {
+		'secondCompanyId':utilFactory.getSecondCompanyId(),
+		'secondCompanyAdminId':utilFactory.getAccountId(),
+		'secondCompanyName':utilFactory.getSecondCompanyName()
+	};
+	$scope.active = false;
+	$scope.submitOnProgress = false;
+	$scope.breadcrumbText={ 'lv1':'班车管理员'};
+
+	$scope.addScheduler = function(formValidateIsInvalid){
+		if(formValidateIsInvalid){
+			return utilFactory.setDirty($scope.formValidate);
+		}
+		$scope.submitOnProgress = true;
+		var _params = {
+			'secondCompanyId':$scope.params.secondCompanyId,
+			'secondCompanyName': $scope.params.secondCompanyName,
+			'name': $scope.params.name,
+			'secondCompanyAdminId':$scope.params.secondCompanyAdminId,
+			'phoneNumber':$scope.params.phoneNumber
+		}
+
+		alertify.confirm('确认新增名为"'+$scope.params.name+'"的这个班车管理员?',function(){
+			companyHttpService.addScheduler(_params).then(function(result){
+				var _resultData = result.data;
+				if(!_resultData.error){
+					alertify.alert('新增成功！',function(){
+						$state.go('admin.companyAdminScheduler',{},{reload:true});
+					})
+				}else{
+					utilFactory.checkErrorCode(_resultData.error.statusCode)
+				}
+				$scope.submitOnProgress = false;
+			},function(){})
+		},function(){
+			$scope.submitOnProgress = false;
+		}).set({labels:{ok:'确认', cancel: '取消'}, padding: true});
+	};
+
+	$scope.close = function(){ $('#myModal').modal('toggle');}
+
+	$scope.updateScheduler = function(updateFormValidateIsInvalid){
+
+		if(updateFormValidateIsInvalid){
+			return utilFactory.setDirty($scope.updateFormValidate);
+		}
+
+		$scope.submitOnProgress = true;
+		var _params = {
+			'secondCompanyId':$scope.updateParams.secondCompanyId,
+			'secondCompanyAdminId': $scope.params.secondCompanyAdminId,
+			'name': $scope.updateParams.name,
+			'partyId': $scope.updateParams.partyId,
+			'phoneNumber': $scope.updateParams.phoneNumber,
+			//'roleCode':$scope.updateParams.roleCode,
+			//'status':$scope.updateParams.status
+		}
+		$('#myModal').modal('toggle');
+		companyHttpService.updateSchedulerById(_params).then(function(result){
+			var _resultData = result.data;
+			if(!_resultData.error){
+				alertify.alert('更新成功！',function(){
+					$state.go('admin.companyAdminScheduler',{},{reload:true});
+				})
+			}else{
+				utilFactory.checkErrorCode(_resultData.error.statusCode)
+			}
+			$scope.submitOnProgress = false;
+		},function(){
+			$scope.submitOnProgress = false;
+		})
+	};	
+
+	$scope.pageConfigs={
+		params:{
+			'pageSize':'20',
+			'pageNumber':'1',
+			'secondCompanyAdminId': utilFactory.getAccountId(),
+			'secondCompanyId': utilFactory.getSecondCompanyId()
+		},
+		list:null,
+		getList:function(params){
+			return companyHttpService.getSchedulerList(params)
+		},
+		loadData:function(){},
+		dataSet:function(result){}
+		//extendParams:function(){}
+	}
+
+	$scope.tableConfig={
+		stableFlag:{
+			arrow:true,
+			index:true,
+			checkbox:false,
+			radio:true,
+			operateIfFlag:true,
+			operate:[{
+				name:'编辑',
+				ngIf:function(){},
+				fun:function(item,event){
+
+					$scope.updateParams = {
+						'name':item.name,
+						'secondCompanyId':item.secondCompanyId,
+						'phoneNumber':item.phoneNumber,
+						'partyId':item.partyId
+					}
+					$('#myModal').modal('toggle');
+				}
+			},
+			{
+				name:'删除',
+				ngIf:function(){},
+				fun:function(item){
+					console.log(1,item)
+					var _deleteParams = {
+						'name':item.name,
+						'secondCompanyId':item.secondCompanyId,
+						'senondCompanyName':item.secondCompanyName,
+						'secondCompanyAdminId':$scope.params.secondCompanyAdminId,
+						'phoneNumber':item.phoneNumber,
+						'partyId':item.partyId
+					}
+					alertify.confirm('确认删除"'+item.name+'"?',function(){
+						companyHttpService.deleteSchedulerByID(_deleteParams).then(function(result){
+							var _resultData =result.data;
+							if(!_resultData.error){
+								$state.go('admin.companyAdminScheduler',{},{reload:true});
+							} else{
+								utilFactory.checkErrorCode(_resultData.error.statusCode)
+							}
+						});
+					},function(){
+
+					}).set({labels:{ok:'确认', cancel: '取消'}, padding: true});
+		
+				}
+			}]
+		},
+		// height:290,
+		// head:[{name:'文件名',key:'filename'}],
+		// className:function(flag){},
+		// clickFun:function(){},
+		// rowClickFun:function(item){},
+		checkbox:{
+			checkArray:[]
+		},
+		defaultValue:'——',
+		defaultEmptyText:'还未添加任何班车管理员',
+		// radioSelect:function(){},
+		operateIfFlag:true,
+		setHeadOptional:{
+			cancelSelectNum:5,
+	    	selectOptions:[
+				{
+					'parentKey':'',
+					'selfKey':{'key':'name','value':'姓名'},
+					'checkFlag':true
+				},
+				{
+					'parentKey':'',
+					'selfKey':{'key':'phoneNumber','value':'手机号'},
+					'checkFlag':true
+				}
+	    	]
+	    }
+		// changeEnable:function(item){}
+	}
+
+	$scope.$watch('$viewContentLoaded',function(event){ 
+  		$scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1'});
+	});
+})
+angular.module('companyHttpServiceModule',[])
+.factory('companyHttpService',function($http,ROLE_CODE,localStorageFactory,APISERVICEPATH){
+	var companyHttp = {};
+	var companyAccount = APISERVICEPATH.companyAccount;
+	var hrService = APISERVICEPATH.hrService;
+	var schedulerService = APISERVICEPATH.schedulerService
+	var USER_ROLE = localStorageFactory.getObject('account',null);
+	
+	companyHttp.addCompany = function(paramsObj){
+		var paramsData = {
+			'apiPath':companyAccount,
+			paramsList:{
+				'affiCompanyId': paramsObj.secondCompanyId,
+				'affiCompanyName': paramsObj.secondCompanyName,
+				'name': paramsObj.name,
+				'adminName':paramsObj.adminName,
+				//'operateAccountId': paramsObj.applicationAdminId,
+				'phoneNumber': paramsObj.phoneNumber,
+				'companyCode':'9'
+			}
+		};
+		return  $http({ method: 'POST',url:paramsData.apiPath,headers:{'Content-type':'application/json'},data:paramsData.paramsList});
+	};
+	
+	companyHttp.getCompanyList = function(paramsObj){
+		var paramsData = {
+			'apiPath':companyAccount+paramsObj.applicationAdminId+'/parentCompanyId/'+paramsObj.secondCompanyId+'/companyCode/9',
+			paramsList:{
+				// 'schedulerId': paramsObj.applicationAdminId,
+				// 'parentCompanyId':paramsObj.secondCompanyId,
+				'pageNumber': paramsObj.pageNumber,
+				'pageSize':paramsObj.pageSize
+				// 'companyCode':'3'
+			}
+		};
+
+		console.log(1,paramsData)
+
+		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
+	}
+
+	companyHttp.updateCompanyByID = function(paramsObj){
+		var paramsData = {
+			'apiPath':companyAccount,
+			paramsList:{
+			  'affiCompanyId': paramsObj.secondCompanyId,
+			  'affiCompanyName': paramsObj.secondCompanyName,
+			  'name': paramsObj.companyName,
+			  'adminName':paramsObj.adminName,
+			  'adminPartyId':paramsObj.userId,
+			  'operateAccountId': paramsObj.applicationAdminId,
+			  'partyId': paramsObj.companyId,
+			  'phoneNumber': paramsObj.phoneNumber,
+			  'status': '1',
+			  'companyCode':'9'
+			}
+		};
+
+		return  $http({ method: 'PUT',url:paramsData.apiPath,data:paramsData.paramsList,headers:{'Content-type':'application/json'}});
+	};
+
+	companyHttp.deleteCompanyByID = function(paramsObj){
+		var paramsData = {
+			'apiPath':companyAccount,
+			paramsList:{
+			  'affiCompanyId': paramsObj.secondCompanyId,
+			  'affiCompanyName': paramsObj.secondCompanyName,
+			  'name': paramsObj.companyName,
+			  'adminName':paramsObj.adminName,
+			  'adminPartyId':paramsObj.userId,
+			  'operateAccountId': paramsObj.applicationAdminId,
+			  'partyId': paramsObj.companyId,
+			  'phoneNumber': paramsObj.phoneNumber,
+			  'status': '2',
+			  'companyCode':'9'
+			}
+		};
+		return  $http({ method: 'PUT',url:paramsData.apiPath,data:paramsData.paramsList,headers:{'Content-type':'application/json'}});
+	};
+
+	companyHttp.addHR = function(paramsObj){
+		
+		var paramsData = {
+			'apiPath':hrService,
+			paramsList:{
+				'affiCompanyId': paramsObj.secondCompanyId,
+			//	'affiCompanyName': paramsObj.secondCompanyName,
+				'name': paramsObj.name,
+				'operateAccountId': paramsObj.secondCompanyAdminId,
+				'phoneNumber': paramsObj.phoneNumber
+			}
+		};
+		return  $http({ method: 'POST',url:paramsData.apiPath,headers:{'Content-type':'application/json'},data:paramsData.paramsList});
+	};
+
+	companyHttp.getHrList = function(paramsObj){
+		var paramsData = {
+			'apiPath':hrService+'superAdminId/'+paramsObj.secondCompanyAdminId+'/userCompanyId/'+paramsObj.secondCompanyId,
+			paramsList:{
+				'pageSize':paramsObj.pageSize,
+				'pageNumber':paramsObj.pageNumber
+			}
+		};
+
+		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
+	}
+
+	companyHttp.deleteHrByID = function(paramsObj){
+		var paramsData = {
+			'apiPath':hrService,
+			paramsList:{
+				'affiCompanyId': paramsObj.secondCompanyId,
+				'affiCompanyName': paramsObj.secondCompanyName ||'111',
+				'name': paramsObj.name,
+				'operateAccountId': paramsObj.secondCompanyAdminId,
+				'phoneNumber': paramsObj.phoneNumber,
+				'partyId':paramsObj.hrId,
+				'status': '2'
+			}
+		};
+
+		return  $http({ method: 'PUT',url:paramsData.apiPath,data:paramsData.paramsList,headers:{'Content-type':'application/json'}});
+	};
+
+	companyHttp.updateHrById = function(paramsObj){
+		var paramsData = {
+			'apiPath':hrService,
+			paramsList:{
+				'affiCompanyId': paramsObj.secondCompanyId,
+				'affiCompanyName': paramsObj.secondCompanyName,
+				'name': paramsObj.name,
+				'operateAccountId': paramsObj.secondCompanyAdminId,
+				'phoneNumber': paramsObj.phoneNumber,
+				'partyId':paramsObj.hrId
+			}
+		};
+
+		return  $http({ method: 'PUT',url:paramsData.apiPath,data:paramsData.paramsList,headers:{'Content-type':'application/json'}});
+	};
+
+	companyHttp.addScheduler = function(paramsObj){
+		
+		var paramsData = {
+			'apiPath':schedulerService,
+			paramsList:{
+				'affiCompanyId': paramsObj.secondCompanyId,
+				'affiCompanyName': paramsObj.secondCompanyName,
+				'name': paramsObj.name,
+				'operateAccountId': paramsObj.secondCompanyAdminId,
+				'phoneNumber': paramsObj.phoneNumber
+			}
+		};
+		return  $http({ method: 'POST',url:paramsData.apiPath,headers:{'Content-type':'application/json'},data:paramsData.paramsList});
+	};
+
+	companyHttp.getSchedulerList = function(paramsObj){
+		var paramsData = {
+			'apiPath':schedulerService+'superAdminId/'+paramsObj.secondCompanyAdminId+'/userCompanyId/'+paramsObj.secondCompanyId,
+			paramsList:{
+				'pageSize':paramsObj.pageSize,
+				'pageNumber':paramsObj.pageNumber
+				// 'superAdminId': paramsObj.secondCompanyAdminId,
+				// 'userCompanyId':paramsObj.secondCompanyId
+			}
+		};
+
+		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
+	}
+
+	companyHttp.deleteSchedulerByID = function(paramsObj){
+		var paramsData = {
+			'apiPath':schedulerService,
+			paramsList:{
+				'affiCompanyId': paramsObj.secondCompanyId,
+				'affiCompanyName': paramsObj.secondCompanyName,
+				'name': paramsObj.name,
+				'operateAccountId': paramsObj.secondCompanyAdminId,
+				'phoneNumber': paramsObj.phoneNumber,
+				'partyId':paramsObj.partyId,
+				'status': '2'
+			}
+		};
+
+		return  $http({ method: 'PUT',url:paramsData.apiPath,data:paramsData.paramsList,headers:{'Content-type':'application/json'}});
+	};
+
+	companyHttp.updateSchedulerById = function(paramsObj){
+		var paramsData = {
+			'apiPath':schedulerService,
+			paramsList:{
+				'affiCompanyId': paramsObj.secondCompanyId,
+				'affiCompanyName': paramsObj.secondCompanyName,
+				'name': paramsObj.name,
+				'operateAccountId': paramsObj.secondCompanyAdminId,
+				'phoneNumber': paramsObj.phoneNumber,
+				'partyId':paramsObj.partyId
+			}
+		};
+
+		return  $http({ method: 'PUT',url:paramsData.apiPath,data:paramsData.paramsList,headers:{'Content-type':'application/json'}});
+	};
+	return companyHttp;
+});
+angular.module('companyAdminControllerModule',[])
+.controller('companyAdminController',function($scope){
+	$scope.icon ='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAASCAYAAABrXO8xAAAAAXNSR0IArs4c6QAAAR5JREFUOBGlk89KAlEUh+eWK90EuRBx1SKIwB5BXCTi2jdo7Sp6gla+Qy/gC7hQCRSC1oKbQJI2QRBtRILK6fvdjnoJlFEPfHP+/c7MYe6Mi8ziOC4Q1qEMZ5AD2RuM4RF68OCcmzsGaiQNqMABXMEQQrsgubPCK/5Wg1OCjBXlOvAc5ApP4DKoTTX4TeEwKCYJf1KmusYPkkygKUEz0hOhmHBI+qJm9DJ2sr0H81s81mt3fqt7rzph1Ru437CyetJMvMaOo6qEOA2f8N9US5umSrw8jqy/SxQd4RcfhZW8U0092Z9W0zCDFrzAOlNPGmm/tN4AtrW+jkNrjOBUe2D6C959tLocE3YtfcKf+5jhNszhA8JfbNHPWE+atoq/NQP1DeFlCFoAAAAASUVORK5CYII=';
+	$scope.menuArray =[
+		{
+			'title':{'name':'公司管理','icon':$scope.icon,'class':'secondAdmin'},
+			'permission':'ROLE_SECONDADMIN',
+			'menuList':[
+				{'name':'乘客管理员','class':'','permission':'','uiSref':'companyAdmin.HR','href':'hr'},
+				{'name':'班车管理员','class':'','permission':'','uiSref':'companyAdmin.scheduler','href':'scheduler'}
+			]
+		}
+	];
+});
+angular.module('companyDetailControllerModule',[])
+.controller('companyDetailController',function(companyHttpService,utilFactory,$stateParams,$state,$scope){
+	if($stateParams.secondCompanyId){
+
+		$scope.params = {
+			'secondCompanyId': $stateParams.secondCompanyId,
+			'companyName': $stateParams.companyName,
+			'adminName':$stateParams.adminName,
+			'companyId': $stateParams.companyId,
+			'userId':$stateParams.userId,
+			'applicationAdminId': $stateParams.applicationAdminId,
+			'companyId': $stateParams.companyId,
+			'phoneNumber': $stateParams.phoneNumber
+		};
+		$scope.active = false;
+		$scope.active_one = false;
+		$scope.submitOnProgress = false;
+		$scope.breadcrumbText={
+			'lv1':'公司列表',
+			'lv2':'公司详情'
+		}
+	}else{
+		$state.go('company.list')
+	}
+
+	$scope.editCompany = function(flag){ $scope.active = !flag; };
+
+	$scope.editCompanyName = function(flag){ $scope.active_one = !flag }
+
+	$scope.updateCompany = function(){
+		$scope.submitOnProgress = true;
+		var _params = {
+			'secondCompanyId': $scope.params.secondCompanyId,
+			'companyName': $scope.params.companyName,
+			'adminName':$scope.params.adminName,
+			'companyId': $scope.params.companyId,
+			'userId':$scope.params.userId,
+			'applicationAdminId': $scope.params.applicationAdminId,
+			'companyId': $scope.params.companyId,
+			'phoneNumber': $scope.params.phoneNumber
+		}
+
+		companyHttpService.updateCompanyByID(_params).then(function(result){
+			$scope.submitOnProgress = false;
+			var _resultData = result.data;
+			if(!_resultData.error){
+				alertify.alert('更新成功!',function(){
+					$state.go('company.list')
+				})
+			}else{
+				utilFactory.checkErrorCode(_resultData.error.statusCode)
+			}
+		},function(){})
+	};
+})
+angular.module('companyListControllerModule',[])
+.controller('companyListController',function(loadData,companyHttpService,utilFactory,$state,$scope){
+	
+	// If data empty wil use empry page replace table.
+	$scope.dataIsEmpty = false;
+	if(!loadData.data.error &&(!loadData.data.value || !loadData.data.value.list.length)){
+		$scope.dataIsEmpty = true;
+	
+	}else if(loadData.data.error){
+		utilFactory.checkErrorCode(loadData.data.error.statusCode)
+		
+	}
+
+
+	$scope.selectAllStatus = false;
+	$scope.pageConfigs={
+		params:{
+			'pageSize':'',
+			'pageNumber':'',
+			'applicationAdminId':utilFactory.getAccountId(),
+			'secondCompanyId':utilFactory.getSecondCompanyId(),
+			'secondCompanyName':utilFactory.getSecondCompanyName()
+		},
+		list:null,
+		getList:function(params){
+			return companyHttpService.getCompanyList(params)
+		},
+		loadData:function(){},
+		dataSet:function(result){
+			if(result.value != null){
+				var _result = result.value;
+				for(var i=0;i<_result.length;i++){
+					_result[i]['status'] =_result[i]['status'] == 0?'未激活':'已激活'
+				}
+			}
+		}
+		//extendParams:function(){}
+	}
+	var _params = {
+			'pageSize':'',
+			'pageNumber':'',
+			'applicationAdminId':utilFactory.getAccountId(),
+			'secondCompanyId':utilFactory.getSecondCompanyId()
+		};
+	$scope.pageConfigs.getList(_params)
+	$scope.queryByKeyObj = {
+		'active':{'key':'name','value':'管理员'},
+		'list':[{'key':'phoneNumber','value':'管理员手机'}]
+	}
+
+	$scope.selectKey = function(activeObj){
+		$scope.queryByKeyObj.list.length = 0;
+		$scope.queryByKeyObj.list.push( {'key':$scope.queryByKeyObj.active.key,'value':$scope.queryByKeyObj.active.value})
+		$scope.queryByKeyObj.active.key = activeObj.key;
+		$scope.queryByKeyObj.active.value = activeObj.value;
+
+		$('.dropdown-menu').css('display','none')
+	}
+
+	$scope.showQueryKeyList = function(){
+		$('.dropdown-menu').css('display','block')
+	}
+
+	$scope.addCompany = function(){
+		$state.go('admin.companyAdd',{'applicationAdminId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId(),'secondCompanyName':utilFactory.getSecondCompanyName()})
+	};
+
+	$scope.tableConfig={
+		stableFlag:{
+			arrow:true,
+			index:true,
+			checkbox:false,
+			radio:true,
+			operate:[{
+				name:'查看详情',
+				ngIf:function(){},
+				fun:function(item){
+					var _params = {
+						'secondCompanyId': item.secondCompanyId,
+						'companyName': item.name,
+						'adminName':item.adminName,
+						'companyId': item.partyId,
+						'userId':item.adminPartyId,
+						'applicationAdminId': utilFactory.getAccountId(),
+						'secondCompanyName':utilFactory.getSecondCompanyName(),
+						'phoneNumber': item.adminPhoneNumber
+					}
+					$state.go('admin.companyDetail',_params);
+				}
+			},
+			{
+				name:'删除',
+				ngIf:function(){},
+				fun:function(item){
+
+					var _deleteParams = {
+						'secondCompanyId': item.secondCompanyId,
+						'companyName': item.name,
+						'adminName':item.adminName,
+						'companyId': item.partyId,
+						'userId':item.adminPartyId,
+						'applicationAdminId': utilFactory.getAccountId(),
+						'secondCompanyName':utilFactory.getSecondCompanyName(),
+						'phoneNumber': item.adminPhoneNumber
+					}
+
+					alertify.confirm('确认删除"'+item.name+'"吗?',function(){
+						companyHttpService.deleteCompanyByID(_deleteParams).then(function(result){
+							var _resultData =result.data;
+							if(!_resultData.error){
+								$state.go('admin.companyList',{},{reload:true});
+							} else{
+								utilFactory.checkErrorCode(_resultData.error.statusCode)
+							}
+						});
+					},function(){
+
+					}).set({labels:{ok:'确认', cancel: '取消'}, padding: true});
+		
+				}
+			}]
+		},
+		// height:290,
+		// head:[{name:'文件名',key:'filename'}],
+		// className:function(flag){},
+		// clickFun:function(){},
+		// rowClickFun:function(item){},
+		checkbox:{
+			checkArray:[]
+		},
+		defaultValue:'——',
+		// radioSelect:function(){},
+		operateIfFlag:true,
+		setHeadOptional:{
+			cancelSelectNum:5,
+			selectOptions:[
+				{
+					'parentKey':'',
+					'selfKey':{'key':'name','value':'公司名称'},
+					'checkFlag':true
+				},
+				{
+					'parentKey':'',
+					'selfKey':{'key':'adminName','value':'管理员'},
+					'checkFlag':true
+				},
+				{
+					'parentKey':'',
+					'selfKey':{'key':'adminPhoneNumber','value':'管理员手机'},
+					'checkFlag':true
+				}
+			]
+		}
+		// changeEnable:function(item){}
+	}
+	
+	$scope.$watch('$viewContentLoaded',function(event){ 
+		$scope.pageConfigs.getList(_params)
+  		$scope.$broadcast('refreshPageList',{pageSize:'',pageNo:''});
+	});
+})
 /**
  * @description
  * goback component works in html files
@@ -2409,7 +2418,7 @@ angular.module("leftNavModule",[])
 				+					'<span style = "width:70px;display:inline-block;text-align:left;">{{menuItem.title.name}}</span>'
 				+				'</div>'
 				+   			'<ul class="menuItemList {{menuItem.title.class}}">'
-				+					'<li class="{{childMenuItem.href}}" ng-repeat="childMenuItem in menuItem.menuList" ng-click="goTo(childMenuItem.uiSref,menuItem,$event)" data-link = "{{childMenuItem.uiSref}}">'
+				+					'<li class="{{childMenuItem.href}}" has-permission="{{childMenuItem.permission}}" ng-repeat="childMenuItem in menuItem.menuList" ng-click="goTo(childMenuItem.uiSref,menuItem,$event)" data-link = "{{childMenuItem.uiSref}}">'
 				+                    '{{childMenuItem.name}}'
 				+					'</li>'
 				+				'</ul>'
@@ -2492,8 +2501,13 @@ angular.module("leftNavModule",[])
 								$('.menuItemList li').removeClass('activeSelected')
 								$('.'+currentActiveTab).addClass('activeSelected')
 							},200)
+
+							return
 						}
+						return
 					}
+					return
+					
 				}
 			}
         })
@@ -3678,17 +3692,17 @@ angular.module("loginControllerModule",[])
 							localStorageFactory.remove('account');
 							utilFactory.assignRole(_getRoleArray);
 							localStorageFactory.setObject('account',USER_ACCOUNT);
-							if(USER_ACCOUNT.ROLE_HR || USER_ACCOUNT.ROLE_SCHEDULER){
+							if(USER_ACCOUNT.ROLE_HR || USER_ACCOUNT.ROLE_SCHEDULER || USER_ACCOUNT.ROLE_APPLICATIONADMIN || USER_ACCOUNT.ROLE_SECONDADMIN){
 								return $state.go('admin.cloudData');
 							}
 							
-							if(USER_ACCOUNT.ROLE_SECONDADMIN){
-								return $state.go('companyAdmin.HR');
-							}
+							// if(USER_ACCOUNT.ROLE_SECONDADMIN){
+							// 	return $state.go('companyAdmin.HR');
+							// }
 
-							if(USER_ACCOUNT.ROLE_APPLICATIONADMIN){
-								return $state.go('company.list')
-							}
+							// if(USER_ACCOUNT.ROLE_APPLICATIONADMIN){
+							// 	return $state.go('company.list')
+							// }
 
 							if(USER_ACCOUNT.ROLE_DRIVER){
 								return alertify.alert('未分配权限,请联系统管理员',function(){
@@ -4105,7 +4119,7 @@ angular.module('listControllerModule',[]).controller('listController',function(l
 	
 	// If data empty wil use empry page replace table.
 	$scope.dataIsEmpty = false;
-	if(!loadData.data.error &&!loadData.data.value){
+	if(!loadData.data.error &&loadData.data.value.list.length == 0 ){
 		$scope.dataIsEmpty = true;
 	}else if(loadData.data.error){
 		utilFactory.checkErrorCode(loadData.data.error.statusCode)
@@ -5185,15 +5199,17 @@ angular.module('schedulerAddScheduleControllerModule',[])
 				$scope.params.routeTemplate = _targetObj.routeTemplate.length? _targetObj.routeTemplate: _targetObj.routeTemplate = [{'routeTemplateName':'暂无数据'}];
 				$scope.params.vehicles = _targetObj.vehicles.length? _targetObj.vehicles: _targetObj.vehicles = [{'licensePlate':'暂无数据'}];
 
-				$scope.params.drivers.unshift({'driverName':'请选择司机','driverId':'?'});
-				$scope.params.routeTemplate.unshift({'routeTemplateName':'请选择线路','routeTemplateId':'?'});
-				$scope.params.vehicles.unshift({'licensePlate':'请选择车辆','vehicleId':'?'});
+				// $scope.params.drivers.unshift({'driverName':'请选择司机','driverId':null});
+				// $scope.params.routeTemplate.unshift({'routeTemplateName':'请选择线路','routeTemplateId':null});
+				// $scope.params.vehicles.unshift({'licensePlate':'请选择车辆','vehicleId':null});
 				
-				$scope.params.driverObj = {'driverName':'请选择司机','driverId':'?'};
-				$scope.params.routeTemplateObj = {'routeTemplateName':'请选择线路','routeTemplateId':'?'};
-				$scope.params.vehicleObj = {'licensePlate':'请选择车辆','vehicleId':'?'};
+				// $scope.params.driverObj = {'driverName':'请选择司机','driverId':null};
+				// $scope.params.routeTemplateObj = {'routeTemplateName':'请选择线路','routeTemplateId':null};
+				// $scope.params.vehicleObj = {'licensePlate':'请选择车辆','vehicleId':null};
 				
 				//close stepone page and show stepTwo page
+
+		
 
 				if((!_targetObj.drivers.length) ||( !_targetObj.routeTemplate.length) ||(!_targetObj.vehicles.length)){
 					var _drivers = !_targetObj.drivers.length?'司机姓名':'';
@@ -5213,6 +5229,8 @@ angular.module('schedulerAddScheduleControllerModule',[])
 			}else{
 				utilFactory.checkErrorCode(_resultJSON.error.statusCode)
 			}
+
+
 		})
 
 	}
@@ -5245,9 +5263,28 @@ angular.module('schedulerAddScheduleControllerModule',[])
 	});
 
 	$scope.stepTwoSubmit = function(formValidateTwoIsInvalid){
-		
 		if(formValidateTwoIsInvalid){
+		
+			//console.log($scope.params.routeTemplateObj.routeTemplateId+"123123xxx")
+			//$scope.params.drivers.unshift({'driverName':'请选择司机','driverId':null});
+			//$scope.params.routeTemplate.unshift({'routeTemplateName':'请选择线路','routeTemplateId':null});
+			//$scope.params.vehicles.unshift({'licensePlate':'请选择车辆','vehicleId':''});
 			return utilFactory.setDirty($scope.formValidateTwo);
+		}
+
+		if(!$scope.params.routeTemplateObj.routeTemplateId){
+			$scope.params.routeTemplateObj = '';
+			return
+		}
+
+		if(!$scope.params.vehicleObj.vehicleId){
+			$scope.params.vehicleObj = '';
+			return
+		}
+
+		if(!$scope.params.driverObj.driverId){
+			$scope.params.driverObj = '';
+			return
 		}
 
 		if($scope.params.routeType ==='AM' && (startTime.split(":")[0]>12)){
@@ -5289,6 +5326,19 @@ angular.module('schedulerAddScheduleControllerModule',[])
 
 		schedulerHttpService.addAssignment(_stepTwoParams).then(function(result){
 			var _resultData = result.data;
+
+			// var _targetObj = _resultJSON.value;
+
+			// if(!_targetObj.drivers.length){
+			// 	var _drivers = !_targetObj.drivers.length?'司机姓名':'';
+			// 	alertify.alert('请选择司机',function(){
+
+			// 	});
+			// }else{
+			// 	$scope.stepOne = true;
+			// 	$scope.stepTwo = false;
+		
+			// }
 			if(!_resultData.error){
 				alertify.alert('新增成功!',function(){
 					$state.go('admin.scheduler.calendar')

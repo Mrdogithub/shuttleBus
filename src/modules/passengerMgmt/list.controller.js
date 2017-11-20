@@ -4,7 +4,7 @@ angular.module('listControllerModule',[]).controller('listController',function(l
 	
 	// If data empty wil use empry page replace table.
 	$scope.dataIsEmpty = false;
-	if(!loadData.data.error &&!loadData.data.value){
+	if(!loadData.data.error &&loadData.data.value.list.length == 0 ){
 		$scope.dataIsEmpty = true;
 	}else if(loadData.data.error){
 		utilFactory.checkErrorCode(loadData.data.error.statusCode)

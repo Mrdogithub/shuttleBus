@@ -62,7 +62,7 @@ angular.module('companyListControllerModule',[])
 	}
 
 	$scope.addCompany = function(){
-		$state.go('company.add',{'applicationAdminId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId(),'secondCompanyName':utilFactory.getSecondCompanyName()})
+		$state.go('admin.companyAdd',{'applicationAdminId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId(),'secondCompanyName':utilFactory.getSecondCompanyName()})
 	};
 
 	$scope.tableConfig={
@@ -85,7 +85,7 @@ angular.module('companyListControllerModule',[])
 						'secondCompanyName':utilFactory.getSecondCompanyName(),
 						'phoneNumber': item.adminPhoneNumber
 					}
-					$state.go('company.detail',_params);
+					$state.go('admin.companyDetail',_params);
 				}
 			},
 			{
@@ -108,7 +108,7 @@ angular.module('companyListControllerModule',[])
 						companyHttpService.deleteCompanyByID(_deleteParams).then(function(result){
 							var _resultData =result.data;
 							if(!_resultData.error){
-								$state.go('company.list',{},{reload:true});
+								$state.go('admin.companyList',{},{reload:true});
 							} else{
 								utilFactory.checkErrorCode(_resultData.error.statusCode)
 							}

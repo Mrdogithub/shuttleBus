@@ -83,15 +83,17 @@ angular.module('schedulerAddScheduleControllerModule',[])
 				$scope.params.routeTemplate = _targetObj.routeTemplate.length? _targetObj.routeTemplate: _targetObj.routeTemplate = [{'routeTemplateName':'暂无数据'}];
 				$scope.params.vehicles = _targetObj.vehicles.length? _targetObj.vehicles: _targetObj.vehicles = [{'licensePlate':'暂无数据'}];
 
-				$scope.params.drivers.unshift({'driverName':'请选择司机','driverId':'?'});
-				$scope.params.routeTemplate.unshift({'routeTemplateName':'请选择线路','routeTemplateId':'?'});
-				$scope.params.vehicles.unshift({'licensePlate':'请选择车辆','vehicleId':'?'});
+				// $scope.params.drivers.unshift({'driverName':'请选择司机','driverId':null});
+				// $scope.params.routeTemplate.unshift({'routeTemplateName':'请选择线路','routeTemplateId':null});
+				// $scope.params.vehicles.unshift({'licensePlate':'请选择车辆','vehicleId':null});
 				
-				$scope.params.driverObj = {'driverName':'请选择司机','driverId':'?'};
-				$scope.params.routeTemplateObj = {'routeTemplateName':'请选择线路','routeTemplateId':'?'};
-				$scope.params.vehicleObj = {'licensePlate':'请选择车辆','vehicleId':'?'};
+				// $scope.params.driverObj = {'driverName':'请选择司机','driverId':null};
+				// $scope.params.routeTemplateObj = {'routeTemplateName':'请选择线路','routeTemplateId':null};
+				// $scope.params.vehicleObj = {'licensePlate':'请选择车辆','vehicleId':null};
 				
 				//close stepone page and show stepTwo page
+
+		
 
 				if((!_targetObj.drivers.length) ||( !_targetObj.routeTemplate.length) ||(!_targetObj.vehicles.length)){
 					var _drivers = !_targetObj.drivers.length?'司机姓名':'';
@@ -111,6 +113,8 @@ angular.module('schedulerAddScheduleControllerModule',[])
 			}else{
 				utilFactory.checkErrorCode(_resultJSON.error.statusCode)
 			}
+
+
 		})
 
 	}
@@ -143,9 +147,28 @@ angular.module('schedulerAddScheduleControllerModule',[])
 	});
 
 	$scope.stepTwoSubmit = function(formValidateTwoIsInvalid){
-		
 		if(formValidateTwoIsInvalid){
+		
+			//console.log($scope.params.routeTemplateObj.routeTemplateId+"123123xxx")
+			//$scope.params.drivers.unshift({'driverName':'请选择司机','driverId':null});
+			//$scope.params.routeTemplate.unshift({'routeTemplateName':'请选择线路','routeTemplateId':null});
+			//$scope.params.vehicles.unshift({'licensePlate':'请选择车辆','vehicleId':''});
 			return utilFactory.setDirty($scope.formValidateTwo);
+		}
+
+		if(!$scope.params.routeTemplateObj.routeTemplateId){
+			$scope.params.routeTemplateObj = '';
+			return
+		}
+
+		if(!$scope.params.vehicleObj.vehicleId){
+			$scope.params.vehicleObj = '';
+			return
+		}
+
+		if(!$scope.params.driverObj.driverId){
+			$scope.params.driverObj = '';
+			return
 		}
 
 		if($scope.params.routeType ==='AM' && (startTime.split(":")[0]>12)){
@@ -187,6 +210,19 @@ angular.module('schedulerAddScheduleControllerModule',[])
 
 		schedulerHttpService.addAssignment(_stepTwoParams).then(function(result){
 			var _resultData = result.data;
+
+			// var _targetObj = _resultJSON.value;
+
+			// if(!_targetObj.drivers.length){
+			// 	var _drivers = !_targetObj.drivers.length?'司机姓名':'';
+			// 	alertify.alert('请选择司机',function(){
+
+			// 	});
+			// }else{
+			// 	$scope.stepOne = true;
+			// 	$scope.stepTwo = false;
+		
+			// }
 			if(!_resultData.error){
 				alertify.alert('新增成功!',function(){
 					$state.go('admin.scheduler.calendar')

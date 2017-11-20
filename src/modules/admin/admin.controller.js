@@ -9,36 +9,45 @@ angular.module('adminControllerModule',[])
 
 	$scope.menuArray =[
 		{
-			'title':{'name':'首页','icon':$scope.cloudDataIcon,'class':'clouddata','uiSref':'admin.cloudData','href':'clouddata'},
-			//'permission':'ROLE_HR&ROLE_SCHEDULER'
-			'permission':'ROLE_SYSADMIN'
+			'title':{'name':'首页','icon':$scope.cloudDataIcon,'class':'clouData','uiSref':'admin.cloudData','href':'clouData'},
+			'permission':'ROLE_HR&ROLE_SCHEDULER'
+			//'permission':'ROLE_SYSADMIN'
 		},
 		{
 			'title':{'name':'乘客管理','icon':$scope.passengerIcon,'class':'passenger','uiSref':'admin.passenger.list'},
 			'permission':'ROLE_HR',
 			'menuList':[
-				{'name':'乘客列表','class':'','uiSref':'admin.passenger.list','href':'list'},
-				{'name':'乘客反馈','class':'','permission':'','uiSref':'admin.passenger.feedback','href':'feedback'},
-				{'name':'乘坐情况','class':'','permission':'','uiSref':'admin.passenger.report.data','href':'data'}
+				{'name':'乘客列表','class':'','permission':'ROLE_HR','uiSref':'admin.passenger.list','href':'list'},
+				{'name':'乘客反馈','class':'','permission':'ROLE_HR','uiSref':'admin.passenger.feedback','href':'feedback'},
+				{'name':'乘坐情况','class':'','permission':'ROLE_HR','uiSref':'admin.passenger.report.data','href':'data'}
 			]
 		},
 		{
 			'title':{'name':'班车管理','icon':$scope.schedulerIcon,'class':'scheduler','uiSref':'admin.scheduler.route'},
 			'permission':'ROLE_SCHEDULER',
 			'menuList':[
-				{'name':'线路管理','class':'','permission':'','uiSref':'admin.scheduler.route','href':'route'},
-				{'name':'站点管理','class':'','permission':'','uiSref':'admin.scheduler.site','href':'site'},
-				{'name':'运营单位','class':'','permission':'','uiSref':'admin.scheduler.busCompany','href':'busCompany'},
-				{'name':'司机管理','class':'','permission':'','uiSref':'admin.scheduler.driver','href':'driver'},
-				{'name':'车辆管理','class':'','permission':'','uiSref':'admin.scheduler.bus','href':'bus'},
-				{'name':'排班管理','class':'','permission':'','uiSref':'admin.scheduler.calendar','href':'calendar'}
+				{'name':'线路管理','class':'','permission':'ROLE_SCHEDULER','uiSref':'admin.scheduler.route','href':'route'},
+				{'name':'站点管理','class':'','permission':'ROLE_SCHEDULER','uiSref':'admin.scheduler.site','href':'site'},
+				{'name':'运营单位','class':'','permission':'ROLE_SCHEDULER','uiSref':'admin.scheduler.busCompany','href':'busCompany'},
+				{'name':'司机管理','class':'','permission':'ROLE_SCHEDULER','uiSref':'admin.scheduler.driver','href':'driver'},
+				{'name':'车辆管理','class':'','permission':'ROLE_SCHEDULER','uiSref':'admin.scheduler.bus','href':'bus'},
+				{'name':'排班管理','class':'','permission':'ROLE_SCHEDULER','uiSref':'admin.scheduler.calendar','href':'calendar'}
 			]
 		},
 		{
 			'title':{'name':'公司管理','icon':$scope.icon,'class':'masterTab',},
 			'permission':'ROLE_SYSADMIN',
 			'menuList':[
-				{'name':'公司列表','class':'','permission':'','uiSref':'admin.master','href':'master'}
+				{'name':'公司列表','class':'','permission':'ROLE_SYSADMIN','uiSref':'admin.master','href':'master'}
+			]
+		},
+		{
+			'title':{'name':'公司管理','icon':$scope.icon,'class':'secondAdmin'},
+			'permission':'ROLE_SECONDADMIN',
+			'menuList':[
+				{'name':'公司列表','class':'','permission':'ROLE_APPLICATIONADMIN','uiSref':'admin.companyList','href':'companyList'},
+				{'name':'乘客管理员','class':'','permission':'ROLE_SECONDADMIN','uiSref':'admin.companyAdminHR','href':'hrAdmin'},
+				{'name':'班车管理员','class':'','permission':'ROLE_SECONDADMIN','uiSref':'admin.companyAdminScheduler','href':'schedulerAdmin'}
 			]
 		}
 	];
