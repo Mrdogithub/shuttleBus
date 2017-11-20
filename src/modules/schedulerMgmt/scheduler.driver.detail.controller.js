@@ -17,6 +17,7 @@ angular.module('schedulerDriverDetailControllerModule',[])
 			'shuttleCompanyName': $stateParams.shuttleCompanyName || '———',
 			'shuttleCompanyId': $stateParams.shuttleCompanyId,
 			'busCompany':[{'name':'数据加载中...','id':null}],
+			'noDataForOptionList':false
 		};
 
 
@@ -25,7 +26,7 @@ angular.module('schedulerDriverDetailControllerModule',[])
 			var	_resultData = result.data;
 			if(!_resultData.error){
 				$scope.params.busCompany.length = 0;
-				_resultData.value.list.length? $scope.params.busCompany = _resultData.value.list :$scope.params.busCompany.push({'name':'暂无数据','id':null});
+				_resultData.value.list.length? $scope.params.busCompany = _resultData.value.list :$scope.params.noDataForOptionList = true;
 				
 			} else{
 				alertify.aleret(_resultData.error.message)

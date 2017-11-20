@@ -164,8 +164,8 @@ angular.module('schedulerUpdateSiteControllerModule',[])
 			};
 			
 			var _gps = info.location.split(",");
-			map = null
-			var map = new AMap.Map('container', { zoom: 10, center: [_gps[0],_gps[1]] });
+			//map = null
+			//var map = new AMap.Map('container', { zoom: 10, center: [_gps[0],_gps[1]] });
 			marker.setMap(map);
             infoWindow.setMap(map);
             marker.setPosition(poi.location);
@@ -177,18 +177,25 @@ angular.module('schedulerUpdateSiteControllerModule',[])
 					$('.addSiteForm-wrapper').css('display','block');
 				},400)
 			})
-		});
-		// poiPicker.onCityReady(function() {});
+			AMap.event.addListener(marker, 'dragging', function() {//拖拽时移除弹出窗体
+				//infoWindow.close();
+				//console.log(marker.getPosition()+"marker.getPosition()")
+				infoWindow.open(map, marker.getPosition());
+				$(document).ready(function(){
+					$('.addSiteForm-wrapper').css('display','block');
+				})
+			});
 
-		// AMap.event.addListener(marker, 'click', function() {//点击时，显示弹出窗体
-		// 	$('.addSiteForm-wrapper').css('display','block');
-		// 	infoWindow.open(map, marker.getPosition());
-		// 	$(document).ready(function(){
-		// 		setTimeout(function(){
-		// 			$("#stationType").val($scope.stationType);
-		// 		},200)
-		// 	})
-		// });
+			AMap.event.addListener(marker, 'dragend', function() {//拖拽时移除弹出窗体
+				//infoWindow.close();
+				// console.log(marker.getPosition()+"marker.getPosition()")
+				infoWindow.open(map, marker.getPosition());
+				$(document).ready(function(){
+					$('.addSiteForm-wrapper').css('display','block');
+				})
+			});
+		});
+
 		$(document).ready(function(){
 			setTimeout(function(){
 				console.log('$scope.stationType:'+$scope.stationType)
@@ -196,6 +203,14 @@ angular.module('schedulerUpdateSiteControllerModule',[])
 				$("#stationType").val($scope.stationType);
 			},200)
 		})
+
+		poiPicker.onCityReady(function() {
+			$(document).ready(function(){
+				setTimeout(function(){
+				$('.addSiteForm-wrapper').css('display','block');
+				},200)
+			})
+		});
 		AMap.event.addListener(marker, 'dragging', function() {
 			//infoWindow.close();
 			infoWindow.open(map, marker.getPosition());

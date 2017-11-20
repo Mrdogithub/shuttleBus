@@ -19,6 +19,7 @@ angular.module('schedulerBusDetailControllerModule',[])
 			'vehicleModel': $stateParams.vehicleModel || '——',
 			'vin': $stateParams.vin || '——',
 			'busCompany':[{'name':'数据加载中...','id':null}],
+			'noDataForOptionList':false
 		}
 
 
@@ -33,7 +34,7 @@ angular.module('schedulerBusDetailControllerModule',[])
 
 			if(!_resultData.error){
 				$scope.params.busCompany.length = 0;
-				_resultData.value.list.length? $scope.params.busCompany = _resultData.value.list :$scope.params.busCompany.push({'name':'暂无数据','id':null});
+				_resultData.value.list.length? $scope.params.busCompany = _resultData.value.list :$scope.params.noDataForOptionList = true;
 			} else{
 				utilFactory.checkErrorCode(_resultData.error.statusCode)
 			}

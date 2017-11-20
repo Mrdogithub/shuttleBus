@@ -9,7 +9,7 @@ angular.module('adminControllerModule',[])
 
 	$scope.menuArray =[
 		{
-			'title':{'name':'首页','icon':$scope.cloudDataIcon,'class':'clouData','uiSref':'admin.cloudData','href':'clouData'},
+			'title':{'name':'首页','icon':$scope.cloudDataIcon,'class':'cloudData','uiSref':'admin.cloudData','href':'cloudData'},
 			'permission':'ROLE_HR&ROLE_SCHEDULER'
 			//'permission':'ROLE_SYSADMIN'
 		},

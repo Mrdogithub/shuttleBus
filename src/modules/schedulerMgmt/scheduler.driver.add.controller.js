@@ -11,6 +11,7 @@ angular.module('schedulerAddDriverControllerModule',[])
 			'schedulerId':$stateParams.schedulerId ,
 			'secondCompanyId':$stateParams.secondCompanyId,
 			'busCompany':[{'name':'数据加载中...','id':null}],
+			'noDataForOptionList':false
 			// 'shuttleCompanyId':$stateParams.shuttleCompanyId,
 			// 'licenseID':$stateParams.licenseID,
 			// 'licenseExpirationDate':$stateParams.licenseExpirationDate,
@@ -23,7 +24,7 @@ angular.module('schedulerAddDriverControllerModule',[])
 
 			if(!_resultData.error){
 				$scope.params.busCompany.length = 0;
-				_resultData.value.list.length? $scope.params.busCompany = _resultData.value.list :$scope.params.busCompany.push({'name':'暂无数据','partyId':null});
+				_resultData.value.list.length? $scope.params.busCompany = _resultData.value.list :$scope.params.noDataForOptionList = true;;
 				//$scope.params.busCompany.unshift({'name':'请选择运营单位','partyId':'?'})
 			} else{
 				alertify.aleret(_resultData.error.message)

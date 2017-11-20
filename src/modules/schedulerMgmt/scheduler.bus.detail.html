@@ -98,12 +98,9 @@
 							 ng-class="{'has-error':formValidate.busCompany.$dirty && formValidate.busCompany.$invalid,'has-success':formValidate.busCompany.$dirty && !formValidate.busCompany.$invalid}">
 								<label class="control-label">运营单位:</label>
 								<span ng-if="!active">{{params.shuttleCompanyName || '———'}}</span>
-								<select class= "form-control"
-									required=""
-									ng-if="active"
-									name="busCompany"
-									ng-options="item as item.name for item in params.busCompany track by item.partyId" 
-									ng-model="params.busCompanyObj" ></select>
+								<select class= "form-control" required="" ng-if="active" name="busCompany" ng-options="item as item.name for item in params.busCompany track by item.partyId" ng-model="params.busCompanyObj" >
+									<option value="" ng-show = "params.noDataForOptionList">暂无数据</option>
+								</select>
 								<sup class="requireMark" ng-if="active" >*</sup>
 							
 							<div class="error"  ng-show="formValidate.busCompany.$dirty && formValidate.busCompany.$invalid">

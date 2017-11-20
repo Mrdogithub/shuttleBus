@@ -20,8 +20,7 @@
 			<div class="content">
 				<form name="formValidate" novalidate>
 					<div class="content-inline">
-						<div class="content-inline-item"  
-							 ng-class="{'has-error':formValidate.name.$dirty && formValidate.name.$invalid,'has-success':formValidate.name.$dirty && !formValidate.name.$invalid}">
+						<div class="content-inline-item" ng-class="{'has-error':formValidate.name.$dirty && formValidate.name.$invalid,'has-success':formValidate.name.$dirty && !formValidate.name.$invalid}">
 							<label for="name" class="control-label" >司机姓名:</label>
 							<input type="text"  
 								   class= "form-control" 
@@ -43,7 +42,11 @@
 						    </div>
 						</div>
 
-						<div class="content-inline-item" ng-class="{'has-error':formValidate.phoneNumber.$dirty && formValidate.phoneNumber.$invalid,'has-success':formValidate.phoneNumber.$dirty && !formValidate.phoneNumber.$invalid}">
+
+
+
+						<div class="content-inline-item" 
+							 ng-class="{'has-error':formValidate.phoneNumber.$dirty && formValidate.phoneNumber.$invalid,'has-success':formValidate.phoneNumber.$dirty && !formValidate.phoneNumber.$invalid}">
 							<label class=" control-label largeSpace" for="phoneNumber" >手机号码：</label>
 							<input type="text" 
 								   id="phoneNumber" 
@@ -58,16 +61,21 @@
 								   ng-class="{'edit':active,'preview':!active}" 
 								   ng-model="params.phoneNumber"><sup class="requireMark" ng-if="active">*</sup>
 							<div class="error"  ng-show="formValidate.phoneNumber.$dirty && formValidate.phoneNumber.$invalid">
-								<small class="contacrol-label" ng-show="formValidate.phoneNumber.$error.required">
+								<small class="control-label" 
+						            ng-show="formValidate.phoneNumber.$error.required">
 						            请输入手机号
 						        </small>
-						        <small class="control-label"  ng-show="formValidate.phoneNumber.$error.maxlength">
+						        <small class="control-label" 
+						            ng-show="formValidate.phoneNumber.$error.maxlength">
 						            请输入11位的手机号
 						        </small>
-						        <small class="control-label" ng-show="formValidate.phoneNumber.$error.minlength &&!formValidate.phoneNumber.$error.pattern">
+
+						        <small class="control-label" 
+						                ng-show="formValidate.phoneNumber.$error.minlength &&!formValidate.phoneNumber.$error.pattern">
 						            请输入11位手机号
 						        </small>
-						    	<small class="control-label" ng-show="formValidate.phoneNumber.$error.pattern ">
+						       <small class="control-label" 
+						                ng-show="formValidate.phoneNumber.$error.pattern ">
 						            请输入正确的手机号
 						        </small>
 						    </div>
@@ -78,18 +86,16 @@
 						<div class="content-inline-item"
 							 ng-class="{'has-error':formValidate.busCompany.$dirty && formValidate.busCompany.$invalid,'has-success':formValidate.busCompany.$dirty && !formValidate.busCompany.$invalid}">
 							<label class="control-label">运营单位:</label>
-								<span ng-if="!active">{{params.shuttleCompanyName}}</span>
-								<select class= "form-control"
-									required=""
-									ng-if="active"
-									name="busCompany" 
-									ng-options="item as item.name for item in params.busCompany track by item.partyId"
-									ng-model="params.busCompanyObj" ></select>
+								<span ng-if="!active">{{params.shuttleCompanyName }}</span>
+								<select class= "form-control" required="" name="busCompany" ng-options="item.name for item in params.busCompany" ng-model="params.busCompanyObj" ng-show="active">
+									<option value="" ng-show = "params.noDataForOptionList">暂无数据</option>
+								</select>
 							<sup class="requireMark" ng-if="active">*</sup>
 							<div class="error"  ng-show="formValidate.busCompany.$dirty && formValidate.busCompany.$invalid">
-								<small class="control-label" ng-show="formValidate.busCompany.$error.required">
+								<small class="control-label" 
+									ng-show="formValidate.busCompany.$error.required">
 									请选择车辆运营单位
-								</small>
+							</small>
 							</div>
 						</div>
 					</div>

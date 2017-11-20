@@ -8,7 +8,7 @@ angular.module("leftNavModule",[])
 				+	'<div class="menu-list">'
 				+	'	<ul class="menu-group">'
 				+	'		<li ng-repeat="menuItem in menuArray track by $index" class="menuItemTitle" data-link = "{{menuItem.title.uiSref}}"  has-permission="{{menuItem.permission}}">'
-				+				'<div class="title-wrapper">'
+				+				'<div class="title-wrapper {{menuItem.title.class}}"">'
 				+       			'<img class="menu-icon" ng-src={{menuItem.title.icon}} />'
 				+					'<span style = "width:70px;display:inline-block;text-align:left;">{{menuItem.title.name}}</span>'
 				+				'</div>'
@@ -35,6 +35,7 @@ angular.module("leftNavModule",[])
 			$(document).off('click','.menuItemTitle').on('click','.menuItemTitle',function(event){
 				$('.menuItemList li').removeClass('activeSelected')
 				$('.menuItemTitle').removeClass('activeSelected')
+				$('.cloudData').removeClass('activeSelected')
 				$(this).find('ul').css('display') === 'none'?$(this).find('ul').css('display','block'):$(this).find('ul').css('display','none');
 				
 				console.log($(this).find('ul >li').length)
@@ -60,6 +61,7 @@ angular.module("leftNavModule",[])
 			})
 
 			$scope.goTo=function(targetState,currentMenuItemObj,event){
+				$('.menuItemTitle').removeClass('activeSelected')
 				$('.menuItemList li').removeClass('activeSelected')
 				$(event.currentTarget).addClass('activeSelected')
 
@@ -75,14 +77,13 @@ angular.module("leftNavModule",[])
 		$rootScope.$watch(function(){
         	return $location.path();
         },function(newValue,oldValue){
-			console.log(oldValue+"oldValue")
-			console.log(newValue+"newValue")
+   //      	$('.menuItemList li').removeClass('activeSelected')
+			$('.cloudData').removeClass('activeSelected')
 			var currentPahtArray = newValue.split('/');
 			var currentActiveTab = currentPahtArray[currentPahtArray.length-1];
 
 			var menuItemArray = $scope.menuArray;
 			for(var j=0;j<menuItemArray.length;j++){
-				console.log(1,menuItemArray[j])
 				if(menuItemArray[j]['menuList']){
 					for(var i=0;i<menuItemArray[j].menuList.length;i++){
 						if(menuItemArray[j].menuList[i]['href'] === currentActiveTab){
@@ -96,13 +97,16 @@ angular.module("leftNavModule",[])
 								$('.menuItemList li').removeClass('activeSelected')
 								$('.'+currentActiveTab).addClass('activeSelected')
 							},200)
-
-							return
 						}
-						return
 					}
-					return
+				}else{
+					if(menuItemArray[j]['title']['href'] === currentActiveTab){
 					
+							var activeTab = menuItemArray[j]['title']['class'];
+							setTimeout(function(){
+								$('.'+currentActiveTab).addClass('activeSelected')
+							},200)
+					}
 				}
 			}
         })

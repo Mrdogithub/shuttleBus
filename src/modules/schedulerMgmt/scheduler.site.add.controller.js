@@ -153,8 +153,8 @@ angular.module('schedulerAddSiteControllerModule',[])
 			};
 			
 			var _gps = info.location.split(",");
-			map = null
-			var map = new AMap.Map('container', { zoom: 10, center: [_gps[0],_gps[1]] });
+			//map = null
+			//var map = new AMap.Map('container', { zoom: 10, center: [_gps[0],_gps[1]] });
 			marker.setMap(map);
             infoWindow.setMap(map);
             marker.setPosition(poi.location);
@@ -185,7 +185,13 @@ angular.module('schedulerAddSiteControllerModule',[])
 			});
 		});
 
-		poiPicker.onCityReady(function() {});
+		poiPicker.onCityReady(function() {
+			$(document).ready(function(){
+				setTimeout(function(){
+				$('.addSiteForm-wrapper').css('display','block');
+				},200)
+			})
+		});
 		AMap.event.addListener(marker, 'dragging', function() {//拖拽时移除弹出窗体
 			//infoWindow.close();
 			//console.log(marker.getPosition()+"marker.getPosition()")
@@ -209,7 +215,7 @@ angular.module('schedulerAddSiteControllerModule',[])
 	$(document).ready(function(){
 		setTimeout(function(){
 			$('.addSiteForm-wrapper').css('display','block');
-		},400)
+		},200)
 	})
 
 });
