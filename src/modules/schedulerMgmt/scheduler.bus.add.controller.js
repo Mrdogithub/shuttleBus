@@ -87,7 +87,7 @@ angular.module('schedulerAddBusControllerModule',[])
 				"licensePlate": $scope.params.licensePlate,
 				"schedulerId": utilFactory.getAccountId(),
 				"secondCompanyId": utilFactory.getSecondCompanyId(),
-				"shuttleCompanyId":$scope.params.busCompanyObj.partyId,
+				"shuttleCompanyId":$scope.params.busCompanyObj.id,
 				'shuttleCompanyName': $scope.params.busCompanyObj.name,
 				"vehicleLicense": $scope.params.vehicleLicense,
 				"vehicleModel": $scope.params.vehicleModel,

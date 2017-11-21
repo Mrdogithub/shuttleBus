@@ -24,7 +24,7 @@ angular.module('schedulerAddDriverControllerModule',[])
 
 			if(!_resultData.error){
 				$scope.params.busCompany.length = 0;
-				_resultData.value.list.length? $scope.params.busCompany = _resultData.value.list :$scope.params.noDataForOptionList = true;;
+				_resultData.value.list.length? $scope.params.busCompany = _resultData.value.list :$scope.params.noDataForOptionList = true;
 				//$scope.params.busCompany.unshift({'name':'请选择运营单位','partyId':'?'})
 			} else{
 				alertify.aleret(_resultData.error.message)
@@ -93,7 +93,7 @@ angular.module('schedulerAddDriverControllerModule',[])
 				'name': $scope.params.name,
 				'phoneNumber': $scope.params.phoneNumber,
 				'schedulerId': $scope.params.schedulerId,
-				'shuttleCompanyId': $scope.params.busCompanyObj.partyId,
+				'shuttleCompanyId': $scope.params.busCompanyObj.id,
 				'shuttleCompanyName':$scope.params.busCompanyObj.name
 			}
 

@@ -50,7 +50,7 @@ angular.module('schedulerBusDetailControllerModule',[])
 		$scope.params['vehicleLicense'] = $stateParams.vehicleLicense  || '';
 		$scope.params['vehicleModel'] = $stateParams.vehicleModel  || '';
 		$scope.params['vin'] = $stateParams.vin  || '';
-		$scope.params.busCompanyObj = {'name':$scope.params.shuttleCompanyName,'partyId':$scope.params.shuttleCompanyId};
+		$scope.params.busCompanyObj = {'name':$scope.params.shuttleCompanyName,'id':$scope.params.shuttleCompanyId};
 	
 		$scope.active = !flag;
 	};
@@ -80,7 +80,7 @@ angular.module('schedulerBusDetailControllerModule',[])
 				"licensePlate": $scope.params.licensePlate,
 				"schedulerId": $scope.params.schedulerId,
 				"secondCompanyId": $scope.params.secondCompanyId,
-				"shuttleCompanyId": $scope.params.busCompanyObj.partyId,
+				"shuttleCompanyId": $scope.params.busCompanyObj.id,
 				"shuttleCompanyName": $scope.params.busCompanyObj.name,
 				"vehicleLicense": $scope.params.vehicleLicense,
 				"vehicleModel": $scope.params.vehicleModel,

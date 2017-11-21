@@ -55,7 +55,7 @@ angular.module('schedulerDriverDetailControllerModule',[])
 		$scope.params['name'] = $stateParams.name || '',
 		$scope.params['phoneNumber'] = $stateParams.phoneNumber || '',
 		$scope.params['shuttleCompanyName'] = $stateParams.shuttleCompanyName || ''
-		$scope.params.busCompanyObj = {'name':$scope.params.shuttleCompanyName,'partyId':$scope.params.shuttleCompanyId};
+		$scope.params.busCompanyObj = {'name':$scope.params.shuttleCompanyName,'id':$scope.params.shuttleCompanyId};
 
 		//scope.$apply();
 		//console.log(1,$scope.params)
@@ -107,7 +107,7 @@ angular.module('schedulerDriverDetailControllerModule',[])
 				'name': $scope.params.name,
 				'driverId': $scope.params.driverId,
 				'phoneNumber': $scope.params.phoneNumber,
-				'shuttleCompanyId':$scope.params.busCompanyObj.partyId,
+				'shuttleCompanyId':$scope.params.busCompanyObj.id,
 				'shuttleCompanyName': $scope.params.busCompanyObj.name,
 				'secondCompanyId': $scope.params.secondCompanyId,
 				'secondCompanyName': $scope.params.secondCompanyName
