@@ -15,7 +15,7 @@
 	</div>
 </div>
 
-<div class="title-wrapper" ng-if="!dataIsEmpty">
+<div class="title-wrapper" ng-show="!dataIsEmpty">
 	<div class="main-title-wrapper" style="line-height: 0px; ">
 		<div style="line-height: 25px; "><a style="cursor: none;">乘客列表</a></div>
 		<div class="search-wrapper " >
@@ -38,15 +38,22 @@
 	       <div class="input-group" style="margin-left: 13px">
 	        	<input  type="text" 
 	      		 	    class="form-control" 
-	      		 		style="height:24px;    box-shadow: 0 0 7px 1px rgba(0,0,0,0.1);" 
-	      		 		placeholder="">
+	      		 		style="height:24px;" 
+	      		 		ng-model= "searchText"/>
 			    <span class="input-group-btn">
 			        <button class="btn btn-default" 
 			        	type="button" 
-			        	style="padding: 1px 6px;    box-shadow: 0 0 7px 1px rgba(0,0,0,0.1);">
+			        	style="padding: 1px 6px;"
+			        	ng-click="searchFn()">
 			        	<img style="vertical-align: baseline;"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAAAXNSR0IArs4c6QAAAV5JREFUKBWNUT1Lw1AUbZ4kSzsLikMNios6mIQYI/gDuhqqkyIoDi7+AN110sFVECfBqbh1MHQJIQmCuggSWhAXF6FL2kDjuTW3FKnohZdz77nv3I8XqZCbbduTnU7nKMsyC1RZkqRnYL1UKp24rpvwPUJBH03TKkmSBBC0ZFneVBRlAqJDxFPtdvvBNM1Zujcw6gDROxKLA3LI0XV9B8d3HGeMaYGRjhGc+77/yOQwhmF4iY4fcRxXmRcgljFSjYlRKISoYVzatW+0UzlN01Yej4Rer9dE8WlOkugJVeaZ+AUXcOeFc+gs6gj2mPiJeAAFgm10uuOcKBaLpyBWDMPYZZKRBHiAC8RvURTdMy+RY1nWTLfbvUbFTxSgpZugaeQtHNp3CVw1CIIG/O+f63neq6qqq4ivcOZw9iEeBx7gySvAdcQ3mGYNfqHfiZy/DD/Yxp1bdNz4t4iK5sKzLwtCfTE0zEQeAAAAAElFTkSuQmCC"/></button>
 			    </span>
 	   		</div>
+	       <!-- 	<div class="input-group" style="margin-left: 13px">
+				<input  type="text" class="form-control" style="height:24px;" placeholder="" ng-model= "searchText">
+				<span class="input-group-btn">
+					<button class="btn btn-default" ng-click="searchFn()" type="button" style="padding: 1px 6px;"><img style="vertical-align: baseline;"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAAAXNSR0IArs4c6QAAAV5JREFUKBWNUT1Lw1AUbZ4kSzsLikMNios6mIQYI/gDuhqqkyIoDi7+AN110sFVECfBqbh1MHQJIQmCuggSWhAXF6FL2kDjuTW3FKnohZdz77nv3I8XqZCbbduTnU7nKMsyC1RZkqRnYL1UKp24rpvwPUJBH03TKkmSBBC0ZFneVBRlAqJDxFPtdvvBNM1Zujcw6gDROxKLA3LI0XV9B8d3HGeMaYGRjhGc+77/yOQwhmF4iY4fcRxXmRcgljFSjYlRKISoYVzatW+0UzlN01Yej4Rer9dE8WlOkugJVeaZ+AUXcOeFc+gs6gj2mPiJeAAFgm10uuOcKBaLpyBWDMPYZZKRBHiAC8RvURTdMy+RY1nWTLfbvUbFTxSgpZugaeQtHNp3CVw1CIIG/O+f63neq6qqq4ivcOZw9iEeBx7gySvAdcQ3mGYNfqHfiZy/DD/Yxp1bdNz4t4iK5sKzLwtCfTE0zEQeAAAAAElFTkSuQmCC"/></button>
+			    </span>
+	   		</div> -->
 		</div>
 		<div class="subTitle-wrapper">
 			<div class="subTitle-content">
@@ -68,7 +75,7 @@
 	<pagination-component page-configs= "pageConfigs"></pagination-component>
 </div>
 
-<div class="modal fade" id="importPassengerPopUp" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="importPassengerPopUp" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document"  style="width: 450px;">
     <div class="modal-content" style="    border-radius: 0px;">
       <div class="modal-body" style="min-height: 100px">

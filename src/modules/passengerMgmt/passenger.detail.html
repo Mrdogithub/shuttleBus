@@ -114,14 +114,16 @@
 		</div>
 
 
-		<div class="info-wrapper" ng-if="!active">
+		<div class="info-wrapper">
 			<div class="title">
 				<h1>乘车记录:</h1>
+				<!-- <h2>$scope.pageConfigs</h2> -->
+
 			</div>
 			<div class="right-content-wrapper" style="margin-top: 14px;">
 				<table-component table-config = "tableConfig" table-data="pageConfigs.list"></table-component>
 			</div>
-			<div class="pagination-wrapper">
+			<div class="pagination-wrapper"  ng-show="!dataIsEmpty">
 				<pagination-component page-configs= "pageConfigs"></pagination-component>
 			</div>
 		</div>

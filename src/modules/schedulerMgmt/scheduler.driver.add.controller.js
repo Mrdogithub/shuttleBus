@@ -17,9 +17,10 @@ angular.module('schedulerAddDriverControllerModule',[])
 			// 'licenseExpirationDate':$stateParams.licenseExpirationDate,
 			// 'identityCard':$stateParams.identityCard
 		};
-
+		console.log("$stateParams.secondCompanyId"+$stateParams.secondCompanyId);
 		// Get bus company list
 		schedulerHttpService.getBusCompany({'schedulerId': $scope.params.schedulerId,'secondCompanyId': $scope.params.secondCompanyId}).then(function(result){
+			
 			var	_resultData = result.data;
 
 			if(!_resultData.error){

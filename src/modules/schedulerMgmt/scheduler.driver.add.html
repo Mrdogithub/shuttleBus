@@ -11,8 +11,8 @@
 				<form name="formValidate" novalidate>
 					<div class="content-inline">
 						<div class="content-inline-item"  
-							 ng-class="{'has-error':formValidate.name.$dirty && formValidate.name.$invalid,'has-success':formValidate.name.$dirty && !formValidate.name.$invalid}">
-							<label for="name" class="control-label" >司机姓名:</label>
+							 ng-class="{'has-error':formValidate.name.$dirty && formValidate.name.$invalid,'has-success':formValidate.name.$dirty && !formValidate.name.$invalid}"  style="width: 50%;">
+							<label for="name" class="control-label">司机姓名:</label>
 							<input type="text"  
 								   class= "form-control" 
 								   id="name" 
@@ -92,7 +92,7 @@
 					</div>
 
 					<div class="content-inline">
-						<div class="content-inline-item">
+						<div class="content-inline-item" style="width: 50%;">
 							<label class="control-label ">驾照号码:</label>
 							<input type="text" 
 								   class= "form-control"  
@@ -116,7 +116,7 @@
 
 					</div>
 
-					<div class="content-inline">
+					<div class="content-inline" style="width: 100%;text-align: center;">
 						<div class="btn-wrapper">
 							<a ng-click="close()"  class="submitBtn submit-cancel">取消</a>
 							<a ng-click="!submitOnProgress&& submitDriverProfile(formValidate.$invalid)" class="submitBtn submit-ok">确认</a>

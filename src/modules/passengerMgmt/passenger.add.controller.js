@@ -42,6 +42,8 @@ angular.module('passengerAddControllerModule',[])
 	$scope.addPassengerProfile = function(formValidate){
 		// if all input filed empty and then user trigger submit button
 		// we will provide message for user to complete the requre filed.
+		console.log("*******")
+		console.log(1, $scope.formValidate)
 		if(!formValidate) return utilFactory.setDirty($scope.formValidate)
 
 

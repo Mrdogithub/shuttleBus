@@ -1,0 +1,28 @@
+<style type="text/css">
+	.pagination-wrapper {
+		display: none;
+	}
+</style>
+<div class="subTab-titleWraper">
+	<div class="subTab-titleWraper-content">
+		<div class="content-inline-item" style="display: inline-block;">
+			<div class="input-group date datepicker" data-provide="datepicker">
+			    <input type="text" class="form-control" id="selectMonth" ng-model="params.selectMonth" style="border-right: none;">
+			    <div class="input-group-addon" style="background: #fff;">
+			      <img style="margin-left: -6px;margin-top: 4px;" src="data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAANCAYAAACdKY9CAAAAAXNSR0IArs4c6QAAAS5JREFUKBV9UD1LA0EQfTN7h1hYekH7kH/hD7DYBBQrsQhYCPkHIiQXRdTeWrAVi4D/wFIQGyuL1BFB8AuS2xl3F1YCHtli5s3b94aZAeZe0S5fWvZsJVEBBy7VIdOaPd6o4PYM8a1TuSPGNpRsFJGOVHBjGJtOsGUMXWcOcmnYdJWWxnDf8MZnRxq7GvC0ggB5/mBm8uZErlC0B4+xmw9FZ3jQ7yunOuDApbqwgyfyM46hfJjIRVlJTjOF5gRdXySc+8uYgMlkdHQB0i+P3yNmfNZhUn3NklsVTUCnsVZpKmj2DwdifukoWBDC0n8XWe2UvYYtu7GJv0zDDvfrvH8jsaDlR/qIojASoaozUGHLewKdq5GfOkHiyPGyP+tJpmx6JNUOhPL0WZ9lBqbdX0AIf9mrUj0dAAAAAElFTkSuQmCC">
+			    </div>
+			</div>
+		</div>
+	</div>
+	<div class="subTab-operate">
+		<a ng-click="importData()">导出报表</a>
+	</div>	 	
+</div>
+
+<div class="right-content-wrapper container-shadow-border">
+	<table-component table-config = "tableConfig" table-data="pageConfigs.list"></table-component>
+</div>
+
+<div class="pagination-wrapper">
+	<pagination-component page-configs= "pageConfigs"></pagination-component>
+</div>

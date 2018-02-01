@@ -2,11 +2,22 @@ angular.module('httpInterceptorModule',[])
 .factory('httpInterceptor',function(localStorageFactory,$q, $injector) {  
 	var httpInterceptor = {
 		'request':function(request){
-			request.headers.ApplicationId ='BACKGROUND';
-			if(localStorageFactory.getObject('account',null)){
-				request.headers.Authorization ='Bearer '+localStorageFactory.getObject('account',null).accessToken;
-				request.headers.operateAccountId =localStorageFactory.getObject('account',null).accountId;
+
+            console.log(1,request)
+            console.log()
+            var _isGaode = request.url.indexOf('http://yuntuapi.amap.com/datasearch/')
+
+            if(_isGaode == 0){
+                return request;
+            }else{
+                request.headers.ApplicationId ='BACKGROUND';
+                request.headers['Application-Id'] = 'ED8D2C72-628A-47A6-9893-AF0B1151A8D3';
+                if(localStorageFactory.getObject('account',null)){
+                    request.headers.Authorization ='Bearer '+localStorageFactory.getObject('account',null).accessToken;
+                    request.headers.operateAccountId =localStorageFactory.getObject('account',null).accountId;
+                }
             }
+	
             
             return request; 
         },

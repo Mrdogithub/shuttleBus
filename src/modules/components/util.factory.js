@@ -3,18 +3,52 @@ angular.module('utilFactoryModule',[])
 	var fn = {};
 	
 	fn.getLocalTime = function(timestamp){
-		var date = new Date(parseInt(timestamp));
-		var y = 1900+date.getYear();
-	    var m = "0"+(date.getMonth()+1);
-	    var d = "0"+date.getDate();
-	    return m.substring(m.length-2,m.length)+"/"+d.substring(d.length-2,d.length)+"/"+y;
-		//return .toLocaleString().replace(/:\d{1,2}$/,' ');     
+
+	    var time = new Date(parseInt(timestamp));
+        var year = time.getFullYear();
+        var month = (time.getMonth() + 1) > 9 && (time.getMonth() + 1) || ('0' + (time.getMonth() + 1));
+        var day = time.getDate() > 9 && time.getDate() || ('0' + time.getDate());
+        var hour = time.getHours() > 9 && time.getHours() || ('0' + time.getHours());
+        var minute = time.getMinutes() > 9 && time.getMinutes() || ('0' + time.getMinutes());
+        var YmdHm = month + '/' + day + '/'+ year + ' ' + hour + ':' + minute;
+        return YmdHm;
 	}
- 	
+	fn.getCurrentMonth = function(timestamp){
+
+	    var time = new Date(parseInt(timestamp));
+        var year = time.getFullYear();
+        var month = (time.getMonth() + 1) > 9 && (time.getMonth() + 1) || ('0' + (time.getMonth() + 1));
+        var Ym = year + '/' + month;
+        return Ym;
+	}
+	fn.getCurrentDate = function(timestamp){
+
+	    var time = new Date(parseInt(timestamp));
+        var year = time.getFullYear();
+        var month = (time.getMonth() + 1) > 9 && (time.getMonth() + 1) || ('0' + (time.getMonth() + 1));
+        var day = time.getDate() > 9 && time.getDate() || ('0' + time.getDate());
+        var Ymd = year + '/' + month + '/'+ day;
+        return Ymd;
+	}
+ 	fn.getCurrentTime = function(timestamp){
+	    var time = new Date(parseInt(timestamp));
+        var hour = time.getHours() > 9 && time.getHours() || ('0' + time.getHours());
+        var minute = time.getMinutes() > 9 && time.getMinutes() || ('0' + time.getMinutes());
+        var Hm = hour + ':' + minute;
+        return Hm;
+	}
+ 		
  	fn.getTimestamp = function(localTime){
  		return new Date(localTime).getTime();
  	}
-
+	fn.getNewDate = function(countDay) {
+		var dd = new Date();
+		var now = dd.setDate(dd.getDate()+countDay);//获取2天后的日期
+		var y = dd.getFullYear();
+		var m = dd.getMonth()+1;//获取当前月份的日期
+		var d = dd.getDate();
+		return y+"-"+m+"-"+d;
+	};
  	fn.getAccountId = function(){
  		return localStorageFactory.getObject('account',null).accountId;
  	}
@@ -50,11 +84,29 @@ angular.module('utilFactoryModule',[])
  	fn.setDirty = function(form){ 
  		return (function(form) {
 		   angular.forEach(form, function(value, key) {
+		   	console.log('--------')
+		   	  console.log(1,form[key])
 		      if(!/^\$/.test(key)) form[key].$setDirty()
 		    })
   		})(form)
  	}
  	fn.checkErrorCode = function(errorCode,errorMessage){
+ 	// fn.checkErrorCode = function(type, errorCode,errorMessage){
+ 		// var CONSTANT = {
+			// ERRORCODE_CONSTANT: ERRORCODE_CONSTANT,
+			// SMSCODE_ERROR: SMSCODE_ERROR,
+			// ERRORCODE_CONSTANT: ERRORCODE_CONSTANT,
+			// ROLE_CODE: ROLE_CODE,
+			// USER_ACCOUNT: USER_ACCOUNT,
+			// FORGET_ACCOUNT_ERROR: FORGET_ACCOUNT_ERROR,
+			// CHECK_ACCOUNT_ERROR: CHECK_ACCOUNT_ERROR,
+			// LOGIN_ACCOUNT_ERROR: LOGIN_ACCOUNT_ERROR,
+			// ACTIVE_ACCOUNT_ERROR: ACTIVE_ACCOUNT_ERROR,
+			// TOKEN_ERROR: TOKEN_ERROR	
+ 		// }
+
+ 		// alertify.alert(CONSTANT[type][ERROR_CODE_ + errorCode].message,function(){})
+
  		switch(errorCode){
  			case ERRORCODE_CONSTANT.ERROR_CODE_1000100201.code :alertify.alert(ERRORCODE_CONSTANT.ERROR_CODE_1000100201.message,function(){})
  				break;
@@ -88,7 +140,8 @@ angular.module('utilFactoryModule',[])
  				break;
  			case ERRORCODE_CONSTANT.ERROR_CODE_1000100302.code :alertify.alert(ERRORCODE_CONSTANT.ERROR_CODE_1000100302.message,function(){})
  				break;
- 			case TOKEN_ERROR.STATUS_CODE_0200201.code:alertify.alert(ERRORCODE_CONSTANT.ERROR_CODE_1000100302.message,function(){$state.go('entry.check')})
+ 				// wrong
+ 			case TOKEN_ERROR.STATUS_CODE_0200201.code: alertify.alert(TOKEN_ERROR.STATUS_CODE_0200101.message,function(){$state.go('entry.check')})
  				break;
  			case TOKEN_ERROR.STATUS_CODE_0200102.code: alertify.alert(TOKEN_ERROR.STATUS_CODE_0200102.message,function(){$state.go('entry.check')})
  				break;
@@ -104,7 +157,8 @@ angular.module('utilFactoryModule',[])
  				break;
  			case ERRORCODE_CONSTANT.ERROR_CODE_0600700201.code :alertify.alert(ERRORCODE_CONSTANT.ERROR_CODE_0600700201.message,function(){})
  				break;
-
+ 			// case ERRORCODE_CONSTANT.ERROR_CODE_0800100601.code :alertify.alert(ERRORCODE_CONSTANT.ERROR_CODE_0800100601.message,function(){})
+ 			// 	break;
 
  			case ERRORCODE_CONSTANT.ERROR_CODE_0600800201.code :alertify.alert(ERRORCODE_CONSTANT.ERROR_CODE_0600800201.message,function(){})
  				break;
@@ -112,6 +166,16 @@ angular.module('utilFactoryModule',[])
  				break;
  			case ERRORCODE_CONSTANT.ERROR_CODE_0600800203.code :alertify.alert(ERRORCODE_CONSTANT.ERROR_CODE_0600800203.message,function(){})
  				break;
+ 			case ERRORCODE_CONSTANT.ERROR_CODE_08005001001.code :alertify.alert(ERRORCODE_CONSTANT.ERROR_CODE_08005001001.message,function(){})
+ 				break; 		
+ 			case ERRORCODE_CONSTANT.ERROR_CODE_08005003001.code :alertify.alert(ERRORCODE_CONSTANT.ERROR_CODE_08005003001.message,function(){})
+ 				break;
+ 			case ERRORCODE_CONSTANT.ERROR_CODE_08005003002.code :alertify.alert(ERRORCODE_CONSTANT.ERROR_CODE_08005003002.message,function(){})
+ 				break;
+ 			case ERRORCODE_CONSTANT.ERROR_CODE_08005004002.code :alertify.alert(ERRORCODE_CONSTANT.ERROR_CODE_08005004002.message,function(){})
+ 				break;		
+ 			case ERRORCODE_CONSTANT.ERROR_CODE_08005004004.code :alertify.alert(ERRORCODE_CONSTANT.ERROR_CODE_08005004004.message,function(){})
+ 				break;	
 			case CHECK_ACCOUNT_ERROR.STATUS_CODE_401.code:alertify.alert(CHECK_ACCOUNT_ERROR.STATUS_CODE_401.message,function(){})
 				break;
 			case CHECK_ACCOUNT_ERROR.STATUS_CODE_0100103.code:alertify.alert(CHECK_ACCOUNT_ERROR.STATUS_CODE_0100103.message,function(){})
@@ -151,6 +215,8 @@ angular.module('utilFactoryModule',[])
 			case LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200111.code:alertify.alert(LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200111.message,function(){})
 				break;
 			case LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200112.code:alertify.alert(LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200112.message,function(){})
+				break;
+			case LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200301.code:alertify.alert(LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200301.message,function(){})
 				break;
 			case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0100113.code:alertify.alert(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0100113.message,function(){})
 				break;

@@ -11,15 +11,14 @@ angular.module('companyListControllerModule',[])
 		
 	}
 
-
-	$scope.selectAllStatus = false;
 	$scope.pageConfigs={
 		params:{
-			'pageSize':'',
-			'pageNumber':'',
+			// 'pageSize':'20',
+			// 'pageNumber':'1',
+			// 'pageNo': '1',
 			'applicationAdminId':utilFactory.getAccountId(),
 			'secondCompanyId':utilFactory.getSecondCompanyId(),
-			'secondCompanyName':utilFactory.getSecondCompanyName()
+			// 'secondCompanyName':utilFactory.getSecondCompanyName()
 		},
 		list:null,
 		getList:function(params){
@@ -34,17 +33,10 @@ angular.module('companyListControllerModule',[])
 				}
 			}
 		}
-		//extendParams:function(){}
 	}
-	var _params = {
-			'pageSize':'',
-			'pageNumber':'',
-			'applicationAdminId':utilFactory.getAccountId(),
-			'secondCompanyId':utilFactory.getSecondCompanyId()
-		};
-	$scope.pageConfigs.getList(_params)
+	$scope.selectAllStatus = false;
 	$scope.queryByKeyObj = {
-		'active':{'key':'name','value':'管理员'},
+		'active':{'key':'companyName','value':'公司名称'},
 		'list':[{'key':'phoneNumber','value':'管理员手机'}]
 	}
 
@@ -57,6 +49,19 @@ angular.module('companyListControllerModule',[])
 		$('.dropdown-menu').css('display','none')
 	}
 
+	$scope.searchFn = function () {
+		var _searchParams = {
+			// 'pageSize':'20',
+			// 'pageNumber':'1',
+			// 'pageNo': '1',
+			'applicationAdminId':utilFactory.getAccountId(),
+			'secondCompanyId':utilFactory.getSecondCompanyId(),
+			'secondCompanyName':utilFactory.getSecondCompanyName()
+		}
+		_searchParams[$scope.queryByKeyObj.active.key] = $scope.searchText;
+		//$scope.pageConfigs.getList(_searchParams)
+		$scope.$broadcast('refreshPageList',_searchParams);
+	}
 	$scope.showQueryKeyList = function(){
 		$('.dropdown-menu').css('display','block')
 	}
@@ -73,7 +78,9 @@ angular.module('companyListControllerModule',[])
 			radio:true,
 			operate:[{
 				name:'查看详情',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item){
 					var _params = {
 						'secondCompanyId': item.secondCompanyId,
@@ -90,7 +97,9 @@ angular.module('companyListControllerModule',[])
 			},
 			{
 				name:'删除',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item){
 
 					var _deleteParams = {
@@ -120,11 +129,6 @@ angular.module('companyListControllerModule',[])
 				}
 			}]
 		},
-		// height:290,
-		// head:[{name:'文件名',key:'filename'}],
-		// className:function(flag){},
-		// clickFun:function(){},
-		// rowClickFun:function(item){},
 		checkbox:{
 			checkArray:[]
 		},
@@ -153,9 +157,15 @@ angular.module('companyListControllerModule',[])
 		}
 		// changeEnable:function(item){}
 	}
-	
-	$scope.$watch('$viewContentLoaded',function(event){ 
-		$scope.pageConfigs.getList(_params)
-  		$scope.$broadcast('refreshPageList',{pageSize:'',pageNo:''});
+
+	$scope.$watch('$viewContentLoaded',function(event){
+		var _params = {
+			'pageSize':'20',
+			'pageNumber':'1',
+			'applicationAdminId':utilFactory.getAccountId(),
+			'secondCompanyId':utilFactory.getSecondCompanyId()
+		};
+		// $scope.pageConfigs.getList(_params)
+  		$scope.$broadcast('refreshPageList',_params);
 	});
 })

@@ -1,5 +1,3 @@
-
-
 angular.module('schedulerAddScheduleControllerModule',[])
 .controller('schedulerAddScheduleController',function(schedulerHttpService,TOKEN_ERROR,utilFactory,$scope,$state,$compile){
 
@@ -12,6 +10,7 @@ angular.module('schedulerAddScheduleControllerModule',[])
 		'beginDate':'',
 		'departureTime':'',
 		'driverID':'',
+		'driverName':'',
 		'endDate':'',
 		'includeSaturday':false,
 		'includeSunday':false,
@@ -46,9 +45,15 @@ angular.module('schedulerAddScheduleControllerModule',[])
 		weekStart: 1
 	};
 	
-	$('.datepicker').datepicker({ language: "zh-CN"});
+	$('.datepicker').datepicker({ 
+		language: "zh-CN",
+		startDate: new Date()
+	});
 
-
+	$scope.close = function(){
+		$state.go('admin.scheduler.calendar')
+	}
+	
 	$scope.stepOneSubmit = function(formValidateOneIsInvalid){
 
 		if(formValidateOneIsInvalid){
@@ -75,13 +80,11 @@ angular.module('schedulerAddScheduleControllerModule',[])
 				// $scope.params.driverObj = _targetObj.drivers[0];
 				// $scope.params.routeTemplateObj = _targetObj.routeTemplate[0];
 				// $scope.params.vehicleObj = _targetObj.vehicles[0];
-
-
 				
 				// get select value
-				$scope.params.drivers = _targetObj.drivers.length?_targetObj.drivers:_targetObj.drivers=[{'driverName':'暂无数据'}];
-				$scope.params.routeTemplate = _targetObj.routeTemplate.length? _targetObj.routeTemplate: _targetObj.routeTemplate = [{'routeTemplateName':'暂无数据'}];
-				$scope.params.vehicles = _targetObj.vehicles.length? _targetObj.vehicles: _targetObj.vehicles = [{'licensePlate':'暂无数据'}];
+				$scope.params.drivers = _targetObj.drivers.length?_targetObj.drivers:'';
+				$scope.params.routeTemplate = _targetObj.routeTemplate.length? _targetObj.routeTemplate: '';
+				$scope.params.vehicles = _targetObj.vehicles.length? _targetObj.vehicles: '';
 
 				// $scope.params.drivers.unshift({'driverName':'请选择司机','driverId':null});
 				// $scope.params.routeTemplate.unshift({'routeTemplateName':'请选择线路','routeTemplateId':null});
@@ -100,13 +103,12 @@ angular.module('schedulerAddScheduleControllerModule',[])
 					var _routeTemplate = !_targetObj.routeTemplate.length?'线路名称':'';
 					var _vehicles = !_targetObj.vehicles.length?'牌照信息':'';
 					alertify.alert('在该时间内暂无'+_drivers +' '+_routeTemplate+' '+_vehicles+' '+',请重新选择时间范围',function(){
-
+						return 
 					});
+					return 
 				}else{
 					$scope.stepOne = false;
 					$scope.stepTwo = true;
-
-					
 				}
 
 
@@ -120,7 +122,8 @@ angular.module('schedulerAddScheduleControllerModule',[])
 	}
 
 	var myDate = new Date();
-	var startTime = myDate.getHours()+":"+myDate.getMinutes();
+	var minute = myDate.getMinutes() > 9 && myDate.getMinutes() || ('0' + myDate.getMinutes());
+	var startTime = myDate.getHours()+":"+minute;
 
 	$("#departureTime").val(startTime)
 
@@ -131,17 +134,21 @@ angular.module('schedulerAddScheduleControllerModule',[])
 		afterDone: function(){
 			var _selectedTime = $("#departureTime").val();
 			if($scope.params.routeType ==='AM' && (_selectedTime.split(":")[0]>12)){
-				alertify.alert('上行线路发车时间不能晚于上午12点,请重新选择发车时间',function(){
+				alertify.alert('上行线路发车时间不能晚于中午12点,请重新选择发车时间',function(){
 
 				});
+				startTime = $("#departureTime").val();
 				return;
 			}else if($scope.params.routeType ==='PM' && (_selectedTime.split(":")[0]<12)){
-				alertify.alert('下行线路发车时间不能早于上午12点,请重新选择发车时间',function(){
+				alertify.alert('下行线路发车时间不能早于中午12点,请重新选择发车时间',function(){
 
 				});
+				startTime = $("#departureTime").val();
 				return;
 			}else{
+
 				startTime = $("#departureTime").val();
+				console.log('startTime:'+startTime)
 			}
 		}
 	});
@@ -172,14 +179,16 @@ angular.module('schedulerAddScheduleControllerModule',[])
 		}
 
 		if($scope.params.routeType ==='AM' && (startTime.split(":")[0]>12)){
-			alertify.alert('上行线路发车时间不能晚于上午12点,请重新选择发车时间',function(){
+			alertify.alert('上行线路发车时间不能晚于中午12点,请重新选择发车时间',function(){
 
 			});
+			startTime = $("#departureTime").val();
 			return;
 		}else if($scope.params.routeType ==='PM' && (startTime.split(":")[0]<12)){
-			alertify.alert('下行线路发车时间不能早于上午12点,请重新选择发车时间',function(){
+			alertify.alert('下行线路发车时间不能早于中午12点,请重新选择发车时间',function(){
 				
 			});
+			startTime = $("#departureTime").val();
 			return;
 		}
 		// Group params from step One
@@ -191,7 +200,7 @@ angular.module('schedulerAddScheduleControllerModule',[])
 			'includeSunday':$scope.params.includeSunday
 		}
 		
-		var _formateDepartureTime = (utilFactory.getTimestamp($scope.params.beginDate + ' '+startTime) - utilFactory.getTimestamp($scope.params.beginDate));
+		var _formateDepartureTime = (utilFactory.getTimestamp($scope.params.beginDate + ' '+startTime) - utilFactory.getTimestamp($scope.params.beginDate + ' 00:00'));
 
 		var _stepTwoParams = {
   			'beginDate': _stepOneParams.beginDate,
@@ -205,7 +214,8 @@ angular.module('schedulerAddScheduleControllerModule',[])
 			// 'routeId':2358710021965824,
 			'schedulerId': utilFactory.getAccountId(),
 			'secondCompanyId': utilFactory.getSecondCompanyId(),
-			'vehicleId': $scope.params.vehicleObj.vehicleId
+			'vehicleId': $scope.params.vehicleObj.vehicleId,
+			'driverName': $scope.params.driverObj.driverName
 		};
 
 		schedulerHttpService.addAssignment(_stepTwoParams).then(function(result){

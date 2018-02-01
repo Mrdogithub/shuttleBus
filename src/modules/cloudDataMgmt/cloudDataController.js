@@ -1,13 +1,4 @@
-angular.module('cloudDataControllerModule',[]).controller('cloudDataController',function($scope){
-	
-	// $scope.leftSideTitle = "首页";
-	// $scope.icon ='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAASCAYAAABrXO8xAAAAAXNSR0IArs4c6QAAAR5JREFUOBGlk89KAlEUh+eWK90EuRBx1SKIwB5BXCTi2jdo7Sp6gla+Qy/gC7hQCRSC1oKbQJI2QRBtRILK6fvdjnoJlFEPfHP+/c7MYe6Mi8ziOC4Q1qEMZ5AD2RuM4RF68OCcmzsGaiQNqMABXMEQQrsgubPCK/5Wg1OCjBXlOvAc5ApP4DKoTTX4TeEwKCYJf1KmusYPkkygKUEz0hOhmHBI+qJm9DJ2sr0H81s81mt3fqt7rzph1Ru437CyetJMvMaOo6qEOA2f8N9US5umSrw8jqy/SxQd4RcfhZW8U0092Z9W0zCDFrzAOlNPGmm/tN4AtrW+jkNrjOBUe2D6C959tLocE3YtfcKf+5jhNszhA8JfbNHPWE+atoq/NQP1DeFlCFoAAAAASUVORK5CYII=';
-
-	// $scope.menuArray =[
-	// 	{
-	// 		'title':{'name':'首页','icon':$scope.icon,'class':'clouddata','uiSref':'admin.clouddata','href':'clouddata'}
-	// 	}
-	// ];
+angular.module('cloudDataControllerModule',[]).controller('cloudDataController',function($scope,utilFactory){
 
 	var map = new AMap.Map("container", {
 		resizeEnable: true,
@@ -18,7 +9,9 @@ angular.module('cloudDataControllerModule',[]).controller('cloudDataController',
 
 	function addCloudLayer() {
 
-		var searchOptions = {};
+		var searchOptions = {
+			 filter: 'user_company_id:' + utilFactory.getSecondCompanyId()
+		};
 		var marker;
 		var icon;
  		var center = [121.339766,31.196099]
@@ -27,6 +20,7 @@ angular.module('cloudDataControllerModule',[]).controller('cloudDataController',
 				var search = new AMap.CloudDataSearch('598a6898305a2a4ed76a78e8', searchOptions); 
 				setInterval(randerData,10000)
 				function randerData(){
+					map.clearMap();
 		          	search.searchNearBy(center, 40000, function(status,result){
 		          		//console.log('xxxsafsfdasssdfasdf')
 		          					if(marker != null){
@@ -184,4 +178,15 @@ angular.module('cloudDataControllerModule',[]).controller('cloudDataController',
 		}
 
     }    
+
+    
+    AMapUI.loadUI(['control/BasicControl'], function(BasicControl) {
+
+        var zoomCtrl1 = new BasicControl.Zoom({
+                theme: 'light',
+                // position: 'tl'
+
+            })
+        map.addControl(zoomCtrl1);
+    });
 })

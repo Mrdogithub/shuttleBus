@@ -1,6 +1,5 @@
 angular.module("forgetControllerModule",[])
-.controller("forgetController",function(utilFactory,loginHttpService,REQUESTTYPE,FORGET_ACCOUNT_ERROR,$scope,$state,$stateParams){
-
+.controller("forgetController",function(utilFactory,loginHttpService,REQUESTTYPE,FORGET_ACCOUNT_ERROR,LOGIN_ACCOUNT_ERROR,$scope,$state,$stateParams){
 	if(!$stateParams.phoneNumber){
 		$state.go('entry.check')
 	}
@@ -27,6 +26,7 @@ angular.module("forgetControllerModule",[])
 	}
 
 	$scope.restPassword = function(){
+console.log('code', FORGET_ACCOUNT_ERROR.STATUS_CODE_0200101.code)
 
 		//var regex = new RegExp( /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,32}$/);
 		var regex = new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,32}$/);
@@ -57,20 +57,34 @@ angular.module("forgetControllerModule",[])
 			loginHttpService.smsCode({'phoneNumber':$scope.phoneNumber,'requestType':REQUESTTYPE.forgetAccount,'smsCode':$scope.smsCode,'password':$scope.password})
 			.then(function(result){
 				var responseData = result.data;
+				console.log(responseData.error.statusCode)
 				if(!responseData.error){
 					alertify.alert('密码重置成功,请重新登录',function(){
 						$state.go('entry.login',{"phoneNumber":$scope.phoneNumber})
 					})
-				}else{
-					if(responseData.error.statusCode == LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200104.code){
-						$state.go('entry.login')
-					}else{
-						utilFactory.checkErrorCode(responseData.error.statusCode,responseData.error.statusText)
-					}
-					
+				}
+				if(responseData.error.statusCode == LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200104.code){
+					$state.go('entry.login')
+				} else if(responseData.error.statusCode == FORGET_ACCOUNT_ERROR.STATUS_CODE_0100113.code){
+					alertify.alert('重置密码可能遇到问题，请稍后再试。',function(){
+						return
+					})
+				} else if(responseData.error.statusCode == FORGET_ACCOUNT_ERROR.STATUS_CODE_0100101.code){
+					alertify.alert('无效的手机号',function(){
+						return
+					})
+				} else if(responseData.error.statusCode == FORGET_ACCOUNT_ERROR.STATUS_CODE_0200101.code){
+					alertify.alert('无效的请求',function(){
+						return
+					})
+				} else{
+					utilFactory.checkErrorCode(responseData.error.statusCode)
 					$scope.restText="重置密码";
 					$scope.disabled = false;
 				}
+				
+				$scope.restText="重置密码";
+				$scope.disabled = false;
 			},function(error){
 					alertify.alert(error.data.message,function(){});
 					$scope.restText="重置密码";

@@ -38,6 +38,7 @@ angular.module('injectModules',[
 	'listControllerModule',
 	'reportControllerModule',
 	'feedbackControllerModule',
+	'resetPasswordControllerModule',
 	
 	'schedulerControllerModule',
 	'schedulerHttpServiceModule',
@@ -60,8 +61,13 @@ angular.module('injectModules',[
 	'schedulerAddRouteControllerModule',
 	'schedulerUpdateRouteControllerModule',
 
-	'httpInterceptorModule',
+	'schedulerSpecialBusControllerModule',
+	'schedulerAddSpecialScheduleControllerModule',
+	'schedulerSpecialBusListControllerModule',
+	'schedulerAddOneDayScheduleControllerModule',
+	// 'schedulerSpecialBusEditControllerModule',
 
+	'httpInterceptorModule',
 
 	'companyControllerModule',
 	'companyListControllerModule',
@@ -73,7 +79,7 @@ angular.module('injectModules',[
 	'companySchedulerControllerModule',
 
 	'passengerReportDataControllerModule',
-	'passengerReportRouteControllerModule',
+	'passengerReportBusRouteControllerModule',
 	'passengerReportStationControllerModule',
 	'passengerReportPassengersControllerModule',
 	'passengerReportArrivalControllerModule',

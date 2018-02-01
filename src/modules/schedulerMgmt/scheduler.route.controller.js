@@ -16,6 +16,10 @@ angular.module('schedulerRouteControllerModule',[])
 	$scope.downLoadTemplte = function(){ alertify.alert('正在建设中...')}
 	$scope.importSite = function(){ alertify.alert('正在建设中...')}
 
+	$scope.searchFn = function(searchText){
+		$scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1','routeName':$scope.searchText});
+	}
+
 	$scope.selectAllStatus = false;
 	$scope.pageConfigs={
 		params:{
@@ -42,14 +46,18 @@ angular.module('schedulerRouteControllerModule',[])
 			operate:[
 			{
 				name:'查看详情',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item){
 					$state.go('admin.scheduler.updateRoute',{'routeId':item.routeId,'schedulerId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId()})
 				}
 			},
 			{
 				name:'删除',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item){
 					console.log(1,item)
 					alertify.confirm('该线路可能有排班任务，如继续删除，排班任务也将被清空！',function(){

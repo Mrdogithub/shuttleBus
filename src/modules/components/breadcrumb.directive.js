@@ -17,11 +17,18 @@ angular.module('breadcrumbModule',[]).directive('breadcrumbComponent',function($
 		scope:{
 			gopath:'@',
 			breadcrumbParams:'=',
-			breadcrumbText:'='
+			breadcrumbText:'=',
+			goToTop:'@'
 		},
 		controller:function($scope){
 			$scope.goBack = function(){
-				window.history.go(-1)
+				if($scope.goToTop) {
+					window.history.go(-2)
+				}else{
+					window.history.go(-1)
+				}
+				console.log()
+				
 			}
 		},
 		link:function(scope,elements,attrs){

@@ -11,7 +11,7 @@
 
 .apps-container-selected {
 	margin: 10px 10px 0 0;
-	min-height:50px;
+	min-height:400px;
 }
 
 .apps-container-selected-item{
@@ -109,7 +109,7 @@
 	font-size: 12px;
 	font-weight: normal;
 	text-align: left;
-	cursor: move;
+	/*cursor: move;*/
 }
 .app:nth-of-type(odd) {
 	background-color: #f9f9f9;
@@ -188,7 +188,7 @@
 											required="" 
 											ng-click="selectRouteType(item.routeType)"/>
 								    <label for="item_{{$index}}" class="check-box  form-control" style="width: 15px;height:15px;display: inline-flex;"></label>
-								   	<span  style="margin-top: -1px;font-size: 12px;margin-right: 5px;margin-left: 0px;"> {{item.name}}</span>
+								   	<span style="margin-top: -1px;font-size: 12px;margin-right: 5px;margin-left: 0px;"> {{item.name}}</span>
 								</span>
 								<div class="error" ng-class="{'has-error':params.routeTypeError}" ng-show="params.routeTypeError"><small class="control-label">请选择线路属性</small></div>
 						</div>
@@ -225,8 +225,8 @@
 						   			</div>
 								</div>
 								<div  class="loadMore">
-								    <div ui-sortable="sortableOptions" class="apps-container dragWrapper" ng-model="params.stationList"
-								     style="overflow: auto; min-height: 400px;">
+								    <div class="apps-container" ng-model="params.stationList"
+								     style="overflow: scroll; max-height: 400px;">
 										<div class="app dragItem moveroverItem" id="addItemForStepTwo_{{$index}}" ng-repeat="station in params.stationList track by $index" style="padding-left: 20px;">{{station.stationName}}
 											<a data-index='{{$index}}' class="addSiteItemForStepTwo" data-id="{{station.stationId}}" data-type="{{station.stationType}}" style="float: right; width: 60px;text-align: center;" ng-click="addSiteItemForStepTwo($event,$index,station.stationId,station.stationType)">加入线路</a>
 										</div>
@@ -237,7 +237,7 @@
 						<div class="route-wrapper">
 							<div>
 								<div class="route-title">线路站点</div>
-								<div ui-sortable="sortableOptions" class="apps-container-selected dragWrapper" ng-model="params.stationList_2">
+								<div class="apps-container-selected" ng-model="params.stationList_2">
 									<div 	class="apps-container-selected-item dragItem"
 											ng-repeat="station in params.stationList_2 track by $index" 
 											id="item_{{$index}}"
@@ -245,13 +245,12 @@
 											{{station.stationName}}
 											<div class="departureTime" ng-if='$index!=0'>
 												<input  name="departureTime_{{$index}}" 
-													type="text" 
-													class= "form-control"
-													ng-model="station.departureTime"
-													value="0" 
-													id="stepTwoDepartureTime_{{$index}}"
-													required=""
-													ng-pattern="/^1[0-9]$|^[2-9]\d$|^1[0-7][0-9]$/"> 分钟
+														type="text"					
+														class= "form-control"
+														ng-model="station.departureTime"
+														id="stepTwoDepartureTime_{{$index}}"
+														required=""
+														ng-pattern="/^[1-9]$|^[1-9]\d$|^1[0-7][0-9]$|^1[8][0]$/"> 分钟
 											</div>
 											<a 	data-index='{{$index}}' 
 												class="removeSiteForStepTwoBtn" 
@@ -261,8 +260,8 @@
 												ng-click="removeSiteItemForStepTwo($event,$index,station.stationId,station.stationType)">
 													<img src="data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAUlJREFUKBV1kLtKxEAUhndCXiCFYGeVUrSy8QJBxRfQgIWFSBJUBAsRvKAGdEXtRMFsQoKdCAteFtfS1kYEX8DnUJP4HWHCuuiBmXP7/3/OHNVoNJ6VUree59Vr/1iSJMN5nieWZQ0YZVk2i6I4gLjzFz6KohHAj4g+ua77YQRBcAxwA2IYx/FuJ4l8lLzNuWKCJekpucRQWscdcUJE9hhjjJcfELr2fX+BF0rBVQRJGGsNwAnhJYBpfBPleeJC+mK/CFKAdAEpIHxDebATLH1DLm2MMQ54jvyF088fQt3TviKgPME27lFssb4h/CrkbUj7Giz+ZySKkzTvyFu2bc86jvMlTURWqJ8S1lnEltQUxSn8DacN2NVgaYohtsy2znjxkD9tCuGd+itKM6h8CqjbWPkihHPTNPtqWZb1Aq7+0g3WeZqmPRJ/A+4nlb/AMkzZAAAAAElFTkSuQmCC"/>
 											</a>
-											<div class="error"  style="position: absolute;top: 20px;">
-											<small class="control-label" ng-show="formValidateTwo.departureTime_{{$index}}.$error.pattern">距始发站不得超过180分钟</small>
+											<div class="error" style="position: absolute;top: 20px;" ng-show="formValidateTwo.departureTime_{{$index}}.$dirty && formValidateTwo.departureTime_{{$index}}.$invalid &&$index!=0">
+												<small class="control-label" ng-show="formValidateTwo.departureTime_{{$index}}.$error.pattern">距始发站时间间隔需在1-180分钟之间</small>
 										        <small class="control-label" ng-show="formValidateTwo.departureTime_{{$index}}.$error.required">请输入站点区间时间</small>
 										    </div>
 					    			</div>
@@ -273,7 +272,7 @@
 					<div class="content-inline" style="text-align: center;">
 						<div class="btn-wrapper" style="margin-top: 40px;width: 100%;padding: 0;">
 							<a ng-click="pre()"  class="submitBtn submit-cancel">上一步</a>
-							<a ng-click="!submitOnProgress&& stepTwoSubmit(formValidateTwo.$valid)" class="submitBtn submit-ok">{{params.routeType == 'All'? '下一步':'确定'}}</a>
+							<a ng-click="!submitOnProgress&& stepTwoSubmit(formValidateTwo.$valid,formValidateTwo)" class="submitBtn submit-ok">{{params.routeType == 'All'? '下一步':'确定'}}</a>
 						</div>
 					</div>
 				</form>
@@ -296,7 +295,7 @@
 									    </span>
 						   			</div>
 								</div>
-							    <div ui-sortable="sortableOptions_2" class="apps-container dragWrapper_2" ng-model="params.stationListForPM" style="overflow: auto; min-height: 400px;">
+							    <div class="apps-container" ng-model="params.stationListForPM" style="overflow: scroll; max-height: 400px;">
 									<div class="app dragItem_2 moveroverItem" id="addItemForStepThree_{{$index}}" ng-repeat="station in params.stationListForPM track by $index" style="padding-left:20px;">{{station.stationName}}
 										<a data-index='{{$index}}' class="stepTwoAddBtn" data-id="{{station.stationId}}" data-type="{{station.stationType}}" style="float: right; width: 60px;text-align: center;" ng-click="addSiteItemForStepThree($event,$index,station.stationId,station.stationType)">加入线路</a>
 									</div>
@@ -306,17 +305,19 @@
 						<div class="route-wrapper">
 							<div>
 								<div class="route-title">线路站点</div>
-								<div ui-sortable="sortableOptions_2" class="apps-container-selected dragWrapper_2" ng-model="params.stationList_3">
+								<div class="apps-container-selected" ng-model="params.stationList_3">
 									<div class="apps-container-selected-item dragItem_2" ng-repeat="station in params.stationList_3 track by $index" id="item_{{$index}}" ng-class="{'has-error':formValidateThree.departureTime_{{$index}}.$dirty && formValidateThree.departureTime_{{$index}}.$invalid,'has-success':formValidateThree.departureTime_{{$index}}.$dirty && !formValidateThree.departureTime_{{$index}}.$invalid}">{{station.stationName}}
 										<div class="departureTime" ng-if='$index!=0'>
-											<input type="text" ng-model="station.departureTime" name="departureTime_{{$index}}" class= "form-control" required=""> 分钟
+											<input type="text" ng-model="station.departureTime" name="departureTime_{{$index}}" class= "form-control" required="" 
+											 ng-pattern="/^[1-9]$|^[1-9]\d$|^1[0-7][0-9]$|^1[8][0]$/"> 分钟
 										</div>
 										<a  data-index='{{$index}}' class="removeSiteForStepThreeBtn" data-id="{{station.stationId}}" data-type="{{station.stationType}}" style="float: right; width: 27px;text-align: center;" ng-click="removeSiteItemForStepThree($event,$index,station.stationId,station.stationType)">
 												<img src="data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAUlJREFUKBV1kLtKxEAUhndCXiCFYGeVUrSy8QJBxRfQgIWFSBJUBAsRvKAGdEXtRMFsQoKdCAteFtfS1kYEX8DnUJP4HWHCuuiBmXP7/3/OHNVoNJ6VUree59Vr/1iSJMN5nieWZQ0YZVk2i6I4gLjzFz6KohHAj4g+ua77YQRBcAxwA2IYx/FuJ4l8lLzNuWKCJekpucRQWscdcUJE9hhjjJcfELr2fX+BF0rBVQRJGGsNwAnhJYBpfBPleeJC+mK/CFKAdAEpIHxDebATLH1DLm2MMQ54jvyF088fQt3TviKgPME27lFssb4h/CrkbUj7Giz+ZySKkzTvyFu2bc86jvMlTURWqJ8S1lnEltQUxSn8DacN2NVgaYohtsy2znjxkD9tCuGd+itKM6h8CqjbWPkihHPTNPtqWZb1Aq7+0g3WeZqmPRJ/A+4nlb/AMkzZAAAAAElFTkSuQmCC"/>
 										</a>
-										<div class="error" ng-show="formValidateThree.departureTime_{{$index}}.$dirty && formValidateThree.departureTime_{{$index}}.$invalid &&$index!=0" style="position: absolute;top: 20px;">
-											<small class="control-label"  ng-show="formValidateThree.departureTime_{{$index}}.$error.required">请输入站点区间时间</small>
-									    </div>
+										<div class="error" style="position: absolute;top: 20px;" ng-show="formValidateThree.departureTime_{{$index}}.$dirty && formValidateThree.departureTime_{{$index}}.$invalid  &&$index!=0">
+											<small class="control-label" ng-show="formValidateThree.departureTime_{{$index}}.$error.pattern">距始发站时间间隔需在1-180分钟之间</small>
+										    <small class="control-label" ng-show="formValidateThree.departureTime_{{$index}}.$error.required">请输入站点区间时间</small>
+										</div>
 									</div>
 						    	</div>
 							</div>

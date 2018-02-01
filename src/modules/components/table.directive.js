@@ -25,9 +25,9 @@ angular.module('tableComponentModule',[]).directive('tableComponent',function(lo
 				+'				</span>'
 				+'				<span ng-repeat="head in tableConfig.head">{{(item[head.parentKey]?item[head.parentKey][head.selfKey.key] :item[head.selfKey.key] )|| tableConfig.defaultValue}}</span>'
 				// +'				<span ><a>编辑</a></span>'
-				+'				<span class="item-operate"  ng-click="preventPropagation($event)" ng-if="tableConfig.operateIfFlag || (stableFlag.operate && stableFlag.operate.Length !=0 && (o.ngIf(item) ||o.ngIf ==undefined))">'
+				+'				<span class="item-operate"  ng-click="preventPropagation($event)" ng-if="tableConfig.operateIfFlag || (stableFlag.operate && stableFlag.operate.length !=0)">'
 				
-				+'					  <a class="operateBtnForTableList" ng-click="o.fun(item,$event)" ng-repeat="o in stableFlag.operate"  ng-if="tableConfig.operateIfFlag || (o.ngIf(item) || o.ngIf ==undefined)">{{o.name}}</a> '     	
+				+'					  <a class="operateBtnForTableList" ng-click="o.fun(item,$event)" ng-repeat="o in stableFlag.operate"  ng-if="tableConfig.operateIfFlag && (o.ngIf(item) || o.ngIf ==undefined)">{{o.name}}</a> '     	
 				+'				</span>'
 				+'			</li>'
 				+'		</ul>'

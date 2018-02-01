@@ -5,7 +5,9 @@ angular.module('schedulerUpdateSiteControllerModule',[])
 	var _secondCompanyId = $stateParams.secondCompanyId || utilFactory.getSecondCompanyId();
 	var _accountId = $stateParams.accountId || utilFactory.getAccountId();
 	var _secondCompanyId = $stateParams.secondCompanyId || utilFactory.getSecondCompanyId();
-	
+	var map ='';
+	var gps = '';
+	var marker='';
 	$scope.goBack = function(){
 		$state.go('admin.scheduler.site')
 	}
@@ -22,16 +24,23 @@ angular.module('schedulerUpdateSiteControllerModule',[])
 			'lv1':'站点管理',
 			'lv2':'编辑站点'
 		}
+		schedulerHttpService.getGPSForUpdateSite({'id':$scope.gps}).then(function(data){
+			if(data.data.info === "OK"){
+				gps = data.data.datas[0]._location.split(',')
+				console.log(gps)
+				map = new AMap.Map('container', { zoom: 10,center:[gps[0],gps[1]]});
+				AMapUI.loadUI(['misc/PoiPicker','overlay/SimpleInfoWindow'], function(PoiPicker,SimpleInfoWindow) {
+					var poiPicker = new PoiPicker({ city:'021', input: 'pickerInput',});
+					poiPickerReady(poiPicker,SimpleInfoWindow);
+				});
+			}
+		},function(){
+
+		});
 	}else{
 		$state.go('admin.scheduler.site')
 	}
 
-	var map = new AMap.Map('container', { zoom: 10,center: [121.339766,31.196099] });
-	var marker='';
-	AMapUI.loadUI(['misc/PoiPicker','overlay/SimpleInfoWindow'], function(PoiPicker,SimpleInfoWindow) {
-		var poiPicker = new PoiPicker({ city:'021', input: 'pickerInput',});
-		poiPickerReady(poiPicker,SimpleInfoWindow);
-	});
 
 	function poiPickerReady(poiPicker,SimpleInfoWindow) {
 		window.poiPicker = poiPicker;
@@ -170,7 +179,8 @@ angular.module('schedulerUpdateSiteControllerModule',[])
             infoWindow.setMap(map);
             marker.setPosition(poi.location);
             infoWindow.setPosition(poi.location);
-
+            map.setCenter(poi.location)
+            console.log('xxx')
             infoWindow.open(map, marker.getPosition()); // show popup by default
             $(document).ready(function(){
 				setTimeout(function(){

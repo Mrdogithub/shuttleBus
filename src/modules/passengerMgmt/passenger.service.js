@@ -3,11 +3,14 @@ angular.module('passengerHttpServiceModule',[]).factory('passengerHttpService',f
 	var passengerAccount = APISERVICEPATH.passengerAccount;
 	//var passengerAccount = APISERVICEPATH.prd;
 	//var passengerProfile = APISERVICEPATH.passengerProfile;
-	var passengerTrip    = APISERVICEPATH.passengerTrip;
+	// var passengerTrip    = APISERVICEPATH.passengerTrip;
+	var stationService = APISERVICEPATH.stationService;
 	var uploadTripHistorysByExcelAPI = APISERVICEPATH.tripHistorysByExcel;
+	var passengerComment = APISERVICEPATH.passengerComment;
+	var reportingService = APISERVICEPATH.reportingService;
 	passengerHttp.getPassengerTrip = function(paramsObj){
 		var paramsData = {
-			'apiPath':passengerTrip+'web/'+paramsObj.passengerId,
+			'apiPath':stationService+'web/'+paramsObj.passengerId,
 			'paramsList':{
 				'pageSize':paramsObj.pageSize,
 				'pageNumber':paramsObj.pageNumber
@@ -24,7 +27,9 @@ angular.module('passengerHttpServiceModule',[]).factory('passengerHttpService',f
 				// 'hrId': paramsObj.hrId,
 				// 'secondCompanyId':paramsObj.secondCompanyId,
 				'pageSize':paramsObj.pageSize,
-				'pageNumber':paramsObj.pageNumber
+				'pageNumber':paramsObj.pageNumber,
+				'name':paramsObj.name,
+				'phoneNumber':paramsObj.phoneNumber
 			}
 		};
 
@@ -100,17 +105,186 @@ angular.module('passengerHttpServiceModule',[]).factory('passengerHttpService',f
 		return  $http({ method: 'POST',url:paramsData.apiPath,headers:{'Content-type':'application/json'},data:paramsData.paramsList});
 	};
 
-	// passengerHttp.getPassengerFeedback = function(){
+	passengerHttp.getPassengerFeedback = function(paramsObj){
 
-		// var paramsData = {
-	// 		// 'apiPath':passengerProfile+'passengerByID',
-	// 		// paramsList:{
-	// 		// 	'passengerUUID':paramsObj.passengerUUID
-	// 		// }
+		var paramsData = {
+			'apiPath':passengerComment+paramsObj.secondCompanyId+'/'+paramsObj.schedulerId,
+			paramsList:{
+				// 'secondCompanyId':paramsObj.secondCompanyId,
+				// 'schedulerId':paramsObj.schedulerId,
+				'pageSize':paramsObj.pageSize,
+				'pageNumber':paramsObj.pageNumber,
+				// 'Authorization':paramsObj.pageNumber,
+				// 'operateAccountId':paramsObj.pageNumber,
+				// 'ApplicationId':paramsObj.pageNumber,
+			}
+		};
+
+		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
+	}
+
+	passengerHttp.getBusRoute = function(paramsObj){
+		var paramsData = {
+			'apiPath':reportingService+'display/attendence/'+paramsObj.beginTime+'/endTime/'+paramsObj.endTime,
+			paramsList:{
+				// 'pageSize':paramsObj.pageSize,
+				// 'pageNumber':paramsObj.pageNumber,
+			}
+		};
+
+		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
+	}
+
+	passengerHttp.downloadBusRoute = function(paramsObj){
+		var paramsData = {
+			'apiPath':reportingService+'download/attendence/'+paramsObj.beginTime+'/endTime/'+paramsObj.endTime,
+			paramsList:{
+				// 'schedulerAccountId':paramsObj.schedulerAccountId
+			}
+		};
+
+		console.log(1,paramsObj)
+		return  $http({ method: 'GET',url:paramsData.apiPath,responseType:'arraybuffer',data:paramsData.paramsList});
+	}
+
+	passengerHttp.getAllTripHistory = function(paramsObj){
+		var paramsData = {
+			'apiPath':reportingService+'scheduler/'+paramsObj.schedulerId+'/secondCompany/'+paramsObj.secondCompanyId,
+			paramsList:{
+				'pageSize':paramsObj.pageSize,
+				'pageNumber':paramsObj.pageNumber,
+				'tripHistoryId': paramsObj.tripHistoryId,
+				// 'vehicleLicensePlate': paramsObj.vehicleLicensePlate,
+				'passengerName': paramsObj.passengerName
+			}
+		};
+
+		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
+	}
+
+	passengerHttp.downloadTripHistory = function(paramsObj){
+		var paramsData = {
+			'apiPath':reportingService+'excel/scheduler/'+paramsObj.schedulerId+'/secondCompany/'+paramsObj.secondCompanyId,
+			paramsList:{
+				// 'schedulerAccountId':paramsObj.schedulerAccountId
+			}
+		};
+
+		console.log(1,paramsObj)
+		return  $http({ method: 'GET',url:paramsData.apiPath,responseType:'arraybuffer',data:paramsData.paramsList});
+	}
+
+	passengerHttp.getArrivalTime = function(paramsObj){
+		var paramsData = {
+			'apiPath':reportingService+'display/arrivalTime/'+paramsObj.routeTemplateId,
+			paramsList:{
+				'beginTime':paramsObj.beginTime,
+				'endTime':paramsObj.endTime,
+				// 'routeTemplateId':paramsObj.routeTemplateId,
+				'vehicleId':paramsObj.vehicleId,
+				'routeTemplateType':paramsObj.routeTemplateType,
+				'vehicleInfoFlag':paramsObj.vehicleInfoFlag
+			}
+		};
+
+		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
+	}
+	passengerHttp.downloadArrivalTime = function(paramsObj){
+		var paramsData = {
+			'apiPath':reportingService+'download/arrivalTime/'+paramsObj.beginTime+'/endTime/'+paramsObj.endTime,
+			// paramsList:{
+			// 	// 'schedulerAccountId':paramsObj.schedulerAccountId
+			// }
+		};
+		return  $http({ method: 'GET',url:paramsData.apiPath,responseType:'arraybuffer'});
+	}
+	passengerHttp.getEmployeeList = function(paramsObj){
+		var paramsData = {
+			'apiPath':reportingService+'web/tripHistory/'+paramsObj.userCompanyId+'/dateTime/'+paramsObj.dateTime,
+			paramsList:{
+				'pageSize':paramsObj.pageSize,
+				'pageNumber':paramsObj.pageNumber,
+				'routeTemplateId':paramsObj.routeTemplateId,
+			}
+		};
+
+		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
+	}
+	passengerHttp.downloadEmployeeList = function(paramsObj){
+		var paramsData = {
+			'apiPath':reportingService+'tripHistory/'+paramsObj.userCompanyId+'/createTime/'+paramsObj.createTime,
+		};
+		return  $http({ method: 'GET',url:paramsData.apiPath,responseType:'arraybuffer'});
+	}
+	passengerHttp.getRouteTemplateList = function(paramsObj){
+		var paramsData = {
+			'apiPath':reportingService+'routeTemplateList/'+paramsObj.beginTime+'/endTime/'+paramsObj.endTime,
+			paramsList:{
+				// 'pageSize':paramsObj.pageSize,
+				// 'pageNumber':paramsObj.pageNumber,
+				'vehicleInfoFlag':paramsObj.vehicleInfoFlag,
+
+				
+			}
+		};
+
+		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
+	}
+	// passengerHttp.getRouteStationList = function(paramsObj){
+	// 	var paramsData = {
+	// 		'apiPath':reportingService+'routeTemplateList/'+paramsObj.beginTime+'/endTime/'+paramsObj.endTime,
+	// 		paramsList:{
+	// 			// 'pageSize':paramsObj.pageSize,
+	// 			// 'pageNumber':paramsObj.pageNumber,
+	// 			'vehicleInfoFlag':paramsObj.vehicleInfoFlag,
+	// 		}
 	// 	};
 
-	// 	//return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
-	// }
+	// 	return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
+	// }	
+	passengerHttp.getArrivalTime = function(paramsObj){
+		var paramsData = {
+			'apiPath':reportingService+'display/arrivalTime/'+paramsObj.routeTemplateId,
+			paramsList:{
+				'beginTime':paramsObj.beginTime,
+				'endTime':paramsObj.endTime,
+				// 'routeTemplateId':paramsObj.routeTemplateId,
+				'vehicleId':paramsObj.vehicleId,
+				'routeTemplateType':paramsObj.routeTemplateType,
+				'vehicleInfoFlag':paramsObj.vehicleInfoFlag
+			}
+		};
 
+		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
+	}
+	passengerHttp.getRouteStationList = function(paramsObj){
+		var paramsData = {
+			'apiPath':reportingService+'count/'+paramsObj.routeTemplateId,
+			paramsList:{
+				'beginTime':paramsObj.beginTime,
+				'endTime':paramsObj.endTime,
+				'routeType':paramsObj.routeType
+			}
+		};
+
+		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
+	}
+
+	passengerHttp.downloadRouteStationList = function(paramsObj){
+		var paramsData = {
+			// http://reporting.apps.cl-cn-east-preprod01.cf.ford.com/api/NanjingShuttle/reportings/v1/count/download/2?routeTemplateName=3&downloadMonth=4&beginTime=5&endTime=6
+			'apiPath':reportingService+'count/download/'+paramsObj.routeTemplateId+'?routeTemplateName='+encodeURIComponent(paramsObj.routeTemplateName)
+			+'&downloadMonth='+encodeURIComponent(paramsObj.downloadMonth)+'&beginTime='+encodeURIComponent(paramsObj.beginTime)+'&endTime='
+			+encodeURIComponent(paramsObj.endTime)+'&routeType='+encodeURIComponent(paramsObj.routeType),
+			// paramsList:{
+			// 	'routeTemplateName':paramsObj.routeTemplateName,
+			// 	'downloadMonth':paramsObj.downloadMonth,
+			// 	'beginTime':paramsObj.beginTime,
+			// 	'endTime':paramsObj.endTime,
+			// 	'routeType':paramsObj.routeType
+			// }
+		};
+		return  $http({ method: 'GET',url:paramsData.apiPath,responseType:'arraybuffer'});
+	}
 	return passengerHttp;
 });

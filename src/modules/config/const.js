@@ -2,8 +2,8 @@ angular.module('constModule',[])
 
 .constant('APISERVICEPATH',{
 	//'accounts'              :'http://accountandauthority.apps.cl-cn-east-preprod01.cf.ford.com/api/NanjingShuttle/accounts/v1/',
-	'auths'            :'http://authentication.apps.cl-cn-east-preprod01.cf.ford.com/api/NanjingShuttle/auths/v1/',
-	'assignmentService':'http://routeandshuttlemeta.apps.cl-cn-east-preprod01.cf.ford.com/api/NanjingShuttle/assignments/v1/',
+	'auths'            :'https://services-cn.cx.ford.com/api/NanjingShuttle/auths/v1/',
+	'assignmentService':'https://services-cn.cx.ford.com/api/NanjingShuttle/assignments/v1/',
 	// 'devPassenger':'http://19.229.169.185:7073/api/v1/passengerAccount/',
 	// 'devLogin':'http://19.229.169.185:7072/api/v1/',
 	// 'dev_1':'http://192.168.43.163:7072/api/v1/',
@@ -11,27 +11,29 @@ angular.module('constModule',[])
 	//'busAPI':'http://19.229.169.228:7072/api/v1/vehicleService/',
 	//'div_2':'http://187.17.43.163:7073/api/v1/passengerAccount/',
 	'passengerDev'     :'./data/',
-	'tripHistorysByExcel':'http://reporting.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/tripHistorysDownload/',// error
-	'passengerTrip'      :'http://route.apps.cl-cn-east-preprod01.cf.ford.com/api/Nanjingshuttle/tripHistories/v1/', // done
+	'tripHistorysByExcel':'https://services-cn.cx.ford.com/api/v1/tripHistorysDownload/',// error
+	'passengerTrip'      :'https://services-cn.cx.ford.com/api/Nanjingshuttle/tripHistories/v1/', // done
 
-	'passengerAccount' :'http://profile.apps.cl-cn-east-preprod01.cf.ford.com/api/NanjingShuttle/profiles/v1/passenger/',
+	'passengerAccount' :'https://services-cn.cx.ford.com/api/NanjingShuttle/profiles/v1/passenger/',
+	'passengerComment' :'https://services-cn.cx.ford.com/api/NanjingShuttle/comments/v1/',
+
+	//'passengerProfile' :'https://services-cn.cx.ford.com/api/v1/passengerProfile/',
+	'companyAccount'   :'https://services-cn.cx.ford.com/api/NanjingShuttle/profiles/v1/company/',
 
 
-	//'passengerProfile' :'http://profile.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/passengerProfile/',
-	'companyAccount'   :'http://profile.apps.cl-cn-east-preprod01.cf.ford.com/api/NanjingShuttle/profiles/v1/company/',
-
-
-	'vehicleService'   :'http://shuttle.apps.cl-cn-east-preprod01.cf.ford.com/api/NanjingShuttle/vehicles/v1/',
+	'vehicleService'   :'https://services-cn.cx.ford.com/api/NanjingShuttle/vehicles/v1/',
 	// 'prd':'http://19.229.169.202:7071/api/v1/passengerAccount/',
-	'driverAccount'    :'http://profile.apps.cl-cn-east-preprod01.cf.ford.com/api/NanjingShuttle/profiles/v1/',
+	'driverAccount'    :'https://services-cn.cx.ford.com/api/NanjingShuttle/profiles/v1/',
 
-	'stationService'   :'http://route.apps.cl-cn-east-preprod01.cf.ford.com/api/NanjingShuttle/routing/v1/',
-	'templateFile'	   :'http://route.apps.cl-cn-east-preprod01.cf.ford.com/api/NanjingShuttle/routing/v1/templateFile/',
-	'routeService'     :'http://route.apps.cl-cn-east-preprod01.cf.ford.com/api/NanjingShuttle/routing/v1/',
+	'stationService'   :'https://services-cn.cx.ford.com/api/NanjingShuttle/routing/v1/',
+	'templateFile'	   :'https://services-cn.cx.ford.com/api/NanjingShuttle/routing/v1/templateFile/',
+	'routeService'     :'https://services-cn.cx.ford.com/api/NanjingShuttle/routing/v1/',
 
 
-	'hrService'		   :'http://profile.apps.cl-cn-east-preprod01.cf.ford.com/api/NanjingShuttle/profiles/v1/hr/',
-	'schedulerService' :'http://profile.apps.cl-cn-east-preprod01.cf.ford.com/api/NanjingShuttle/profiles/v1/scheduler/'
+	'hrService'		   :'https://services-cn.cx.ford.com/api/NanjingShuttle/profiles/v1/hr/',
+	'schedulerService' :'https://services-cn.cx.ford.com/api/NanjingShuttle/profiles/v1/scheduler/',
+
+	'reportingService' :'https://services-cn.cx.ford.com/api/NanjingShuttle/report/v1/'
 })
 .constant('ERRORCODE',{
 	'activeProgress':'0100104',
@@ -72,8 +74,13 @@ angular.module('constModule',[])
 	'ERROR_CODE_0600100201':{'code':'0600100201','message':'可能遇到问题，请稍候再试'},
 	'ERROR_CODE_0600800201':{'code':'0600800201','message':'新增操作遇到问题，请重试'},
 	'ERROR_CODE_0600800202':{'code':'0600800202','message':'修改操作遇到问题，请重试'},
-	'ERROR_CODE_0600800203':{'code':'0600800203','message':'删除操作遇到问题，请重试'}
+	'ERROR_CODE_0600800203':{'code':'0600800203','message':'删除操作遇到问题，请重试'},
 
+	'ERROR_CODE_08005001001':{'code':'08005001001','message':'可能遇到问题，请稍候再试'},
+	'ERROR_CODE_08005003001':{'code':'08005003001','message':'可能遇到问题，请稍候再试'},
+	'ERROR_CODE_08005003002':{'code':'08005003002','message':'排班不存在，请返回列表，刷新再试'},
+	'ERROR_CODE_08005004002':{'code':'08005004002','message':'排班不存在，请返回列表，刷新再试'},
+	'ERROR_CODE_08005004004':{'code':'08005004004','message':'删除预约排班须至少提前两天'}
 
 })
 .constant('CHECK_ACCOUNT_ERROR',{
@@ -114,7 +121,8 @@ angular.module('constModule',[])
 	'STATUS_CODE_0200109':{'code':'0200109','message':'无效的请求'},
 	'STATUS_CODE_0200110':{'code':'0200110','message':'无效的请求'},
 	'STATUS_CODE_0200111':{'code':'0200111','message':'无效的请求'},
-	'STATUS_CODE_0200112':{'code':'0200112','message':'无效的请求'}
+	'STATUS_CODE_0200112':{'code':'0200112','message':'无效的请求'},
+	'STATUS_CODE_0200301':{'code':'0200301','message':'无效的用户'}
 })
 .constant('SMSCODE_ERROR',{
 	'STATUS_CODE_0100108':{'code':'0100108','message':'发送验证码失败,请稍候再试'},
@@ -145,14 +153,21 @@ angular.module('constModule',[])
 	'STATUS_CODE_0100113':{'code':'0100113','message':'重置密码可能遇到问题，请稍候再试'},
 	'STATUS_CODE_0100115':{'code':'0100115','message':'无效的请求'},
 	'STATUS_CODE_0100106':{'code':'0100106','message':'无效的请求'},
-	'STATUS_CODE_0200101':{'code':'0200101','message':'无效的请求'}
+	'STATUS_CODE_0200101':{'code':'0200101','message':'无效的请求'},
+	'STATUS_CODE_0100101':{'code':'0100101','message':'无效的手机号'},
+	// 'STATUS_CODE_0100103':{'code':'0100103','message':'重置密码可能遇到问题，请稍后再试。'},
 })
 .constant('TOKEN_ERROR',{
 	'STATUS_CODE_0200102':{'code':'0200102','message':'您的帐户信息已过期，请重新登录'},
 	'STATUS_CODE_0200105':{'code':'0200105','message':'您的帐户信息已过期，请重新登录'},
 	'STATUS_CODE_0200201':{'code':'0200201','message':'您的帐户信息已过期，请重新登录'}
-}).
-constant('USER_ACCOUNT',{
+})
+.constant('RESET_ACCOUNT_ERROR',{
+	'STATUS_CODE_0200101':{'code':'0200101','message':'旧密码不正确'},
+	'STATUS_CODE_0200110':{'code':'0200110','message':'无效的用户'},
+	'STATUS_CODE_0100113':{'code':'0100113','message':'重置密码可能遇到问题，请稍候再试'}
+})
+.constant('USER_ACCOUNT',{
 	'accountId':'',
 	'accessToken':'',
 	'refreshToken':'',
@@ -160,7 +175,7 @@ constant('USER_ACCOUNT',{
 	'ROLE_SYSADMIN':false,
 	'ROLE_COMPANY_ADMIN':false,
 
-	'ROLE_HR':false,
+	'ROLE_HR':'',
 	'ROLE_SCHEDULER':false,
 	'ROLE_PASSENGER':false,
 	'ROLE_DRIVER':false,

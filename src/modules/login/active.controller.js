@@ -76,11 +76,11 @@ angular.module("activeControllerModule",[])
 						}
 						
 						if(USER_ACCOUNT.ROLE_SECONDADMIN){
-							return $state.go('companyAdmin.HR');
+							return $state.go('admin.companyAdminHR');
 						}
 
 						if(USER_ACCOUNT.ROLE_APPLICATIONADMIN){
-							return $state.go('company.list')
+							return $state.go('admin.companyList')
 						}
 
 						if(USER_ACCOUNT.ROLE_DRIVER){

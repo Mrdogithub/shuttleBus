@@ -36,7 +36,12 @@ angular.module('app',['injectModules'])
 		templateUrl:'modules/login/masterLogin.html',
 		controller:'masterLoginController'
 	})
-
+	.state('entry.reset',{
+		url:'/reset',
+		templateUrl:'modules/login/resetPassword.html',
+		params:{'userName':null,'password':null},
+		controller:'resetPasswordController'
+	})
 	.state('admin',{
 		url:'/admin',
 		templateUrl:'modules/admin/admin.html',
@@ -147,10 +152,10 @@ angular.module('app',['injectModules'])
 		templateUrl:'modules/passengerMgmt/passenger.report.station.html',
 		controller:'passengerReportStationController'
 	})
-	.state('admin.passenger.report.route',{
-		url:'/route',
-		templateUrl:'modules/passengerMgmt/passenger.report.route.html',
-		controller:'passengerReportRouteController'
+	.state('admin.passenger.report.busRoute',{
+		url:'/busRoute',
+		templateUrl:'modules/passengerMgmt/passenger.report.busRoute.html',
+		controller:'passengerReportBusRouteController'
 	})
 	.state('admin.passenger.add',{
 		url:'/add',
@@ -170,7 +175,9 @@ angular.module('app',['injectModules'])
 			'phoneNumber': null,
 			'schedulerId':  null,
 			'passengerId':null,
-			'status': null
+			'status': null,
+			'defaultStationName':null,
+			'defaultRouteName':null
 		},
 		templateUrl:'modules/passengerMgmt/passenger.detail.html',
 		controller:'passengerDetailController'
@@ -345,6 +352,37 @@ angular.module('app',['injectModules'])
 		templateUrl:'modules/schedulerMgmt/scheduler.busCompany.html',
 		controller:'schedulerbusCompanyController'
 	})
+	.state('admin.scheduler.specialBus',{
+		url:'/specialBus',
+		templateUrl:'modules/schedulerMgmt/scheduler.specialBus.html',
+		controller:'schedulerSpecialBusController'
+	})
+	.state('admin.scheduler.addSpecialSchedule',{
+		url:'/specialSchedule',
+		templateUrl:'modules/schedulerMgmt/scheduler.addSpecialSchedule.html',
+		controller:'schedulerAddSpecialScheduleController'
+	})
+	.state('admin.scheduler.specialBusList',{
+		url:'/specialBusList',
+		templateUrl:'modules/schedulerMgmt/scheduler.specialBusList.html',
+		params:{'eventDay':null},
+		controller:'schedulerSpecialBusListController',
+		reload:true,  
+		cache:false
+	})
+	// .state('admin.scheduler.specialBusEdit',{
+	// 	url:'/specialBusEdit',
+	// 	templateUrl:'modules/schedulerMgmt/scheduler.specialBusEdit.html',
+	// 	params:{'assignmentId':null},
+	// 	controller:'schedulerSpecialBusEditController'
+	// })
+	.state('admin.scheduler.addOneDaySchedule',{
+		url:'/oneDaySchedule',
+		templateUrl:'modules/schedulerMgmt/scheduler.addOneDaySchedule.html',
+		params:{'eventDay':null,'dateTime':null},
+		controller:'schedulerAddOneDayScheduleController'
+	})
+
 	// .state('admin.company',{
 	// 	url:'/company',
 	// 	templateUrl:'modules/companyMgmt/company.html',

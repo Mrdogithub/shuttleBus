@@ -19,6 +19,15 @@ angular.module('schedulerAddSiteControllerModule',[])
 		var poiPicker = new PoiPicker({city:'021',input: 'pickerInput',});
 		poiPickerReady(poiPicker,SimpleInfoWindow);
 	});
+    AMapUI.loadUI(['control/BasicControl'], function(BasicControl) {
+
+        var zoomCtrl1 = new BasicControl.Zoom({
+                theme: 'light'
+            })
+
+        map.addControl(zoomCtrl1);
+
+    });
 
 	function poiPickerReady(poiPicker,SimpleInfoWindow) {
 		window.poiPicker = poiPicker;
@@ -159,7 +168,7 @@ angular.module('schedulerAddSiteControllerModule',[])
             infoWindow.setMap(map);
             marker.setPosition(poi.location);
             infoWindow.setPosition(poi.location);
-
+            map.setCenter(poi.location)
             infoWindow.open(map, marker.getPosition()); // show popup by default
             $(document).ready(function(){
 				setTimeout(function(){

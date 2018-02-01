@@ -26,6 +26,8 @@ angular.module('applicationAdminHttpServiceModule',[])
 				// 'parentCompanyId':paramsObj.systemAdminCompanyId,
 				'pageNumber': paramsObj.pageNumber,
 				'pageSize':paramsObj.pageSize,
+				'companyName': paramsObj.companyName,
+				'phoneNumber': paramsObj.phoneNumber
 				// 'companyCode':'2'
 			}
 		};

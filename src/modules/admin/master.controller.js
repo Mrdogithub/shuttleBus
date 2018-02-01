@@ -32,29 +32,30 @@ angular.module('masterControllerModule',[])
 		};
 	$scope.pageConfigs.getList(_params)
 	$scope.queryByKeyObj = {
-		'active':{'key':'name','value':'管理员'},
+		'active':{'key':'companyName','value':'公司名称'},
 		'list':[{'key':'phoneNumber','value':'管理员手机'}]
 	}
 
-	var searchText = {};
 	$scope.selectKey = function(activeObj){
 		$scope.queryByKeyObj.list.length = 0;
 		$scope.queryByKeyObj.list.push( {'key':$scope.queryByKeyObj.active.key,'value':$scope.queryByKeyObj.active.value})
 		$scope.queryByKeyObj.active.key = activeObj.key;
 		$scope.queryByKeyObj.active.value = activeObj.value;
-		console.log(activeObj.key)
-		searchText[activeObj.key] = $scope.searchText
+
 		$('.dropdown-menu').css('display','none')
 	}
 
+
 	$scope.searchFn = function(){
-		var _searchText ={
-			'pageSize':'20',
-			'pageNo':'1',
+		var _searchParams ={
+			// 'pageSize':'20',
+			// 'pageNo':'1'
+			'systemAdminId':utilFactory.getAccountId(),
+			'systemAdminCompanyId':utilFactory.getSecondCompanyId()
 		}
-		_searchText[$scope.queryByKeyObj.active.key] = $scope.queryByKeyObj.active.value;
-		console.log(1,_searchText)
-		$scope.$broadcast('refreshPageList',_searchText);
+		_searchParams[$scope.queryByKeyObj.active.key] = $scope.searchText;
+		console.log(1,_searchParams)
+		$scope.$broadcast('refreshPageList',_searchParams);
 	}
 	$scope.showQueryKeyList = function(){
 		$('.dropdown-menu').css('display','block')
@@ -72,7 +73,9 @@ angular.module('masterControllerModule',[])
 			radio:true,
 			operate:[{
 				name:'查看详情',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item){
 					var _params = {
 						'systemAdminCompanyId': item.secondCompanyId,
@@ -89,7 +92,9 @@ angular.module('masterControllerModule',[])
 			},
 			{
 				name:'删除',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item){
 
 					var _deleteParams = {
@@ -156,7 +161,7 @@ angular.module('masterControllerModule',[])
 	
 
 	$scope.dataIsEmpty = false;
-	if(loadData&&!loadData.data.error &&!loadData.data.value.list.length){
+	if(loadData && (loadData.data.value == null)){
 		$scope.dataIsEmpty = true;
 		return
 	}else if(loadData && loadData.data.error){

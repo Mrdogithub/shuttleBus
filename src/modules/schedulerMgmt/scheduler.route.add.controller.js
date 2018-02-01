@@ -31,15 +31,15 @@ angular.module('schedulerAddRouteControllerModule',[])
 
 
 		$scope.breadcrumbText={'lv1':'线路管理','lv2':'新增线路'}
-		$scope.sortableOptions = {
-			placeholder: "dragItem",
-			connectWith: ".dragWrapper"
-		};
+		// $scope.sortableOptions = {
+		// 	placeholder: "dragItem",
+		// 	connectWith: ".dragWrapper"
+		// };
 
-		$scope.sortableOptions_2 = {
-			placeholder: "dragItem_2",
-			connectWith: ".dragWrapper_2"
-		};
+		// $scope.sortableOptions_2 = {
+		// 	placeholder: "dragItem_2",
+		// 	connectWith: ".dragWrapper_2"
+		// };
 
 	}else{
 		$state.go('admin.scheduler.route')
@@ -80,8 +80,10 @@ angular.module('schedulerAddRouteControllerModule',[])
 	$scope.stepOneSubmit = function(formValidateIsInvalid){
 		
 		// Submit empty form will provide error messages
-		if(formValidateIsInvalid || $scope.params.routeType == ''){
+		if($scope.params.routeType == ''){
 			$scope.params.routeTypeError = true;
+		}
+		if(formValidateIsInvalid || $scope.params.routeType == ''){
 
 			return 	utilFactory.setDirty($scope.formValidateOne);
 		}
@@ -109,51 +111,58 @@ angular.module('schedulerAddRouteControllerModule',[])
 	}
 
 	$scope.stepThreePre = function(){
-		$scope.stepTwo = true;
+		$scope.params.stationListForPM = null;
+		$scope.searchByStationNameForStepTwo()
 		$scope.stepThree = false;
+		$scope.stepTwo = true;
+		
 	}
 	$scope.close = function(){
 		$state.go('admin.scheduler.route')
 	}
 
-	$scope.stepTwoSubmit = function(formValidateTwo){
-
-		
-		var _stationList = $scope.params.stationList_2;
-		if(!formValidateTwo)return utilFactory.setDirty($scope.formValidateTwo)
+	$scope.stepTwoSubmit = function(formValidateTwo,obj){
+	
+		var _stationListArray = angular.copy($scope.params.stationList_2);
+		console.log('****** formValidateTwo *******')
+		console.log(1,$scope.formValidateTwo)
+		if(!formValidateTwo){
+			
+			utilFactory.setDirty($scope.formValidateTwo)
+			return
+		}
 		
 		// Logic for PM or AM only
 		if($scope.params.routeType !='All'){
 			// Get All selected sites and removed some unuse params.
 
-			if($scope.params.stationList_2.length<2) return alertify.alert('请添加至少两个站点',function(){})
+			if(_stationListArray.length<2) return alertify.alert('请添加至少两个站点',function(){})
 			
-			for(var i=0;i<_stationList.length;i++){
+			for(var i=0;i<_stationListArray.length;i++){
 				// filter unuse params
-				delete _stationList[i]['address'];
-				delete _stationList[i]['gps'];
-				delete _stationList[i]['stationName'];
-				delete _stationList[i]['status'];
+				delete _stationListArray[i]['address'];
+				delete _stationListArray[i]['gps'];
+				delete _stationListArray[i]['stationName'];
+				delete _stationListArray[i]['status'];
 
-				_stationList[i]['departureTime'] = _stationList[i]['departureTime']?_stationList[i]['departureTime']:'0';
-				_stationList[i]['stationId'] =  _stationList[i]['stationId'] == ''?_stationList[i]['stationId'] ='0':_stationList[i]['stationId']+'';
+				_stationListArray[i]['departureTime'] = _stationListArray[i]['departureTime']?_stationListArray[i]['departureTime']:'0';
+				_stationListArray[i]['stationId'] =  _stationListArray[i]['stationId'] == ''?_stationListArray[i]['stationId'] ='0':_stationListArray[i]['stationId']+'';
 				
 				// if routeType equals All, return AM as the default Route Type for last step.
-				_stationList[i]['routeType'] = _stationList[i]['stationType'] == 'All'?'AM':_stationList[i]['stationType'];
+				_stationListArray[i]['routeType'] = _stationListArray[i]['stationType'] == 'All'?'AM':_stationListArray[i]['stationType'];
 				
-				delete _stationList[i]['stationType'];
+				delete _stationListArray[i]['stationType'];
 			}
-			
 			var _params = {
 				'routeName': $scope.params.routeName,
 				'schedulerId': utilFactory.getAccountId(),
 				'secondCompanyId': utilFactory.getSecondCompanyId(),
-				'stationList': _stationList
+				'stationList': _stationListArray
 			}
-			
+			console.log(1,_stationListArray);
 			schedulerHttpService.addRoute(_params).then(function(result){
 				var _resultData = result.data;
-				if(!_resultData.error){
+				if(!_resultData.error){			
 					alertify.alert('新增成功！',function(){
 						$state.go('admin.scheduler.route')
 					}) 
@@ -163,7 +172,7 @@ angular.module('schedulerAddRouteControllerModule',[])
 			});
 		}else{
 
-			if($scope.params.stationList_2.length<2) return alertify.alert('至少两个站点可以组成一条线路',function(){})
+			if(_stationListArray.length<2) return alertify.alert('请添加至少两个站点',function(){})
 			// Logic For routeType All
 			schedulerHttpService.getSiteList({'pageSize':1000,'pageNumber':1,'accountId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId(),'stationType':'PM'}).then(function(result){
 				var _resultData = result.data;
@@ -186,8 +195,10 @@ angular.module('schedulerAddRouteControllerModule',[])
 
 		if(!formValidateThree) return utilFactory.setDirty($scope.formValidateThree)
 		var _stationListForAllArray = [];
-		if($scope.params.stationList_3.length<2) return alertify.alert('至少两个站点可以组成一条线路',function(){})
-		_stationListForAllArray = $scope.params.stationList_2.concat($scope.params.stationList_3)
+		if($scope.params.stationList_3.length<2) return alertify.alert('请添加至少两个站点',function(){})
+
+		// var _stationListArray = angular.copy($scope.params.stationList_2);
+		var _stationListForAllArray = angular.copy($scope.params.stationList_2.concat($scope.params.stationList_3));
 		for(var i=0;i<_stationListForAllArray.length;i++){
 			// filter unuse params
 			delete _stationListForAllArray[i]['address'];
@@ -294,16 +305,42 @@ angular.module('schedulerAddRouteControllerModule',[])
 	// 	}
 	// });
 
-	$scope.addSiteItemForStepTwo = function($event,id,stationId,stationType){
+	$scope.addSiteItemForStepTwo = function($event,id,stationId,routeType){
 		$event.stopPropagation()
-		//$("#addItemForStepTwo_"+id).remove();
+		var _stationList_2 = angular.copy($scope.params.stationList_2);
 		for(var i = $scope.params.stationList.length-1 ; i>=0;i--){
-			if($scope.params.stationList[i].stationId == stationId && $scope.params.stationList[i].stationType == stationType){
-				$scope.params.stationList_2.push($scope.params.stationList[i])
-				$scope.params.stationList.splice(i,1)
-				return false
+			if($scope.params.stationList[i].stationId == stationId && $scope.params.stationList[i]['stationType'] == routeType){
+				if(!_stationList_2.length){
+					$scope.params.stationList_2.push($scope.params.stationList[i])
+					$scope.params.stationList.splice(i,1)
+					return
+				}
+
+				for(var j=0;j<_stationList_2.length;j++){
+					if(_stationList_2.length){
+						if(stationId == _stationList_2[j].stationId){
+							alertify.alert('不能添加重复站点',function() {})
+							return							
+						}else if(j == _stationList_2.length-1) {
+							$scope.params.stationList_2.push($scope.params.stationList[i])
+							$scope.params.stationList.splice(i,1)
+							return
+						}
+
+					}
+				}
+				
 			}
 		}
+
+		// //$("#addItemForStepTwo_"+id).remove();
+		// for(var i = $scope.params.stationList.length-1 ; i>=0;i--){
+		// 	if($scope.params.stationList[i].stationId == stationId && $scope.params.stationList[i].stationType == stationType){
+		// 		$scope.params.stationList_2.push($scope.params.stationList[i])
+		// 		$scope.params.stationList.splice(i,1)
+		// 		return false
+		// 	}
+		// }
 	}
 
 	$scope.removeSiteItemForStepThree = function($event,id,stationId,stationType){
@@ -319,15 +356,43 @@ angular.module('schedulerAddRouteControllerModule',[])
 
 
 
-	$scope.addSiteItemForStepThree = function($event,id,stationId,stationType){
+	$scope.addSiteItemForStepThree = function($event,id,stationId,routeType){
+
 		$event.stopPropagation()
-		// console.log('addSiteItemForStepThree')
-		// $("#addItemForStepThree_"+id).remove();
+		var _stationList_3 = angular.copy($scope.params.stationList_3);
 		for(var i = $scope.params.stationListForPM.length-1 ; i>=0;i--){
-			if($scope.params.stationListForPM[i].stationId == stationId && $scope.params.stationListForPM[i].stationType == stationType){
-				$scope.params.stationList_3.push($scope.params.stationListForPM[i])
-				$scope.params.stationListForPM.splice(i,1)
+			if($scope.params.stationListForPM[i].stationId == stationId && $scope.params.stationListForPM[i]['stationType'] == routeType){
+				if(!_stationList_3.length){
+					$scope.params.stationList_3.push($scope.params.stationListForPM[i])
+					$scope.params.stationListForPM.splice(i,1)
+					return
+				}
+
+				for(var j=0;j<_stationList_3.length;j++){
+					if(_stationList_3.length){
+						if(stationId == _stationList_3[j].stationId){
+							alertify.alert('不能添加重复站点',function() {})
+							return							
+						}else if(j == _stationList_3.length-1) {
+							$scope.params.stationList_3.push($scope.params.stationListForPM[i])
+							$scope.params.stationListForPM.splice(i,1)
+							return
+						}
+
+					}
+				}
+				
 			}
 		}
+
+		// $event.stopPropagation()
+		// // console.log('addSiteItemForStepThree')
+		// // $("#addItemForStepThree_"+id).remove();
+		// for(var i = $scope.params.stationListForPM.length-1 ; i>=0;i--){
+		// 	if($scope.params.stationListForPM[i].stationId == stationId && $scope.params.stationListForPM[i].stationType == stationType){
+		// 		$scope.params.stationList_3.push($scope.params.stationListForPM[i])
+		// 		$scope.params.stationListForPM.splice(i,1)
+		// 	}
+		// }
 	}
 })

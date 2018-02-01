@@ -26,6 +26,8 @@ angular.module('companyHttpServiceModule',[])
 		var paramsData = {
 			'apiPath':companyAccount+paramsObj.applicationAdminId+'/parentCompanyId/'+paramsObj.secondCompanyId+'/companyCode/9',
 			paramsList:{
+				'companyName': paramsObj.companyName,
+				'phoneNumber': paramsObj.phoneNumber,
 				// 'schedulerId': paramsObj.applicationAdminId,
 				// 'parentCompanyId':paramsObj.secondCompanyId,
 				'pageNumber': paramsObj.pageNumber,
@@ -97,6 +99,7 @@ angular.module('companyHttpServiceModule',[])
 		var paramsData = {
 			'apiPath':hrService+'superAdminId/'+paramsObj.secondCompanyAdminId+'/userCompanyId/'+paramsObj.secondCompanyId,
 			paramsList:{
+				'hrName': paramsObj.hrName,
 				'pageSize':paramsObj.pageSize,
 				'pageNumber':paramsObj.pageNumber
 			}
@@ -157,6 +160,7 @@ angular.module('companyHttpServiceModule',[])
 		var paramsData = {
 			'apiPath':schedulerService+'superAdminId/'+paramsObj.secondCompanyAdminId+'/userCompanyId/'+paramsObj.secondCompanyId,
 			paramsList:{
+				'schedulerName': paramsObj.schedulerName,
 				'pageSize':paramsObj.pageSize,
 				'pageNumber':paramsObj.pageNumber
 				// 'superAdminId': paramsObj.secondCompanyAdminId,

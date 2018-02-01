@@ -72,7 +72,7 @@ angular.module('paginationModule',[])
 									_rewriteToken.refreshToken = _tokenRes.refreshToken;
 									localStorageFactory.setObject('account',_rewriteToken);
 									scope.$broadcast('refreshAPI')
-								}else if(_tokenRes.error.statusCode == TOKEN_ERROR.STATUS_CODE_0200105.code){
+  								}else if(_tokenRes.error.statusCode == TOKEN_ERROR.STATUS_CODE_0200105.code){
 									localStorageFactory.remove('account');
 									$state.go('entry.check')
 								}else if(_tokenRes.error.statusCode == '0200104'){
@@ -96,22 +96,33 @@ angular.module('paginationModule',[])
 					}else{
 						var _total;
 						var data = data.data;
-						if(scope.pageConfigs.dataSet){
-							scope.pageConfigs.dataSet(data)
+							// if(scope.pageConfigs.dataSet){
+						// 	scope.pageConfigs.dataSet(data)
+						// }
+						if(scope.pageConfigs.dataSet && data.value){
+							// scope.pageConfigs.dataSet(data);
+							if(scope.pageConfigs.dataSet && data.value.list.length){
+								scope.pageConfigs.dataSet(data);
+							}
 						}
 
 						if(!data.value) {
+							_total = '1'
+							scope.pageConfigs.list = null;
+						}else if (!data.value.list){
+							_total = '1'
 							scope.pageConfigs.list = null;
 						}else{
 							scope.pageConfigs.list = data.value.list;
 							_total = data.value.totalNumber
-							
 						}
-						if(!data.value.totalNumber){
-							_total = '1'
-						}else if (data.value == undefined){
-							_total = data.value.length;
-						}
+
+						// if(!data.value.totalNumber){
+						// 	_total = '1'
+						// }else if (data.value == undefined){
+						// 	_total = data.value.length;
+						// }
+
 
 						deffered.resolve(_total);
 					}

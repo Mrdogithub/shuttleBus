@@ -70,24 +70,24 @@ angular.module('passengerDetailControllerModule',[])
 		}).set({labels:{ok:'确认', cancel: '取消'}, padding: true});
 	};
 
+
 	$scope.pageConfigs={
 		params:{
 			'pageSize':'20',
 			'pageNumber':'1',
-			'hrId':utilFactory.getAccountId(),
-			'passengerId':$scope.params.passengerId
+			'passengerId': $scope.params.passengerId
 		},
 		list:null,
 		getList:function(params){
 			return passengerHttpService.getPassengerTrip(params)
 		},
-		loadData:function(){},
+		loadData:function(){
+		},
 		dataSet:function(result){
 			for(var i=0;i<result.length;i++){
 				result[i]['status'] =result[i]['status'] == 0?'未激活':'已激活'
 			}
 		}
-		//extendParams:function(){}
 	}
 
 
@@ -97,7 +97,7 @@ angular.module('passengerDetailControllerModule',[])
 			index:true,
 			checkbox:false,
 			radio:true,
-			operateIfFlag:false,
+			// operateIfFlag:false,
 			operate:[]
 		},
 		// height:290,
@@ -110,35 +110,35 @@ angular.module('passengerDetailControllerModule',[])
 		},
 		defaultValue:'——',
 		// radioSelect:function(){},
+		defaultEmptyText:'暂无乘车记录',
 		operateIfFlag:false,
 		setHeadOptional:{
 			cancelSelectNum:5,
 	    	selectOptions:[
 				{
 					'parentKey':'',
-					'selfKey':{'key':'passengerUuid','value':'上车时间'},
+					'selfKey':{'key':'dateTime','value':'上车时间'},
 					'checkFlag':true
 				},
 				{
 					'parentKey':'',
-					'selfKey':{'key':'phoneNumber','value':'上车站点'},
+					'selfKey':{'key':'startStationName','value':'上车站点'},
 					'checkFlag':true
 				},
 				{
 					'parentKey':'',
-					'selfKey':{'key':'stationName','value':'乘坐线路'},
+					'selfKey':{'key':'routeName','value':'乘坐线路'},
 					'checkFlag':true
 				},
 				{
 					'parentKey':'',
-					'selfKey':{'key':'routeName','value':'乘坐车辆'},
+					'selfKey':{'key':'vehicleLicensePlate','value':'乘坐车辆'},
 					'checkFlag':true
 				}
 	    	]
 	    }
 		// changeEnable:function(item){}
 	}
-
 
 	$scope.$watch('$viewContentLoaded',function(event){ 
   		$scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1'});

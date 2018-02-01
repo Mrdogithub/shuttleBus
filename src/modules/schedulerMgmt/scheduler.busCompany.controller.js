@@ -97,7 +97,9 @@ angular.module('schedulerbusCompanyControllerModule',[])
 			operateIfFlag:true,
 			operate:[{
 				name:'编辑',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item,event){
 					$scope.updateParams = {
 						'name':item.name,
@@ -110,7 +112,9 @@ angular.module('schedulerbusCompanyControllerModule',[])
 			,
 			{
 				name:'删除',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item){
 					var _deleteParams = {
 						'name':item.name,

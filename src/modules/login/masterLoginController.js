@@ -32,18 +32,36 @@ angular.module("masterLoginControllerModule",[])
 					responseData = result.data;
 				}else{
 					return
-				}
+				} 
+
 				if(!responseData.error){
-					utilFactory.assignRole(ROLE_CODE.ROLE_CODE_SYSADMIN);
-					USER_ACCOUNT.phoneNumber = $scope.userName;
-					USER_ACCOUNT.accessToken = responseData.value.accessToken;
-					USER_ACCOUNT.refreshToken = responseData.value.refreshToken;
-					USER_ACCOUNT.accountId = responseData.value.accountId;
-					USER_ACCOUNT.secondCompanyName = responseData.value.secondCompanyName;
-					USER_ACCOUNT.secondCompanyId = responseData.value.secondCompanyId;
-					localStorageFactory.remove('account');
-					localStorageFactory.setObject('account',USER_ACCOUNT);
-					$state.go('admin.master')
+
+					var lastUpdateTime = utilFactory.getTimestamp(responseData.value.lastUpdatePasswordTime);
+					var now = Date.parse(new Date());
+					var daysDifference = (now - lastUpdateTime) / 1000 / 60 / 60 / 24;
+
+					if(daysDifference < 90) {
+
+						utilFactory.assignRole(ROLE_CODE.ROLE_CODE_SYSADMIN);
+						USER_ACCOUNT.phoneNumber = $scope.userName;
+						USER_ACCOUNT.accessToken = responseData.value.accessToken;
+						USER_ACCOUNT.refreshToken = responseData.value.refreshToken;
+						USER_ACCOUNT.accountId = responseData.value.accountId;
+						USER_ACCOUNT.secondCompanyName = responseData.value.secondCompanyName;
+						USER_ACCOUNT.secondCompanyId = responseData.value.secondCompanyId;
+						localStorageFactory.remove('account');
+						localStorageFactory.setObject('account',USER_ACCOUNT);
+
+						$state.go('admin.master');
+					} else {
+						alertify.alert('您的密码已过期，请重置密码！',function(){
+							$scope.disabled = false;
+							$state.go('entry.reset',{'userName':$scope.userName,'password':$scope.password});
+						}).set('label', '重置密码');
+					}
+					// 'label', 'Alright!'
+					// {label:'重置密码'}
+					
 				}else{
 					$scope.loginText = "登录";
 					$scope.disabled = false;

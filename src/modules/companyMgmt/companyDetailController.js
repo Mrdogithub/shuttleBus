@@ -23,9 +23,13 @@ angular.module('companyDetailControllerModule',[])
 		$state.go('company.list')
 	}
 
-	$scope.editCompany = function(flag){ $scope.active = !flag; };
+	$scope.editCompany = function(flag){
+		$scope.active = !flag; 
+	};
 
-	$scope.editCompanyName = function(flag){ $scope.active_one = !flag }
+	$scope.editCompanyName = function(flag){ 
+		$scope.active_one = !flag; 
+	};
 
 	$scope.updateCompany = function(){
 		$scope.submitOnProgress = true;
@@ -45,7 +49,10 @@ angular.module('companyDetailControllerModule',[])
 			var _resultData = result.data;
 			if(!_resultData.error){
 				alertify.alert('更新成功!',function(){
-					$state.go('company.list')
+					// $state.go('admin.companyList')
+					$scope.active = false;
+					$scope.active_one = false;
+					$scope.$apply();
 				})
 			}else{
 				utilFactory.checkErrorCode(_resultData.error.statusCode)

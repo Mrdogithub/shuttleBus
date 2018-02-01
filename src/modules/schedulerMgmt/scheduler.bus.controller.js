@@ -30,6 +30,9 @@ angular.module('schedulerBusControllerModule',[])
 	}
 
 
+	$scope.searchFn = function(){
+		$scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1','licensePlate':$scope.searchText});
+	}
 	$scope.addBus = function(){
 		$state.go('admin.scheduler.addBus',{'schedulerId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId()})
 	};
@@ -42,7 +45,9 @@ angular.module('schedulerBusControllerModule',[])
 			radio:true,
 			operate:[{
 				name:'查看详情',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item){
 					var paramsObj = item;
 					$state.go('admin.scheduler.busDetail',{
@@ -64,7 +69,9 @@ angular.module('schedulerBusControllerModule',[])
 			},
 			{
 				name:'删除',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item){
 
 					alertify.confirm('该车辆可能有排班任务，如继续删除，排班任务也将被清空！',function(){

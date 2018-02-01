@@ -2,7 +2,7 @@
 angular.module('loginHttpServiceModule',[]).factory('loginHttpService',function($http,APISERVICEPATH){
 	var loginHttp = {};
 	var auths = APISERVICEPATH.auths;
- 
+ 	
 	/**
 	 * @description
 	 * check user phonenumbser status,if user recorded in system already, go to step 2(login progress)
@@ -71,6 +71,7 @@ angular.module('loginHttpServiceModule',[]).factory('loginHttpService',function(
 				"username":paramsObj.phoneNumber,
 				"password":paramsObj.password,
 				"client_id":"client_auth_mode",
+				"grant_type":"password",
 				"state":randomNum(5),
 				"scope":"read write",
 				"redirect_uri":"http://f-shuttlebus-authentication-management.apps.cl-cn-north-preprod01.cf.ford.com/api/v1/",
@@ -145,6 +146,21 @@ angular.module('loginHttpServiceModule',[]).factory('loginHttpService',function(
 		}
 
 		return  $http({ method: 'POST',url:paramsData.apiPath,data:paramsData.paramsList,headers:paramsData.setHeader});
+	}
+	
+
+	loginHttp.passwordReset = function(paramsObj){
+		var paramsData = {
+			"apiPath":auths+'auth/admin/password',
+			paramsList:{
+				"password": paramsObj.password,
+  				"phoneNumber": paramsObj.phoneNumber,
+				"previousPassword": paramsObj.previousPassword
+			},
+			setHeader: {'ApplicationId':'BACKGROUND','X-Requested-With':'XMLHttpRequest'}
+		}
+
+		return $http({method: 'POST', url:paramsData.apiPath, data:paramsData.paramsList,headers:{'Content-type':'application/json','ApplicationId':'BACKGROUND','X-Requested-With':'XMLHttpRequest'}});
 	}
 	return loginHttp;
 });

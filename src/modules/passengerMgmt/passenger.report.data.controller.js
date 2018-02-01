@@ -1,30 +1,80 @@
 angular.module('passengerReportDataControllerModule',[]).controller('passengerReportDataController',function(passengerHttpService,utilFactory,$scope){
 	$scope.pageConfigs={
 		params:{
-			'hrId':utilFactory.getAccountId(),
-			'secondCompanyId':utilFactory.getSecondCompanyId(),
 			'pageSize':'20',
-			'pageNumber':'1'
+			'pageNumber':'1',
+			'schedulerId':utilFactory.getAccountId(),
+			'secondCompanyId':utilFactory.getSecondCompanyId()
 		},
 		list:null,
 		getList:function(params){
-			return passengerHttpService.passenger(params)
+			return passengerHttpService.getAllTripHistory(params)
 		},
 		loadData:function(){},
 		dataSet:function(result){
-			if(result.value != null){
-				var _result = result.value;
-				for(var i=0;i<_result.length;i++){
-					_result[i]['status'] =_result[i]['status'] == 0?'未激活':'已激活'
-				}
-			}
 		}
 		//extendParams:function(){}
 	}
 
+
+	$scope.tableConfig={
+		stableFlag:{
+			arrow:true,
+			index:true,
+			checkbox:false,
+			radio:true,
+			operate:[]
+		},
+		checkbox:{
+			checkArray:[]
+		},
+		defaultValue:'——',
+		// defaultEmptyText:'暂无数据',
+		// radioSelect:function(){},
+		operateIfFlag:false,
+		setHeadOptional:{
+			cancelSelectNum:5,
+			selectOptions:[
+				{
+					'parentKey':'',
+					'selfKey':{'key':'id','value':'记录编号'},
+					'checkFlag':true
+				},
+				{
+					'parentKey':'accountDTO',
+					'selfKey':{'key':'name','value':'乘车人员'},
+					'checkFlag':true
+				},
+				{
+					'parentKey':'',
+					'selfKey':{'key':'licensePlate','value':'乘坐车辆'},
+					'checkFlag':true
+				},
+				{
+					'parentKey':'',
+					'selfKey':{'key':'routeName','value':'线路名称'},
+					'checkFlag':true
+				},
+				{
+					'parentKey':'',
+					'selfKey':{'key':'startStationName','value':'起点站'},
+					'checkFlag':true
+				},
+				{
+					'parentKey':'',
+					'selfKey':{'key':'arrivalStationName','value':'终点站'},
+					'checkFlag':true
+				}
+			]
+		}
+		// changeEnable:function(item){}
+	}
+
+	
+	$scope.selectAllStatus = false;
 	$scope.queryByKeyObj = {
-		'active':{'key':'name','value':'乘车人员'},
-		'list':[{'key':'phoneNumber','value':'记录编号'}]
+		'active':{'key':'passengerName','value':'乘车人员'},
+		'list':[{'key':'tripHistoryId','value':'记录编号'}]
 	}
 
 	$scope.selectKey = function(activeObj){
@@ -40,10 +90,23 @@ angular.module('passengerReportDataControllerModule',[]).controller('passengerRe
 		$('.dropdown-menu').css('display','block')
 	}
 
+	$scope.searchFn = function(searchText){
+		var _searchParams = {
+			'pageSize':'20',
+			'pageNumber':'1',
+			'pageNo': '1',
+			'schedulerId':utilFactory.getAccountId(),
+			'secondCompanyId':utilFactory.getSecondCompanyId()
+		}
+		_searchParams[$scope.queryByKeyObj.active.key] = $scope.searchText;
+		// $scope.pageConfigs.getList(_searchParams)
+		$scope.$broadcast('refreshPageList',_searchParams);
+
+	}
 
 	$scope.importData = function(){
 
-		passengerHttpService.tripHistorysByExcel({'schedulerAccountId':utilFactory.getAccountId()}).then(function(data){
+		passengerHttpService.downloadTripHistory({'schedulerId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId()}).then(function(data){
 			var blob = new Blob([data.data], {type: "application/vnd.ms-excel;charset=utf-8"});
 			var objectUrl = URL.createObjectURL(blob);
 			var a = document.createElement('a');
@@ -56,65 +119,6 @@ angular.module('passengerReportDataControllerModule',[]).controller('passengerRe
 		})
 
 	}
-
-
-	$scope.tableConfig={
-		stableFlag:{
-			arrow:true,
-			index:true,
-			checkbox:false,
-			radio:true,
-			operate:[]
-		},
-		// height:290,
-		// head:[{name:'文件名',key:'filename'}],
-		// className:function(flag){},
-		// clickFun:function(){},
-		// rowClickFun:function(item){},
-		checkbox:{
-			checkArray:[]
-		},
-		defaultValue:'——',
-		// radioSelect:function(){},
-		operateIfFlag:false,
-		setHeadOptional:{
-			cancelSelectNum:5,
-			selectOptions:[
-				{
-					'parentKey':'',
-					'selfKey':{'key':'name','value':'记录编号'},
-					'checkFlag':true
-				},
-				{
-					'parentKey':'accountDTO',
-					'selfKey':{'key':'phoneNumber','value':'乘车人员'},
-					'checkFlag':true
-				},
-				{
-					'parentKey':'',
-					'selfKey':{'key':'defautStationName','value':'乘坐车辆'},
-					'checkFlag':true
-				},
-				{
-					'parentKey':'',
-					'selfKey':{'key':'defautRouteName','value':'线路名称'},
-					'checkFlag':true
-				},
-				{
-					'parentKey':'',
-					'selfKey':{'key':'status','value':'起点站'},
-					'checkFlag':true
-				},
-				{
-					'parentKey':'',
-					'selfKey':{'key':'status','value':'终点站'},
-					'checkFlag':true
-				}
-			]
-		}
-		// changeEnable:function(item){}
-	}
-
 
 	$scope.$watch('$viewContentLoaded',function(event){ 
   		$scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1'});

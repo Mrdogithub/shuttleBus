@@ -3,8 +3,6 @@ angular.module('schedulerDriverControllerModule',[])
 	
 	// If data empty wil use empry page replace table.
 	$scope.dataIsEmpty = false;
-	console.log('xxxxx')
-	console.log(1,loadData)
 	if(!loadData.data.error &&(!loadData.data.value || !loadData.data.value.list.length)){
 		console.log('test test')
 		$scope.dataIsEmpty = true;
@@ -15,7 +13,7 @@ angular.module('schedulerDriverControllerModule',[])
 
 	$scope.selectAllStatus = false;
 	$scope.queryByKeyObj = {
-		'active':{'key':'name','value':'司机姓名'},
+		'active':{'key':'driverName','value':'司机姓名'},
 		'list':[{'key':'phoneNumber','value':'手机号'}]
 	}
 
@@ -31,6 +29,18 @@ angular.module('schedulerDriverControllerModule',[])
 		$('.dropdown-menu').css('display','block')
 	}
 
+	$scope.searchFn = function(){
+		var _searchParams = {
+			'pageSize':'20',
+			'pageNumber':'1',
+			'pageNo': '1',
+			'accountId':utilFactory.getAccountId(),
+			'secondCompanyId':utilFactory.getSecondCompanyId()
+		}
+		_searchParams[$scope.queryByKeyObj.active.key] = $scope.searchText;
+		$scope.pageConfigs.getList(_searchParams);
+		$scope.$broadcast('refreshPageList',_searchParams);
+	}
 	$scope.pageConfigs={
 		params:{
 			'pageSize':'20',
@@ -60,7 +70,9 @@ angular.module('schedulerDriverControllerModule',[])
 			radio:true,
 			operate:[{
 				name:'查看详情',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item){
 					var _params = {
 						'schedulerId': utilFactory.getAccountId(),
@@ -81,7 +93,9 @@ angular.module('schedulerDriverControllerModule',[])
 			},
 			{
 				name:'删除',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item){
 					var _params = {
 						'schedulerId': utilFactory.getAccountId(),

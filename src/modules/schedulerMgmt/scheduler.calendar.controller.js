@@ -25,35 +25,6 @@ angular.module('schedulerCalendarControllerModule',[])
 		currentTimezone: 'America/Chicago' // an option!
 	};
 
-	/* event source that contains custom events on the scope */
-	schedulerHttpService.assignmentService({'schedulerId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId(),'beginDate':$scope.beginDate || '1504195200000','endDate':'1506787200000'}).then(function(result){
-		var _resultData = '';
-		if(result){
-			_resultData = result.data;
-		}
-		if(!_resultData.error){
-			for(var i in _resultData.value){
-				$scope.events.push({
-					start:i,
-					title:'班次'+' ' +_resultData.value[i].totalShifts
-				})
-			}
-		}else{
-			alertify.alert(_resultData.error.message)
-		}
-	})
-
-
-	// $scope.calEventsExt = {
- //       color: '#f00',
- //       textColor: 'yellow',
- //       events: [ 
- //          {type:'party',title: 'Lunch',start: new Date(y, m, d, 12, 0),end: new Date(y, m, d, 14, 0),allDay: false},
- //          {type:'party',title: 'Lunch 2',start: new Date(y, m, d, 12, 0),end: new Date(y, m, d, 14, 0),allDay: false},
- //          {type:'party',title: 'Click for Google',start: new Date(y, m, 28),end: new Date(y, m, 29),url: 'http://google.com/'}
- //        ]
- //    };
-
 	$scope.eventsF = function (start, end, timezone, callback) {
 		var s = new Date(start).getTime();
 		var e = new Date(end).getTime()
@@ -75,7 +46,7 @@ angular.module('schedulerCalendarControllerModule',[])
 						var d = date.getDate();
 						var m = date.getMonth()+1;
 					    var _today =y+"-"+m+"-"+d;
-					    var _todayB =y+"-"+m+"-0"+d
+					    var _todayB =y+"-"+m+"-0"+d;
 					if(i ==_today || i ==_todayB){
 						$scope.events.push({
 							start:i,
@@ -91,16 +62,16 @@ angular.module('schedulerCalendarControllerModule',[])
 					
 				}
 			}else{
-				alertify.alert(_resultData.error.message)
+				utilFactory.checkErrorCode(_resultData.error.statusCode)
 			}
 		})
 	};
-
+	
 	$scope.alertOnEventClick = function( date, jsEvent, view){			
 		$('#myModal').modal('toggle');
 
 		var _params = {
-			'date':utilFactory.getTimestamp(date.start._i),
+			'date':utilFactory.getTimestamp(date.start._i+" 00:00"),
 			'schedulerId':utilFactory.getAccountId(),
 			'secondCompanyId':utilFactory.getSecondCompanyId()
 		};
@@ -114,11 +85,10 @@ angular.module('schedulerCalendarControllerModule',[])
 					_resultData.value[i]['departureTime'] = utilFactory.getLocalTime(_resultData.value[i]['departureTime']);
 					_resultData.value[i]['routeType'] = _resultData.value[i]['routeType'] == 'PM'?'下午':'上午';
 
-					
 				}
 				$scope.pageConfigs.list = _resultData.value;
 			}else{
-				alertify.alert(_resultData.error.message)
+				utilFactory.checkErrorCode(_resultData.error.statusCode)
 			}
       	});
 		//$scope.pageConfigs.getList(_params);

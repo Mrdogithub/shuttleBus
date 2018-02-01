@@ -9,7 +9,9 @@ angular.module('HRControllerModule',[])
 	$scope.submitOnProgress = false;
 	$scope.breadcrumbText={ 'lv1':'乘客管理员'}
 
-
+	$scope.searchFn = function () {
+		$scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1','hrName':$scope.searchText});
+	}
 	$scope.addHR = function(formValidateIsInvalid){
 		if(formValidateIsInvalid){
 			return utilFactory.setDirty($scope.formValidate);
@@ -97,7 +99,9 @@ angular.module('HRControllerModule',[])
 			operateIfFlag:true,
 			operate:[{
 				name:'编辑',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item,event){
 
 					$scope.updateParams = {
@@ -111,7 +115,9 @@ angular.module('HRControllerModule',[])
 			},
 			{
 				name:'删除',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item){
 					var _deleteParams = {
 						'name':item.name,

@@ -8,7 +8,7 @@
  * @sleep={booleans}: true => init component status by "获取验证码",false => init component status by "重新获取"
  *
  */
-angular.module('smsCodeModule',[]).directive('smsCodeComponent',function(loginHttpService,REQUESTTYPE,$state){
+angular.module('smsCodeModule',[]).directive('smsCodeComponent',function(loginHttpService,REQUESTTYPE,$state,utilFactory){
 	return {
 		restrict:"EA",
 		template:'<button  id="smsCodeBtn" class="btn-normal" ng-class="{\'smsActive\': isActive,\'smsSheep\': !isActive}"  ng-click="invokeSmsCode()">{{defaultValue}}</button>',
@@ -40,6 +40,7 @@ angular.module('smsCodeModule',[]).directive('smsCodeComponent',function(loginHt
 					}else{
 						utilFactory.checkErrorCode(responseData.error.statusCode,responseData.error.message)
 						scope.activeText = "激活";
+						scope.isActive = true;
 						scope.disabled = false;
 					}
 				},function(error){

@@ -9,7 +9,9 @@ angular.module('companySchedulerControllerModule',[])
 	$scope.active = false;
 	$scope.submitOnProgress = false;
 	$scope.breadcrumbText={ 'lv1':'班车管理员'};
-
+	$scope.searchFn = function(){
+		$scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1','schedulerName':$scope.searchText});
+	}
 	$scope.addScheduler = function(formValidateIsInvalid){
 		if(formValidateIsInvalid){
 			return utilFactory.setDirty($scope.formValidate);
@@ -99,7 +101,9 @@ angular.module('companySchedulerControllerModule',[])
 			operateIfFlag:true,
 			operate:[{
 				name:'编辑',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item,event){
 
 					$scope.updateParams = {
@@ -113,7 +117,9 @@ angular.module('companySchedulerControllerModule',[])
 			},
 			{
 				name:'删除',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item){
 					console.log(1,item)
 					var _deleteParams = {
