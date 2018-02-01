@@ -1,0 +1,197 @@
+<div class="title-wrapper breadcrumb-wrapper">
+	<breadcrumb-component breadcrumb-params="breadcrumbParams" breadcrumb-text="breadcrumbText"></breadcrumb-component>
+</div>
+<div class="right-content-wrapper container-shadow-border" style="min-height: 500px;">
+
+	<div class="inner-content">
+
+		<div class="info-wrapper">
+			<div class="title">
+				<h1>时间信息:</h1>
+			</div>
+			<div class="content" style="margin-top: 20px;">
+				<form name="formValidateOne" novalidate style="text-align: center;">
+					<table style="width: 100%;">
+						<tr>
+							<td align="center">
+								<div class="content-inline">
+									<div class="content-inline-item" style="width: 100%;"  ng-class="{'has-error':formValidateOne.beginDate.$dirty && formValidateOne.beginDate.$invalid,'has-success':formValidateOne.beginDate.$dirty && !formValidateOne.beginDate.$invalid}">
+										<label for="beginDate" class="control-label" >开始日期:</label>
+										<div class="input-group date datepicker" data-provide="datepicker">
+			    							<input type="text" 
+			    								   class="form-control"
+			    							 	   name="beginDate" 
+											       id="beginDate" 
+											       ng-disabled="!active"
+												   required=""
+												   style="padding-left: 10px;"
+											       style="border-right: none;" 
+											       ng-class="{'edit':active,'preview':!active}" 
+											       ng-model="params.beginDate">
+											<div class="input-group-addon">
+												<img style="margin-left: -6px;margin-top: 4px;" src="data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAANCAYAAACdKY9CAAAAAXNSR0IArs4c6QAAAS5JREFUKBV9UD1LA0EQfTN7h1hYekH7kH/hD7DYBBQrsQhYCPkHIiQXRdTeWrAVi4D/wFIQGyuL1BFB8AuS2xl3F1YCHtli5s3b94aZAeZe0S5fWvZsJVEBBy7VIdOaPd6o4PYM8a1TuSPGNpRsFJGOVHBjGJtOsGUMXWcOcmnYdJWWxnDf8MZnRxq7GvC0ggB5/mBm8uZErlC0B4+xmw9FZ3jQ7yunOuDApbqwgyfyM46hfJjIRVlJTjOF5gRdXySc+8uYgMlkdHQB0i+P3yNmfNZhUn3NklsVTUCnsVZpKmj2DwdifukoWBDC0n8XWe2UvYYtu7GJv0zDDvfrvH8jsaDlR/qIojASoaozUGHLewKdq5GfOkHiyPGyP+tJpmx6JNUOhPL0WZ9lBqbdX0AIf9mrUj0dAAAAAElFTkSuQmCC">
+				    						</div>
+										</div>
+										<sup class="requireMark">*</sup>
+										<div class="error"  
+										 	 ng-show="formValidateOne.beginDate.$dirty && formValidateOne.beginDate.$invalid">
+											<small class="control-label" ng-show="formValidateOne.beginDate.$error.required">
+									        	请选择开始日期
+									        </small>
+								      	</div>
+									</div>
+								</div>
+							</td>
+							<td align="center">
+								<div class="content-inline" style="padding-left: 0px;">
+									<div class="content-inline-item" style="width: 100%;" ng-class="{'has-error':formValidateOne.endDate.$dirty && formValidateOne.endDate.$invalid,'has-success':formValidateOne.endDate.$dirty && !formValidateOne.endDate.$invalid}">
+										<label for="endDate" class="control-label">结束日期:</label>
+										<div class="input-group date datepicker" data-provide="datepicker">
+			    							<input type="text" 
+			    								   class="form-control"
+			    							 	   name="endDate" 
+												   id="endDate"
+												   style="padding-left: 10px;"
+											       ng-disabled="!active"
+											       required=""
+											       style="border-right: none;" 
+											       ng-class="{'edit':active,'preview':!active}" 
+											       ng-model="params.endDate">
+											<div class="input-group-addon" >
+												<img style="margin-left: -6px;margin-top: 4px;" src="data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAANCAYAAACdKY9CAAAAAXNSR0IArs4c6QAAAS5JREFUKBV9UD1LA0EQfTN7h1hYekH7kH/hD7DYBBQrsQhYCPkHIiQXRdTeWrAVi4D/wFIQGyuL1BFB8AuS2xl3F1YCHtli5s3b94aZAeZe0S5fWvZsJVEBBy7VIdOaPd6o4PYM8a1TuSPGNpRsFJGOVHBjGJtOsGUMXWcOcmnYdJWWxnDf8MZnRxq7GvC0ggB5/mBm8uZErlC0B4+xmw9FZ3jQ7yunOuDApbqwgyfyM46hfJjIRVlJTjOF5gRdXySc+8uYgMlkdHQB0i+P3yNmfNZhUn3NklsVTUCnsVZpKmj2DwdifukoWBDC0n8XWe2UvYYtu7GJv0zDDvfrvH8jsaDlR/qIojASoaozUGHLewKdq5GfOkHiyPGyP+tJpmx6JNUOhPL0WZ9lBqbdX0AIf9mrUj0dAAAAAElFTkSuQmCC">
+											</div>
+										</div>
+										<sup class="requireMark">*</sup>
+										<div class="error"	ng-show="formValidateOne.endDate.$dirty && formValidateOne.endDate.$invalid">
+									        <small class="control-label"	ng-show="formValidateOne.endDate.$error.required">
+									            请选择结束日期
+									        </small>
+								      	</div>
+									</div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td align="center">
+								<div class="content-inline">
+									<div class="content-inline-item" style="width: 100%;" ng-class="{'has-error':formValidateOne.shuttleCompanyId.$dirty && formValidateOne.shuttleCompanyId.$invalid,'has-success':formValidateOne.shuttleCompanyId.$dirty && !formValidateOne.shuttleCompanyId.$invalid}">
+										<label class="control-label">周末安排:</label>
+											<span class="first-operate">
+												<input type="checkbox" id="item" ng-model="params.includingSaturday" />
+												<label for="item" class="check-box" style="width: 15px;margin-bottom: 0px;vertical-align: sub;"></label>
+												<span>包含周六</span>
+											</span>
+											<span class="first-operate" style="margin-right: 25px;">
+												<input type="checkbox" id="item_1"  ng-model="params.includingSunday"/>
+												<label for="item_1" class="check-box" style="width: 15px;margin-bottom: 0px;vertical-align: sub;"></label>
+												<span>包含周日</span>
+											</span>
+									</div>
+								</div>
+							</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td align="center">
+								<div class="content-inline">
+									<div class="content-inline-item" style="width: 100%;" 
+										 ng-class="{'has-error':formValidateOne.bookingRoute.$dirty && formValidateOne.bookingRoute.$invalid,'has-success':formValidateOne.bookingRoute.$dirty && !formValidateOne.bookingRoute.$invalid}">
+										<label for="bookingRoute" class="control-label" >线路名称:</label>
+										<input type="text"  
+											   class= "form-control" 
+											   name="bookingRoute" 
+											   id="bookingRoute"
+											   required=""
+											   ng-disabled="!active" 
+											   ng-model="params.bookingRoute"
+											   ng-maxlength="30"/><sup class="requireMark" style="margin-left: 11px;">*</sup>
+										<div class="error" ng-show="formValidateOne.bookingRoute.$dirty && formValidateOne.bookingRoute.$invalid">
+									        <small class="control-label" ng-show="formValidateOne.bookingRoute.$error.required">请输入线路名称</small>
+									        <small style="margin-left: 60px;" class="control-label" ng-show="formValidateOne.bookingRoute.$error.maxlength"> 线路名称过长，请重新输入 </small>
+									    </div>
+									</div>
+								</div>
+							</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td align="center">
+								<div class="content-inline">
+									<div class="content-inline-item" style="width: 100%;"  ng-class="{'has-error':formValidateOne.departureTime.$dirty && formValidateOne.departureTime.$invalid,'has-success':formValidateOne.departureTime.$dirty && !formValidateOne.departureTime.$invalid}">
+										<label for="departureTime" class="control-label" >发车时间:</label>
+										<div class="input-group clockpicker" >
+											<input type="text" id="departureTime" readonly="" ng-model="updateParams.name" class="form-control" required="" name="departureTime" style="padding-left: 10px;">
+											<div class="input-group-addon">
+												<img style="margin-left: -6px;margin-top: 4px;" src="data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAAAXNSR0IArs4c6QAAAX5JREFUKBWNkrFLw0AUxt+7tKGDi6BWFFcVXHTQzXZybSuS/hOOIkKLLQYrODg6uPgHNEhrFzehFbq4uAjqrGCri4hLYnK+LzFYFcQbcpf3/e7uve8d08AYLdTmSftbRDrDRCOa6JmIO8TG/lOzfBWjohFZVt1ouzdlrfWGIjpkRRfaMG/Zd2d0QMsB0TozH2TN2ZrjFH1hiLCBtF4zjeRir1UtDU0NnweK1GOzeoZ/xKGHnPAKKeGGpJG0HhqlOxzyev+yQq53jDUG4tDBgVeoASnFGwBpTQkmbWAdD+jgPnkpWmqIxb/miNMZFbokRf+E5baUpBMaFWuhOeKqgq1wKRYwM6e68nlL5+3ueGF3KdZCN4WXNLkDW2MBc6+x2e83t7Na8VEQBK2JnL2AeMRxh8OGBu9t2DpoBiCMOatuXjtFd3J1b9r1vUtSiWyY81jerqAPg7ZHW6IvNni+50jKJ/3Tip1AGJ2WxhFOSud2fr0IiX+9COG/ufPft/cBa//EKBAR2dMAAAAASUVORK5CYII=">
+				    						</div>
+										</div>
+										<sup class="requireMark">*</sup>
+										<div class="error"  
+										 	 ng-show="formValidateOne.departureTime.$dirty && formValidateOne.departureTime.$invalid">
+											<small class="control-label" ng-show="formValidateOne.departureTime.$error.required">
+									        	请选择发车时间
+									        </small>
+								      	</div>
+									</div>
+								</div>
+							</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td align="center">
+								<div class="content-inline">
+									<div class="content-inline-item" style="width: 100%;" 
+										 ng-class="{'has-error':formValidateOne.bookingStartStation.$dirty && formValidateOne.bookingStartStation.$invalid,'has-success':formValidateOne.bookingStartStation.$dirty && !formValidateOne.bookingStartStation.$invalid}">
+										<label for="bookingStartStation" class="control-label" >起始站点：</label>
+										<input type="text"  
+											   class= "form-control" 
+											   name="bookingStartStation" 
+											   id="bookingStartStation"
+											   required=""
+											   ng-disabled="!active" 
+											   ng-model="params.bookingStartStation"
+											   ng-maxlength="30"/><sup class="requireMark" style="margin-left: 11px;">*</sup>
+										<div class="error" ng-show="formValidateOne.bookingStartStation.$dirty && formValidateOne.bookingStartStation.$invalid">
+									        <small style="margin-left: 20px;" class="control-label" ng-show="formValidateOne.bookingStartStation.$error.required">请输入起始站点名称</small>
+									        <!-- <small class="control-label" ng-show="formValidateOne.bookingStartStation.$error.maxlength"> 起始站点名称过长，请重新输入 </small> -->
+									    </div>
+									</div>
+								</div>
+							</td>
+							<td align="center">
+								<div class="content-inline" style="padding-left: 0px;">
+									<div class="content-inline-item"  style="width: 100%;"
+										 ng-class="{'has-error':formValidateOne.bookingEndStation.$dirty && formValidateOne.bookingEndStation.$invalid,'has-success':formValidateOne.bookingEndStation.$dirty && !formValidateOne.bookingEndStation.$invalid}">
+										<label for="bookingEndStation" class="control-label" >到达站点：</label>
+										<input type="text"  
+											   class= "form-control" 
+											   name="bookingEndStation" 
+											   id="bookingEndStation"
+											   required=""
+											   ng-disabled="!active" 
+											   ng-model="params.bookingEndStation"
+											   ng-maxlength="30"/><sup class="requireMark" style="margin-left: 11px;">*</sup>
+										<div class="error" ng-show="formValidateOne.bookingEndStation.$dirty && formValidateOne.bookingEndStation.$invalid">
+									        <small style="margin-left: 20px;" class="control-label" ng-show="formValidateOne.bookingEndStation.$error.required">请输入到达站点名称</small>
+									        <!-- <small class="control-label" ng-show="formValidateOne.bookingEndStation.$error.maxlength"> 到达站点名称过长，请重新输入 </small> -->
+									    </div>
+									</div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td align="center" colspan="2">
+								<div class="content-inline" style="padding-left: 0; text-align: center;">
+									<div class="btn-wrapper" style="margin-top: 40px;width: 100%;padding: 0;">
+										<a ng-click="close()"  class="submitBtn submit-cancel">取消</a>
+										<a ng-click="!submitOnProgress && submit(formValidateOne.$invalid)" class="submitBtn submit-ok">确定</a>
+									</div>
+								</div>
+							</td>
+						</tr>
+					</table>	
+				</form>			
+			</div>
+		</div>
+	</div>
+</div>

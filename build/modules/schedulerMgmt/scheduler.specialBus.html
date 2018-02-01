@@ -1,0 +1,153 @@
+<style type="text/css">
+.fc-view, .fc-view>table {
+    position: relative;
+    z-index: 1;
+}
+
+.fc-unthemed .fc-content, .fc-unthemed .fc-divider, .fc-unthemed .fc-list-heading td, .fc-unthemed .fc-list-view, .fc-unthemed .fc-popover, .fc-unthemed .fc-row, .fc-unthemed tbody, .fc-unthemed td, .fc-unthemed th, .fc-unthemed thead {
+    border-color: #ddd;
+}
+.fc-state-default {
+    border: 1px solid #ddd;
+    border-radius: 0px;
+    background-color:none;
+    background-image:none;
+    background-repeat: none; 
+    border-color: none; 
+    color: #333;
+    text-shadow: none;
+    box-shadow: none;
+}
+.fc-state-default.fc-corner-left {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+.fc-head-container .fc-widget-header{
+  border-top-left-radius: 4px;
+   border-top-right-radius: 4px;
+}
+.fc-state-default.fc-corner-right {
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+.fc .fc-button-group>:first-child {
+    margin-left: 0;
+    margin-right: 5px;
+}
+.fc-unthemed td.fc-today {
+  background: #338ca5;
+}
+.fc-ltr .fc-basic-view .fc-day-top .fc-day-number {
+    float: none;
+    margin-top: 5px;
+    display: inline-block;
+}
+
+tr:first-child>td>.fc-day-grid-event {
+    margin-top: 10px;
+}
+
+
+
+.fc-scroller .fc-day-grid-container{
+  border-left: 2px solid #ddd;
+  border-right: 2px solid #ddd;
+  border-bottom: 2px solid #ddd;
+}
+.fc-unthemed .fc-content, .fc-unthemed .fc-divider, .fc-unthemed .fc-list-heading td, .fc-unthemed .fc-list-view, .fc-unthemed .fc-popover, .fc-unthemed .fc-row, .fc-unthemed tbody, .fc-unthemed td, .fc-unthemed th, .fc-unthemed thead {
+    border-color: #ddd;
+    text-align: center;
+}
+.fc-head-container .fc-widget-header{
+  height: 30px;
+  border: 0;
+  border-width: 0px;
+  line-height: 30px;
+  background: #047190;
+  border: 1px solid transparent;
+  color: #fff;
+}
+.fc-unthemed .fc-content, .fc-unthemed .fc-divider, .fc-unthemed .fc-list-heading td, .fc-unthemed .fc-list-view, .fc-unthemed .fc-popover, .fc-unthemed .fc-row, .fc-unthemed tbody, .fc-unthemed td, .fc-unthemed th, .fc-unthemed thead{
+  border:1px solid transparent;
+}
+.fc-basic-view .fc-body .fc-row{
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+/*.fc-ltr .fc-basic-view .fc-day-top .fc-day-number{
+  color: #3a87ad;
+}*/
+.fc-day-top .fc-today .fc-day-number{
+    color: #fff;
+}
+.fc-unthemed td.fc-today,.fc-unthemed td.fc-today .fc-day-number{
+    background: #338ca5;
+    color: #fff;
+}
+.fc-day-top .fc-day-number{
+	color: #338ca5;
+	font-size: 14px;
+	font-weight: bold;
+}
+.fc-event {
+    position: relative;
+    display: block;
+    font-size: 1em;
+    line-height: 1em;
+    border-radius: 3px;
+    border: 1px solid #3a87ad;
+}
+.fc-scroller .fc-day-grid-container{
+	min-height: 400px;
+}
+
+.fc-event {
+    position: relative;
+    display: block;
+    font-size: 1em;
+    line-height: 1em;
+    border-radius: 0px;
+    border: 1px solid transparent;
+    color: #666;
+}
+.fc-event, .fc-event-dot {
+    background-color: transparent;
+}
+.fc-event, .fc-event:hover {
+    color: #666;
+    text-decoration: none;
+}
+.todayTextColor{
+	color: #fff;
+}
+</style>
+
+<div class="title-wrapper">
+  <div class="main-title-wrapper" style="line-height: 0px; ">
+    <div style="line-height: 25px; "><a style="cursor: none;">专车排班</a></div>
+        <div class="subTitle-wrapper">
+      <div class="subTitle-content">
+      </div>
+      <div class="subTitle-operate">
+        <a ng-click="addSchedule()" style="float: right;color: #338ca5;">新增班次</a>
+      </div>    
+    </div>
+  </div>    
+</div>
+<!-- <div class="subTitle-wrapper">
+ 	<div class="subTitle-content">
+ 		<p ng-if ="!active">{{params.name}}</p>
+ 	</div>
+
+</div> -->
+<div class="right-content-wrapper">
+<!-- 	<button ng-click="pre()">上一个月</button><select name="" >
+		<option value="">2017</option>
+		<option value="">2017</option>
+		<option value="">2017</option>
+		<option value="">2017</option>
+	</select><a ng-click="next()">下一个月</a> -->
+	<div ui-calendar="uiConfig.calendar" class="span8 calendar" ng-model="eventSources"></div>
+
+</div>

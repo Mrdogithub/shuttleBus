@@ -1,0 +1,87 @@
+<style>
+  .clockpicker-popover {
+    z-index: 9999;
+  }
+</style>
+<div class="title-wrapper breadcrumb-wrapper">
+	<breadcrumb-component breadcrumb-params="breadcrumbParams" breadcrumb-text="breadcrumbText"></breadcrumb-component>
+    <div class="subTitle-operate" style="display: inline-block; float: right;">
+    	<a ng-click="addSchedule()" ng-if="!display" style="float: right; color: #338ca5; font-weight: bold; font-size: 14px;">新增班次</a>
+    </div>	
+
+</div>
+
+<div class="right-content-wrapper">
+	<div class="content-inline-item" style="display: inline-block; margin-bottom: 20px;">
+		<div class="input-group date datepicker" data-provide="datepicker">
+        <input type="text" id="currentDay" ng-model="params.currentDay" class="form-control" style="border-right: none;">
+		    <div class="input-group-addon" style="background: #fff;">
+		      <img style="margin-left: -6px;margin-top: 4px;" src="data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAANCAYAAACdKY9CAAAAAXNSR0IArs4c6QAAAS5JREFUKBV9UD1LA0EQfTN7h1hYekH7kH/hD7DYBBQrsQhYCPkHIiQXRdTeWrAVi4D/wFIQGyuL1BFB8AuS2xl3F1YCHtli5s3b94aZAeZe0S5fWvZsJVEBBy7VIdOaPd6o4PYM8a1TuSPGNpRsFJGOVHBjGJtOsGUMXWcOcmnYdJWWxnDf8MZnRxq7GvC0ggB5/mBm8uZErlC0B4+xmw9FZ3jQ7yunOuDApbqwgyfyM46hfJjIRVlJTjOF5gRdXySc+8uYgMlkdHQB0i+P3yNmfNZhUn3NklsVTUCnsVZpKmj2DwdifukoWBDC0n8XWe2UvYYtu7GJv0zDDvfrvH8jsaDlR/qIojASoaozUGHLewKdq5GfOkHiyPGyP+tJpmx6JNUOhPL0WZ9lBqbdX0AIf9mrUj0dAAAAAElFTkSuQmCC">
+		    </div>
+		</div>	
+	</div>
+	<table-component table-config = "tableConfig" table-data="pageConfigs.list"></table-component>
+</div>
+<div class="pagination-wrapper" ng-show="!dataIsEmpty">
+	<pagination-component page-configs= "pageConfigs"></pagination-component>
+</div>
+
+	<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel" style="position:absolute;top:20%;right: -11px;">
+  <div class="modal-dialog" role="document"  style="width: 900px;"> 
+    <div class="modal-content" style="border-radius: 0px;">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">{{clickDate}}&nbsp;&nbsp;{{routeName}}&nbsp;&nbsp;{{departureTime}}班次</h4>
+      </div>
+      <div class="modal-body">
+        <table-component table-config = "tableConfigModal" table-data="pageConfigsModal.list"></table-component>
+
+        <div class="pagination-wrapper">
+			    <pagination-component page-configs= "pageConfigsModal" ng-show="pageConfigsModal.ngIf"></pagination-component>
+		    </div>
+      </div>
+      <div class="modal-footer" style="text-align: center;border: none;">
+        <button type="button" class="submitBtn submit-cancel" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document"  style="width: 500px; margin-top: 255px;"> 
+    <div class="modal-content" style="    border-radius: 0px;">
+      <div class="modal-body" style="padding-top: 52px;">
+        <form name="updateFormValidate" novalidate style="text-align: center;">
+          <div class="content-inline">
+            <div class="content-inline-item" style="width: 100%; position: relative; z-index: 9999;"  ng-class="{'has-error':updateFormValidate.departureTime.$dirty && updateFormValidate.departureTime.$invalid}">
+              <label for="departureTime" class="control-label" >发车时间:</label>
+              <div class="input-group clockpicker">
+                <input type="text" id="departureTime" ng-model="_startTime" readonly="" class="form-control" required="" name="departureTime" style="padding-left: 10px;">
+                <div class="input-group-addon">
+                  <img style="margin-left: -6px;margin-top: 4px;" src="data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAAAXNSR0IArs4c6QAAAX5JREFUKBWNkrFLw0AUxt+7tKGDi6BWFFcVXHTQzXZybSuS/hOOIkKLLQYrODg6uPgHNEhrFzehFbq4uAjqrGCri4hLYnK+LzFYFcQbcpf3/e7uve8d08AYLdTmSftbRDrDRCOa6JmIO8TG/lOzfBWjohFZVt1ouzdlrfWGIjpkRRfaMG/Zd2d0QMsB0TozH2TN2ZrjFH1hiLCBtF4zjeRir1UtDU0NnweK1GOzeoZ/xKGHnPAKKeGGpJG0HhqlOxzyev+yQq53jDUG4tDBgVeoASnFGwBpTQkmbWAdD+jgPnkpWmqIxb/miNMZFbokRf+E5baUpBMaFWuhOeKqgq1wKRYwM6e68nlL5+3ueGF3KdZCN4WXNLkDW2MBc6+x2e83t7Na8VEQBK2JnL2AeMRxh8OGBu9t2DpoBiCMOatuXjtFd3J1b9r1vUtSiWyY81jerqAPg7ZHW6IvNni+50jKJ/3Tip1AGJ2WxhFOSud2fr0IiX+9COG/ufPft/cBa//EKBAR2dMAAAAASUVORK5CYII=">
+                </div>
+              </div>
+              <!-- <sup class="requireMark">*</sup> -->
+              <!-- <div class="error" ng-show="updateFormValidate.departureTime.$dirty && updateFormValidate.departureTime.$invalid">
+                <small class="control-label" ng-show="updateFormValidate.departureTime.$error.required">
+                      请选择发车时间
+                </small>
+              </div> -->
+            </div>
+          </div>
+          <div class="content-inline" style="height: 65px; line-height:50px; margin-top: 20px;">
+            <div class="content-inline-item">
+              <div class="btn-wrapper" style="margin-top: 0px;padding: 0px;">
+                <a ng-click="close()" class="submitBtn submit-cancel">取消</a>
+                <a ng-click="!submitOnProgress&& updateBookingAssignment(updateFormValidate.$invalid)" class="submitBtn submit-ok">更新</a>
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+      
+    </div>
+  </div>
+</div>

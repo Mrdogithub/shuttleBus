@@ -12,7 +12,7 @@
 
 .apps-container-selected {
 	margin: 10px 10px 0 0;
-	min-height:50px;
+	min-height:400px;
 }
 
 .apps-container-selected-item{
@@ -99,7 +99,7 @@ position: absolute;
 	font-size: 12px;
 	font-weight: normal;
 	text-align: left;
-	cursor: move;
+	/*cursor: move;*/
 }
 .app:nth-of-type(odd) {
 	background-color: #f9f9f9;
@@ -192,17 +192,26 @@ position: absolute;
     right: 24px;
     top: 10px;
 }
+.route-name{
+	font-size: 18px;
+    color: #666;
+    width: 200px;
+}
+.route-line-wrapper {
+	padding-left: 20px;
+}
 </style>
 
 
 <div class="title-wrapper breadcrumb-wrapper">
 	<breadcrumb-component breadcrumb-params="breadcrumbParams" breadcrumb-text="breadcrumbText"></breadcrumb-component>
 </div>
-
+<p class="route-name" ng-show ="!active">{{params.routeName}}</p>
 <div class="right-content-wrapper container-shadow-border">
 	<div class="inner-content">
 		<div class="info-wrapper">
 			<form name="formValidateOne" novalidate>
+				
 				<div class="title">
 					<h1>基础信息:</h1>
 					<a ng-click="editRouteProfile(false)" ng-if="!active">编辑</a>
@@ -248,8 +257,8 @@ position: absolute;
 			</form>	
 		</div>
 		
-		<div ng-if='params.currentRouteType == params.routeType'>
-			<div class="info-wrapper" ng-if = "!hideSiteIsActive">
+		<div ng-show='params.currentRouteType == params.routeType'>
+			<div class="info-wrapper" ng-show = "!hideSiteIsActive">
 				<div class="title"> <h1>线路站点设置:</h1> </div>
 				<div class="route-box">
 					<div class="route-line-wrapper" ng-show="(params.routeType == 'All') || params.routeType == 'AM'">
@@ -295,10 +304,10 @@ position: absolute;
 										    </span>
 							   			</div>
 									</div>
-								    <div ui-sortable="sortableOptions" class="apps-container dragWrapper" ng-model="params.stationListFromSiteLibrary" style="overflow: auto; min-height: 400px;">
+								    <div class="apps-container" ng-model="params.stationListFromSiteLibrary" style="overflow: scroll; max-height: 400px;">
 										<div class="app dragItem moveroverItem" ng-repeat="station in params.stationListFromSiteLibrary track by $index">
 											{{station.stationName}}
-											<a data-index='{{$index}}' class="stepTwoAddBtn" data-id="{{station.stationId}}" data-type="{{station.stationType}}"style="float: right; width: 60px;text-align: center;" ng-click="addSiteItemForRoute($event,$index,station.stationId,station.stationType)">加入线路</a>
+											<a data-index='{{$index}}' class="stepTwoAddBtn" data-id="{{station.stationId}}" data-type="{{station.stationType}}" style="float: right; width: 60px;text-align: center;" ng-click="addSiteItemForRoute($event,$index,station.stationId,station.stationType)">加入线路</a>
 										</div>
 								    </div>
 								</div>
@@ -306,20 +315,21 @@ position: absolute;
 
 							<div class="route-wrapper">
 								<div class="route-title">线路站点</div>
-								<div ui-sortable="sortableOptions" class="apps-container-selected dragWrapper" ng-model="params.stationSelectedForRoute">
+								<div class="apps-container-selected" ng-model="params.stationSelectedForRoute">
 									<div class="apps-container-selected-item dragItem" 
 										 ng-repeat="station in params.stationSelectedForRoute  track by $index" 
 										 ng-class="{'has-error':formValidate.departureTime_{{$index}}.$dirty && formValidate.departureTime_{{$index}}.$invalid,'has-success':formValidate.departureTime_{{$index}}.$dirty && !formValidate.departureTime_{{$index}}.$invalid}">
 											{{station.stationName}}
 										<div class="departureTime" ng-if='$index!=0'>
-											<input type="text" ng-model="station.departureTime" name="departureTime_{{$index}}" class= "form-control" required=""> 分钟</div>
+											<input type="text"  ng-model="station.departureTime" name="departureTime_{{$index}}" class= "form-control" required="" ng-pattern="/^[1-9]$|^[1-9]\d$|^1[0-7][0-9]$|^1[8][0]$/"> 分钟</div>
 											<a  style="float: right; width: 27px;text-align: center;" 
 												ng-click="removeSiteItemFromSelectedList($event,$index,station.stationId,station.routeType,station.departureTime,station.routeStationId)">
 													<img src="data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAUlJREFUKBV1kLtKxEAUhndCXiCFYGeVUrSy8QJBxRfQgIWFSBJUBAsRvKAGdEXtRMFsQoKdCAteFtfS1kYEX8DnUJP4HWHCuuiBmXP7/3/OHNVoNJ6VUree59Vr/1iSJMN5nieWZQ0YZVk2i6I4gLjzFz6KohHAj4g+ua77YQRBcAxwA2IYx/FuJ4l8lLzNuWKCJekpucRQWscdcUJE9hhjjJcfELr2fX+BF0rBVQRJGGsNwAnhJYBpfBPleeJC+mK/CFKAdAEpIHxDebATLH1DLm2MMQ54jvyF088fQt3TviKgPME27lFssb4h/CrkbUj7Giz+ZySKkzTvyFu2bc86jvMlTURWqJ8S1lnEltQUxSn8DacN2NVgaYohtsy2znjxkD9tCuGd+itKM6h8CqjbWPkihHPTNPtqWZb1Aq7+0g3WeZqmPRJ/A+4nlb/AMkzZAAAAAElFTkSuQmCC"/>
 											</a>
-										<div class="error" ng-show="formValidate.departureTime_{{$index}}.$dirty && formValidate.departureTime_{{$index}}.$invalid &&$index!=0" style="position: absolute;top: 20px;">
-									        <small class="control-label" ng-show="formValidate.departureTime_{{$index}}.$error.required"> 请输入站点区间时间</small>
-									    </div>
+											<div class="error" style="position: absolute;top: 20px;" ng-show="formValidate.departureTime_{{$index}}.$dirty && formValidate.departureTime_{{$index}}.$invalid  &&$index!=0">
+												<small class="control-label" ng-show="formValidate.departureTime_{{$index}}.$error.pattern">距始发站时间间隔需在1-180分钟之间</small>
+												<small class="control-label" ng-show="formValidate.departureTime_{{$index}}.$error.required">请输入站点区间时间</small>
+											</div>
 									</div>
 						    	</div>
 							</div>
@@ -328,7 +338,7 @@ position: absolute;
 						<div class="content-inline" style="text-align: center;">
 							<div class="btn-wrapper" style="margin-top: 40px;width: 100%;padding: 0;">
 								<a ng-click="close()"  class="submitBtn submit-cancel">取消</a>
-								<a ng-click="!submitOnProgress&& updateSiteForRouteConfirmBtn(formValidate.$valid,route.routeType)" class="submitBtn submit-ok">确定</a>
+								<a ng-click="!submitOnProgress&& updateSiteForRouteConfirmBtn(formValidate.$valid,route.routeType,formValidate)" class="submitBtn submit-ok">确定</a>
 							</div>
 						</div>
 					</form>
@@ -353,7 +363,7 @@ position: absolute;
 									    </span>
 						   			</div>
 								</div>
-							    <div ui-sortable="sortableOptions" class="apps-container dragWrapper" ng-model="params.stationList" style="overflow: auto; min-height: 400px;">
+							    <div class="apps-container" ng-model="params.stationList" style="overflow: scroll; max-height: 400px;">
 									<div class="app dragItem moveroverItem" ng-repeat="station in params.stationListBySearchForAMOrPM track by $index">
 										{{station.stationName}}
 										<a  style="float: right; width: 60px;text-align: center;" ng-click="addSiteItemForAMOrPMOnly($event,$index,station.stationId,station.stationType)">加入线路</a>
@@ -367,7 +377,7 @@ position: absolute;
 						<div class="route-wrapper">
 							<div>
 								<div class="route-title">线路站点</div>
-									<div ui-sortable="sortableOptions" class="apps-container-selected dragWrapper" ng-model="params.stationListBySearchForAMOrPM_1">
+									<div class="apps-container-selected" ng-model="params.stationListBySearchForAMOrPM_1">
 										<div 	class="apps-container-selected-item dragItem"
 												ng-repeat="station in params.stationListBySearchForAMOrPM_1 track by $index " 
 												id="item_{{$index}}"
@@ -377,7 +387,9 @@ position: absolute;
 												<input  name="departureTime_{{$index}}" 
 														type="text" 
 														class= "form-control"
+														 
 														ng-model="station.departureTime" 
+														required="" ng-pattern="/^[1-9]$|^[1-9]\d$|^1[0-7][0-9]$|^1[8][0]$/"
 														id="stepTwoDepartureTime_{{$index}}"
 														required=""> 分钟</div>
 												<a 	style="float: right; width: 27px;text-align: center;" 
@@ -399,15 +411,13 @@ position: absolute;
 
 					<div class="content-inline" style="text-align: center;">
 						<div class="btn-wrapper" style="margin-top: 40px;width: 100%;padding: 0;">
-							<a ng-click="pre()"  class="submitBtn submit-cancel">上一步</a>
+							<a ng-click="closeAMAndPMEdit()"  class="submitBtn submit-cancel">取消</a>
 							<a ng-click="!submitOnProgress&& updateRouteByNewRouteTypeForAMOrPMOlny(formValidateTwo.$valid)" class="submitBtn submit-ok">{{params.routeType == 'All'? '下一步':'确定'}}</a>
 						</div>
 					</div>
 				</form>
 			</div>
 		</div>
-
-
 		<div class="info-wrapper" ng-show="setRouteTypeForAll">
 			<div class="title"><h1>下行线路站点:</h1></div>
 			<div class="route-box">
@@ -424,7 +434,7 @@ position: absolute;
 									    </span>
 						   			</div>
 								</div>
-							    <div ui-sortable="sortableOptions_2" class="apps-container dragWrapper_2" ng-model="params.stationListBySearchForPM" style="overflow: auto;  min-height: 400px;">
+							    <div class="apps-container" ng-model="params.stationListBySearchForPM" style="overflow: scroll;  max-height: 400px;">
 									<div class="app dragItem_2 moveroverItem" id="addItemForStepThree_{{$index}}" ng-repeat="station in params.stationListBySearchForPM track by $index">
 										{{station.stationName}}
 										<a class="stepTwoAddBtn" style="float: right; width: 60px;text-align: center;" ng-click="addSiteItemForPM($event,$index,station.stationId,station.stationType)">加入线路</a>
@@ -436,17 +446,18 @@ position: absolute;
 						<div class="route-wrapper">
 							<div>
 								<div class="route-title">线路站点</div>
-								<div ui-sortable="sortableOptions_2" class="apps-container-selected dragWrapper_2" ng-model="params.stationListForPM">
+								<div class="apps-container-selected" ng-model="params.stationListForPM">
 									<div class="apps-container-selected-item dragItem_2"  ng-repeat="station in params.stationListForPM track by $index" id="item_{{$index}}" ng-class="{'has-error':formValidateThree.departureTime_{{$index}}.$dirty && formValidateThree.departureTime_{{$index}}.$invalid,'has-success':formValidateThree.departureTime_{{$index}}.$dirty && !formValidateThree.departureTime_{{$index}}.$invalid}">
 											{{station.stationName}}
 										<div class="departureTime" ng-if='$index!=0'>
-											<input type="text" ng-model="station.departureTime" name="departureTime_{{$index}}" class= "form-control" required=""> 分钟</div>
+											<input type="text" ng-model="station.departureTime" name="departureTime_{{$index}}" required="" ng-pattern="/^[1-9]$|^[1-9]\d$|^1[0-7][0-9]$|^1[8][0]$/" class= "form-control"  > 分钟</div>
 											<a  style="float: right; width: 27px;text-align: center;" ng-click="removeSiteItemForStepThree($event,$index,station.stationId,station.stationType)">
 													<img src="data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAUlJREFUKBV1kLtKxEAUhndCXiCFYGeVUrSy8QJBxRfQgIWFSBJUBAsRvKAGdEXtRMFsQoKdCAteFtfS1kYEX8DnUJP4HWHCuuiBmXP7/3/OHNVoNJ6VUree59Vr/1iSJMN5nieWZQ0YZVk2i6I4gLjzFz6KohHAj4g+ua77YQRBcAxwA2IYx/FuJ4l8lLzNuWKCJekpucRQWscdcUJE9hhjjJcfELr2fX+BF0rBVQRJGGsNwAnhJYBpfBPleeJC+mK/CFKAdAEpIHxDebATLH1DLm2MMQ54jvyF088fQt3TviKgPME27lFssb4h/CrkbUj7Giz+ZySKkzTvyFu2bc86jvMlTURWqJ8S1lnEltQUxSn8DacN2NVgaYohtsy2znjxkD9tCuGd+itKM6h8CqjbWPkihHPTNPtqWZb1Aq7+0g3WeZqmPRJ/A+4nlb/AMkzZAAAAAElFTkSuQmCC"/>
 											</a>
-										<div class="error" ng-show="formValidateThree.departureTime_{{$index}}.$dirty && formValidateThree.departureTime_{{$index}}.$invalid &&$index!=0" style="position: absolute;top: 20px;">
-									        <small class="control-label" ng-show="formValidateThree.departureTime_{{$index}}.$error.required"> 请输入站点区间时间</small>
-									    </div>
+											<div class="error" style="position: absolute;top: 20px;" ng-show="formValidateThree.departureTime_{{$index}}.$dirty && formValidateThree.departureTime_{{$index}}.$invalid  &&$index!=0">
+												<small class="control-label" ng-show="formValidateThree.departureTime_{{$index}}.$error.pattern">距始发站时间间隔需在1-180分钟之间</small>
+												<small class="control-label" ng-show="formValidateThree.departureTime_{{$index}}.$error.required">请输入站点区间时间</small>
+											</div>
 									</div>
 						    	</div>
 							</div>

@@ -8414,6 +8414,10 @@ input[type=radio]:checked + .check-box::before, .check-box.checked::before {
 	top: auto;
 	bottom: 6px;
 }
+.clockpicker-popover {
+	z-index: 1000;
+}
+
 .clockpicker-popover .popover-title {
 	background-color: #fff;
 	color: #999;
@@ -12083,7 +12087,7 @@ a.btn-confirm:hover{
 	    padding: 5px;
 	    box-sizing: border-box;
 	    min-width: 24px;
-	    height: 24px;
+	    height: 26px;
 	    /* min-height: 24px; */
 	    text-align: center;
 	    line-height: 12px;

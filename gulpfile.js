@@ -98,7 +98,7 @@ gulp.task('run',['build'],function(){
 	$.connect.server({
 		root:[app.devPath],
 		livereload:true,
-		port:9898
+		port:9999
 	});
 });
 

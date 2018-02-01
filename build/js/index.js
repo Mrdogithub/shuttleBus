@@ -1,634 +1,9 @@
-angular.module('cloudDataControllerModule',[]).controller('cloudDataController',function($scope){
-	
-	// $scope.leftSideTitle = "首页";
-	// $scope.icon ='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAASCAYAAABrXO8xAAAAAXNSR0IArs4c6QAAAR5JREFUOBGlk89KAlEUh+eWK90EuRBx1SKIwB5BXCTi2jdo7Sp6gla+Qy/gC7hQCRSC1oKbQJI2QRBtRILK6fvdjnoJlFEPfHP+/c7MYe6Mi8ziOC4Q1qEMZ5AD2RuM4RF68OCcmzsGaiQNqMABXMEQQrsgubPCK/5Wg1OCjBXlOvAc5ApP4DKoTTX4TeEwKCYJf1KmusYPkkygKUEz0hOhmHBI+qJm9DJ2sr0H81s81mt3fqt7rzph1Ru437CyetJMvMaOo6qEOA2f8N9US5umSrw8jqy/SxQd4RcfhZW8U0092Z9W0zCDFrzAOlNPGmm/tN4AtrW+jkNrjOBUe2D6C959tLocE3YtfcKf+5jhNszhA8JfbNHPWE+atoq/NQP1DeFlCFoAAAAASUVORK5CYII=';
-
-	// $scope.menuArray =[
-	// 	{
-	// 		'title':{'name':'首页','icon':$scope.icon,'class':'clouddata','uiSref':'admin.clouddata','href':'clouddata'}
-	// 	}
-	// ];
-
-	var map = new AMap.Map("container", {
-		resizeEnable: true,
-		center: [121.339766,31.196099],//地图中心点
-		zoom: 12 //地图显示的缩放级别
-	});		
-	addCloudLayer();  //叠加云数据图层
-
-	function addCloudLayer() {
-
-		var searchOptions = {};
-		var marker;
-		var icon;
- 		var center = [121.339766,31.196099]
-		AMap.service(["AMap.CloudDataSearch"], function() {
-			
-				var search = new AMap.CloudDataSearch('598a6898305a2a4ed76a78e8', searchOptions); 
-				setInterval(randerData,10000)
-				function randerData(){
-		          	search.searchNearBy(center, 40000, function(status,result){
-		          		//console.log('xxxsafsfdasssdfasdf')
-		          					if(marker != null){
-						marker = null;
-						icon = null;
-					}
-		        	   if(result.datas){
-		        		    for (var i = 0; i < result.datas.length; i++) {
-		        				icon = new AMap.Icon({
-		        				    image: '../images/bus.png',
-		        				    size: new AMap.Size(50, 50),
-		        				    imageSize: new AMap.Size(50, 50)
-		        				});
-								var infoWindow = new AMap.InfoWindow({
-									isCustom: true,  //使用自定义窗体
-						       		offset: new AMap.Pixel(10, -15)
-					       		});
-		        				marker = new AMap.Marker({
-		        					icon: icon,
-		        					position: [result.datas[i]._location.lng,result.datas[i]._location.lat],
-		        					offset: new AMap.Pixel(-12,-12),
-		        					zIndex: 101,
-		        					title: result.datas[i]._name,
-		        					extData:{'bus_plate':result.datas[i].bus_plate,'_name':result.datas[i]._name,'_address':result.datas[i]._address,'id':result.datas[i]._id,'area_id':result.datas[i].area_id,'gps':result.datas[i]._location,'ismetro':result.datas[i].ismetro},
-		        					map: map
-		        				});
-
-
-		        				marker.on('click', markerClick);
-		       					marker.emit('click', {target: marker});
-		       					function markerClick(e) {
-							       infoWindow.setContent(createInfoWindow(e.target.G.extData.bus_plate,e.target.G.extData._name,e.target.G.extData._address));
-							       infoWindow.open(map, e.target.getPosition());
-		    					}
-		        		    }
-		        	   	}
-		        	});
-		        }
-		});
-
-
- // AMapUI.load(['ui/misc/PathSimplifier', 'lib/$'], function(PathSimplifier, $) {
- //        if (!PathSimplifier.supportCanvas) {
- //            alert('当前环境不支持 Canvas！');
- //            return;
- //        }
-
- //        var emptyLineStyle = {
- //            lineWidth: 0,
- //            fillStyle: null,
- //            strokeStyle: null,
- //            borderStyle: null
- //        };
-
- //        var pathSimplifierIns = new PathSimplifier({
- //            zIndex: 100,
- //            //autoSetFitView:false,
- //            map: map, //所属的地图实例
-
- //            getPath: function(pathData, pathIndex) {
-
- //                return pathData.path;
- //            },
- //            getHoverTitle: function(pathData, pathIndex, pointIndex) {
-
- //                return null;
- //            },
- //            renderOptions: {
- //                //将点、线相关的style全部置emptyLineStyle
- //                pathLineStyle: emptyLineStyle,
- //                pathLineSelectedStyle: emptyLineStyle,
- //                pathLineHoverStyle: emptyLineStyle,
- //                keyPointStyle: emptyLineStyle,
- //                startPointStyle: emptyLineStyle,
- //                endPointStyle: emptyLineStyle,
- //                keyPointHoverStyle: emptyLineStyle,
- //                keyPointOnSelectedPathLineStyle: emptyLineStyle
- //            }
- //        });
-
- //        window.pathSimplifierIns = pathSimplifierIns;
- //        var path = [[116.41, 39.90],
- //                [113.96, 40.55],
- //                [111.48, 41.14],
- //                [108.95, 41.67],
- //                [106.38, 42.15],
- //                [103.77, 42.57],
- //                [101.14, 42.93],
- //                [98.47, 43.23],
- //                [95.78, 43.47],
- //                [93.07, 43.64],
- //                [90.35, 43.75],
- //                [87.62, 43.79]]
-
- //        var currentPath = [];
- //        setInterval(function(){
- //        	for(var i=0;i<path.length-i)
- //        },1000)
- //        for(var i =0;i<path.length;path++){
-
- //        }
- //        pathSimplifierIns.setData([{
- //            name: '测试',
- //            path: [
-                
- //            ]
- //        }]);
-
- //        //initRoutesContainer(d);
-
- //        function onload() {
- //            pathSimplifierIns.renderLater();
- //        }
-
- //        function onerror(e) {
- //            alert('图片加载失败！');
- //        }
-
- //        var navg1 = pathSimplifierIns.createPathNavigator(0, {
- //            loop: true,
- //            speed: 1000000,
- //            pathNavigatorStyle: {
- //                width: 50,
- //                height: 50,
- //                //使用图片
- //                content: PathSimplifier.Render.Canvas.getImageContent('../images/bus.png', onload, onerror),
- //                strokeStyle: null,
- //                fillStyle: null,
- //                //经过路径的样式
- //                pathLinePassedStyle: {
- //                    lineWidth: 0,
- //                    strokeStyle: 'none',
- //                    dirArrowStyle: {
- //                        stepSpace: 1,
- //                        strokeStyle: 'none'
- //                    }
- //                }
- //            }
- //        });
-
- //        navg1.start();
-
- //    });
-
-
-		function createInfoWindow (bus_plate,_name,_address){
-			var addSitePop = document.createElement("div"),formContent = document.createElement("div");
-			formContent.innerHTML = '<div class="busInfo-wrapper container-shadow-border">'
-									+'<p>'+_address+'</p>'
-									+'<p>司机姓名：'+_name+'</p>'
-									+'<p>驾照信息：'+bus_plate+'</p>'
-									+'</div>';
-			addSitePop.appendChild(formContent);
-			return addSitePop;
-		}
-
-    }    
-})
-'use strict'
-angular.module('adminControllerModule',[])
-.controller('adminController',function($scope){
-
-	$scope.passengerIcon ='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAASCAYAAABrXO8xAAAAAXNSR0IArs4c6QAAAR5JREFUOBGlk89KAlEUh+eWK90EuRBx1SKIwB5BXCTi2jdo7Sp6gla+Qy/gC7hQCRSC1oKbQJI2QRBtRILK6fvdjnoJlFEPfHP+/c7MYe6Mi8ziOC4Q1qEMZ5AD2RuM4RF68OCcmzsGaiQNqMABXMEQQrsgubPCK/5Wg1OCjBXlOvAc5ApP4DKoTTX4TeEwKCYJf1KmusYPkkygKUEz0hOhmHBI+qJm9DJ2sr0H81s81mt3fqt7rzph1Ru437CyetJMvMaOo6qEOA2f8N9US5umSrw8jqy/SxQd4RcfhZW8U0092Z9W0zCDFrzAOlNPGmm/tN4AtrW+jkNrjOBUe2D6C959tLocE3YtfcKf+5jhNszhA8JfbNHPWE+atoq/NQP1DeFlCFoAAAAASUVORK5CYII=';
-	$scope.schedulerIcon ='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAASCAYAAABrXO8xAAAAAXNSR0IArs4c6QAAAR5JREFUOBGlk89KAlEUh+eWK90EuRBx1SKIwB5BXCTi2jdo7Sp6gla+Qy/gC7hQCRSC1oKbQJI2QRBtRILK6fvdjnoJlFEPfHP+/c7MYe6Mi8ziOC4Q1qEMZ5AD2RuM4RF68OCcmzsGaiQNqMABXMEQQrsgubPCK/5Wg1OCjBXlOvAc5ApP4DKoTTX4TeEwKCYJf1KmusYPkkygKUEz0hOhmHBI+qJm9DJ2sr0H81s81mt3fqt7rzph1Ru437CyetJMvMaOo6qEOA2f8N9US5umSrw8jqy/SxQd4RcfhZW8U0092Z9W0zCDFrzAOlNPGmm/tN4AtrW+jkNrjOBUe2D6C959tLocE3YtfcKf+5jhNszhA8JfbNHPWE+atoq/NQP1DeFlCFoAAAAASUVORK5CYII=';
-	$scope.cloudDataIcon ='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAASCAYAAABrXO8xAAAAAXNSR0IArs4c6QAAAR5JREFUOBGlk89KAlEUh+eWK90EuRBx1SKIwB5BXCTi2jdo7Sp6gla+Qy/gC7hQCRSC1oKbQJI2QRBtRILK6fvdjnoJlFEPfHP+/c7MYe6Mi8ziOC4Q1qEMZ5AD2RuM4RF68OCcmzsGaiQNqMABXMEQQrsgubPCK/5Wg1OCjBXlOvAc5ApP4DKoTTX4TeEwKCYJf1KmusYPkkygKUEz0hOhmHBI+qJm9DJ2sr0H81s81mt3fqt7rzph1Ru437CyetJMvMaOo6qEOA2f8N9US5umSrw8jqy/SxQd4RcfhZW8U0092Z9W0zCDFrzAOlNPGmm/tN4AtrW+jkNrjOBUe2D6C959tLocE3YtfcKf+5jhNszhA8JfbNHPWE+atoq/NQP1DeFlCFoAAAAASUVORK5CYII=';
-	$scope.icon ='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAASCAYAAABrXO8xAAAAAXNSR0IArs4c6QAAAR5JREFUOBGlk89KAlEUh+eWK90EuRBx1SKIwB5BXCTi2jdo7Sp6gla+Qy/gC7hQCRSC1oKbQJI2QRBtRILK6fvdjnoJlFEPfHP+/c7MYe6Mi8ziOC4Q1qEMZ5AD2RuM4RF68OCcmzsGaiQNqMABXMEQQrsgubPCK/5Wg1OCjBXlOvAc5ApP4DKoTTX4TeEwKCYJf1KmusYPkkygKUEz0hOhmHBI+qJm9DJ2sr0H81s81mt3fqt7rzph1Ru437CyetJMvMaOo6qEOA2f8N9US5umSrw8jqy/SxQd4RcfhZW8U0092Z9W0zCDFrzAOlNPGmm/tN4AtrW+jkNrjOBUe2D6C959tLocE3YtfcKf+5jhNszhA8JfbNHPWE+atoq/NQP1DeFlCFoAAAAASUVORK5CYII=';
-
-	$scope.menuArray =[
-		{
-			'title':{'name':'首页','icon':$scope.cloudDataIcon,'class':'clouData','uiSref':'admin.cloudData','href':'clouData'},
-			'permission':'ROLE_HR&ROLE_SCHEDULER'
-			//'permission':'ROLE_SYSADMIN'
-		},
-		{
-			'title':{'name':'乘客管理','icon':$scope.passengerIcon,'class':'passenger','uiSref':'admin.passenger.list'},
-			'permission':'ROLE_HR',
-			'menuList':[
-				{'name':'乘客列表','class':'','permission':'ROLE_HR','uiSref':'admin.passenger.list','href':'list'},
-				{'name':'乘客反馈','class':'','permission':'ROLE_HR','uiSref':'admin.passenger.feedback','href':'feedback'},
-				{'name':'乘坐情况','class':'','permission':'ROLE_HR','uiSref':'admin.passenger.report.data','href':'data'}
-			]
-		},
-		{
-			'title':{'name':'班车管理','icon':$scope.schedulerIcon,'class':'scheduler','uiSref':'admin.scheduler.route'},
-			'permission':'ROLE_SCHEDULER',
-			'menuList':[
-				{'name':'线路管理','class':'','permission':'ROLE_SCHEDULER','uiSref':'admin.scheduler.route','href':'route'},
-				{'name':'站点管理','class':'','permission':'ROLE_SCHEDULER','uiSref':'admin.scheduler.site','href':'site'},
-				{'name':'运营单位','class':'','permission':'ROLE_SCHEDULER','uiSref':'admin.scheduler.busCompany','href':'busCompany'},
-				{'name':'司机管理','class':'','permission':'ROLE_SCHEDULER','uiSref':'admin.scheduler.driver','href':'driver'},
-				{'name':'车辆管理','class':'','permission':'ROLE_SCHEDULER','uiSref':'admin.scheduler.bus','href':'bus'},
-				{'name':'排班管理','class':'','permission':'ROLE_SCHEDULER','uiSref':'admin.scheduler.calendar','href':'calendar'}
-			]
-		},
-		{
-			'title':{'name':'公司管理','icon':$scope.icon,'class':'masterTab',},
-			'permission':'ROLE_SYSADMIN',
-			'menuList':[
-				{'name':'公司列表','class':'','permission':'ROLE_SYSADMIN','uiSref':'admin.master','href':'master'}
-			]
-		},
-		{
-			'title':{'name':'公司管理','icon':$scope.icon,'class':'secondAdmin'},
-			'permission':'ROLE_SECONDADMIN',
-			'menuList':[
-				{'name':'公司列表','class':'','permission':'ROLE_APPLICATIONADMIN','uiSref':'admin.companyList','href':'companyList'},
-				{'name':'乘客管理员','class':'','permission':'ROLE_SECONDADMIN','uiSref':'admin.companyAdminHR','href':'hrAdmin'},
-				{'name':'班车管理员','class':'','permission':'ROLE_SECONDADMIN','uiSref':'admin.companyAdminScheduler','href':'schedulerAdmin'}
-			]
-		}
-	];
-
-})
-angular.module('masterAddControllerModule',[])
-.controller('masterAddController',function(applicationAdminHttpService,utilFactory,$stateParams,$state,$scope){
-
-	console.log('add master')
-	if($stateParams.systemAdminId){
-		// $scope.companyUuid = $stateParams.companyUuid;
-		$scope.params = {
-			'systemAdminId': $stateParams.systemAdminId,
-			'systemAdminCompanyId': $stateParams.systemAdminCompanyId,
-			'systemCompanyName':$stateParams.systemCompanyName
-			// 'name': $stateParams.name,
-			// 'phoneNumber': $stateParams.phoneNumber
-		};
-		$scope.active = true;
-		$scope.submitOnProgress = false;
-		$scope.submitStatusText = '完成';
-		$scope.breadcrumbText={
-			'lv1':'公司列表',
-			'lv2':'新增公司'
-		}
-	}else{
-		$state.go('admin.master')
-	}
-
-	// form information haven't been completed by user and then user trigger ‘取消’
-	// we should provide messages for user
-	$scope.close = function(){
-		alertify.confirm('请确认是否离开该页面,未保存的数据将在离开之后丢失。',function(){
-			$state.go('admin.master')
-		},function(){
-
-		});
-	}
-
-	// form information completed by user and the group params whin _params obj
-	// invoke API.Before invoke api we need to check all filed's status by 'setDirty'
-	// services.
-	$scope.addApplicationAdmin = function(formValidate){
-		// if all input filed empty and then user trigger submit button
-		// we will provide message for user to complete the requre filed.
-		
-		if(!formValidate) return utilFactory.setDirty($scope.formValidate)
-		// alertify.confirm('确认新增名为'+$scope.params.name+'的这个乘客？',function(){
-			
-		// },function(){
-		// 	console.log('cancel')
-		// })
-
-		var _params = {
-				'systemAdminCompanyId': $scope.params.systemAdminCompanyId,
-				'adminName':$scope.params.adminName,
-				'name': $scope.params.name,
-				'systemAdminId': $scope.params.systemAdminId,
-				'phoneNumber': $scope.params.phoneNumber,
-				'systemCompanyName':$scope.params.systemCompanyName
-		}
-
-		alertify.confirm('确认新增 "'+$scope.params.name+'"，并添加 "'+$scope.params.adminName+'" 为管理员吗？',function(){
-			applicationAdminHttpService.addApplicationAdmin(_params).then(function(result){
-				var responseData = result.data;
-				if(!responseData.error){
-				
-					alertify.alert('新增成功！',function(){
-						$scope.submitStatusText = '完成';
-						$scope.active = true;
-						$state.go('admin.master')
-					})
-				}else{
-					utilFactory.checkErrorCode(responseData.error.statusCode,responseData.error.message)
-				}
-			},function(errorResult){
-				alertify.alert(errorResult.error.message)
-			})
-		},function(){
-			
-		})
-	}
-})
-angular.module('masterControllerModule',[])
-.controller('masterController',function(loadData,applicationAdminHttpService,utilFactory,$stateParams,$state,$scope){
-
-	$scope.selectAllStatus = false;
-	$scope.pageConfigs={
-		params:{
-			'pageSize':'',
-			'pageNumber':'',
-			'systemAdminId':utilFactory.getAccountId(),
-			'systemAdminCompanyId':utilFactory.getSecondCompanyId()
-		},
-		list:null,
-		getList:function(params){
-			return applicationAdminHttpService.getApplicationAdminList(params)
-		},
-		loadData:function(){},
-		dataSet:function(result){
-			if(result.value != null){
-				var _result = result.value;
-				for(var i=0;i<_result.length;i++){
-					_result[i]['status'] =_result[i]['status'] == 0?'未激活':'已激活'
-				}
-			}
-		}
-		//extendParams:function(){}
-	}
-	var _params = {
-			'pageSize':'',
-			'pageNumber':'',
-			'systemAdminId':utilFactory.getAccountId(),
-			'systemAdminCompanyId':utilFactory.getSecondCompanyId()
-		};
-	$scope.pageConfigs.getList(_params)
-	$scope.queryByKeyObj = {
-		'active':{'key':'name','value':'管理员'},
-		'list':[{'key':'phoneNumber','value':'管理员手机'}]
-	}
-
-	var searchText = {};
-	$scope.selectKey = function(activeObj){
-		$scope.queryByKeyObj.list.length = 0;
-		$scope.queryByKeyObj.list.push( {'key':$scope.queryByKeyObj.active.key,'value':$scope.queryByKeyObj.active.value})
-		$scope.queryByKeyObj.active.key = activeObj.key;
-		$scope.queryByKeyObj.active.value = activeObj.value;
-		console.log(activeObj.key)
-		searchText[activeObj.key] = $scope.searchText
-		$('.dropdown-menu').css('display','none')
-	}
-
-	$scope.searchFn = function(){
-		var _searchText ={
-			'pageSize':'20',
-			'pageNo':'1',
-		}
-		_searchText[$scope.queryByKeyObj.active.key] = $scope.queryByKeyObj.active.value;
-		console.log(1,_searchText)
-		$scope.$broadcast('refreshPageList',_searchText);
-	}
-	$scope.showQueryKeyList = function(){
-		$('.dropdown-menu').css('display','block')
-	}
-
-	$scope.addApplicationCompany = function(){
-		$state.go('admin.addMaster',{'systemAdminId':utilFactory.getAccountId(),'systemAdminCompanyId':utilFactory.getSecondCompanyId(),'systemCompanyName':utilFactory.getSecondCompanyName()})
-	};
-
-	$scope.tableConfig={
-		stableFlag:{
-			arrow:true,
-			index:true,
-			checkbox:false,
-			radio:true,
-			operate:[{
-				name:'查看详情',
-				ngIf:function(){},
-				fun:function(item){
-					var _params = {
-						'systemAdminCompanyId': item.secondCompanyId,
-						'companyName': item.name,
-						'adminName':item.adminName,
-						'userId': item.partyId,
-						'companyId':item.adminPartyId,
-						'systemCompanyName':utilFactory.getSecondCompanyName(),
-						'systemAdminId': utilFactory.getAccountId(),
-						'phoneNumber': item.adminPhoneNumber
-					}
-					$state.go('admin.detailMaster',_params);
-				}
-			},
-			{
-				name:'删除',
-				ngIf:function(){},
-				fun:function(item){
-
-					var _deleteParams = {
-						'systemAdminCompanyId': item.secondCompanyId,
-						'companyName': item.name,
-						'adminName':item.adminName,
-						'userId': item.partyId,
-						'systemCompanyName':utilFactory.getSecondCompanyName(),
-						'systemAdminId': utilFactory.getAccountId(),
-						'phoneNumber': item.adminPhoneNumber,
-						'companyName':item.name,
-						'companyId':item.adminPartyId
-					}
-
-					alertify.confirm('确认删除"'+item.name+'"吗?',function(){
-						applicationAdminHttpService.deleteApplicationAdminByID(_deleteParams).then(function(result){
-							var _resultData =result.data;
-							if(!_resultData.error){
-								$state.go('admin.master',{},{reload:true});
-							} else{
-								utilFactory.checkErrorCode(_resultData.error.statusCode,_resultData.error.message)
-							}
-						});
-					},function(){
-
-					}).set({labels:{ok:'确认', cancel: '取消'}, padding: true});
-		
-				}
-			}]
-		},
-		// height:290,
-		// head:[{name:'文件名',key:'filename'}],
-		// className:function(flag){},
-		// clickFun:function(){},
-		// rowClickFun:function(item){},
-		checkbox:{
-			checkArray:[]
-		},
-		defaultValue:'——',
-		// radioSelect:function(){},
-		operateIfFlag:true,
-		setHeadOptional:{
-			cancelSelectNum:5,
-			selectOptions:[
-				{
-					'parentKey':'',
-					'selfKey':{'key':'name','value':'公司名称'},
-					'checkFlag':true
-				},
-				{
-					'parentKey':'',
-					'selfKey':{'key':'adminName','value':'管理员'},
-					'checkFlag':true
-				},
-				{
-					'parentKey':'',
-					'selfKey':{'key':'adminPhoneNumber','value':'管理员手机'},
-					'checkFlag':true
-				}
-			]
-		}
-		// changeEnable:function(item){}
-	}
-	
-
-	$scope.dataIsEmpty = false;
-	if(loadData&&!loadData.data.error &&!loadData.data.value.list.length){
-		$scope.dataIsEmpty = true;
-		return
-	}else if(loadData && loadData.data.error){
-		utilFactory.checkErrorCode(loadData.data.error.statusCode);
-		return
-	}else{
-		$scope.$watch('$viewContentLoaded',function(event){ 
-			$scope.pageConfigs.getList(_params)
-  			$scope.$broadcast('refreshPageList',{pageSize:'',pageNo:''});
-		});	
-	}
-
-
-});
-angular.module('masterDetailControllerModule',[])
-.controller('masterDetailController',function(applicationAdminHttpService,utilFactory,$stateParams,$state,$scope){
-	if($stateParams.systemAdminId){
-
-		$scope.params = {
-			'systemAdminCompanyId': $stateParams.systemAdminCompanyId,
-			'companyName': $stateParams.companyName,
-			'adminName':$stateParams.adminName,
-			'systemAdminId': $stateParams.systemAdminId,
-			'companyId': $stateParams.companyId,
-			'phoneNumber': $stateParams.phoneNumber,
-			'userId': $stateParams.userId,
-			'systemCompanyName': $stateParams.systemCompanyName
-		};
-		$scope.active = false;
-		$scope.active_one = false;
-		$scope.submitOnProgress = false;
-		$scope.breadcrumbText={
-			'lv1':'公司列表',
-			'lv2':'公司详情'
-		}
-	}else{
-		$state.go('admin.master')
-	}
-
-	$scope.editCompany = function(flag){ $scope.active = !flag; };
-
-	$scope.editCompanyName = function(flag){ $scope.active_one = !flag }
-
-	$scope.updateCompany = function(){
-		$scope.submitOnProgress = true;
-		var _params = {
-			'systemAdminCompanyId': $scope.params.systemAdminCompanyId,
-			'companyName': $scope.params.companyName,
-			'adminName':$scope.params.adminName,
-			'companyId': $scope.params.companyId,
-			'userId':$scope.params.userId,
-			'systemAdminId': $scope.params.systemAdminId,
-			'companyId': $scope.params.companyId,
-			'phoneNumber': $scope.params.phoneNumber,
-			'systemCompanyName':$scope.params.systemCompanyName
-		}
-
-		applicationAdminHttpService.updateApplicationAdminByID(_params).then(function(result){
-			$scope.submitOnProgress = false;
-			var _resultData = result.data;
-			if(!_resultData.error){
-				alertify.alert('更新成功!',function(){
-					$state.go('admin.master')
-				})
-			}else{
-				utilFactory.checkErrorCode(_resultData.error.statusCode)
-			}
-		},function(){})
-	};
-})
-angular.module('applicationAdminHttpServiceModule',[])
-.factory('applicationAdminHttpService',function($http,ROLE_CODE,localStorageFactory,APISERVICEPATH){
-	var masterHttp = {};
-	var companyAccount = APISERVICEPATH.companyAccount;
-	
-	masterHttp.addApplicationAdmin = function(paramsObj){
-		var paramsData = {
-			'apiPath':companyAccount,
-			paramsList:{
-				'affiCompanyId': paramsObj.systemAdminCompanyId,
-				'name': paramsObj.name,
-				'adminName':paramsObj.adminName,
-				//'operateAccountId': paramsObj.applicationAdminId,
-				'phoneNumber': paramsObj.phoneNumber,
-				'companyCode':'8'
-			}
-		};
-		return  $http({ method: 'POST',url:paramsData.apiPath,headers:{'Content-type':'application/json'},data:paramsData.paramsList});
-	};
-	
-	masterHttp.getApplicationAdminList = function(paramsObj){
-		var paramsData = {
-			'apiPath':companyAccount+paramsObj.systemAdminId+"/parentCompanyId/"+paramsObj.systemAdminCompanyId+"/companyCode/8",
-			paramsList:{
-				// 'schedulerId': paramsObj.systemAdminId,
-				// 'parentCompanyId':paramsObj.systemAdminCompanyId,
-				'pageNumber': paramsObj.pageNumber,
-				'pageSize':paramsObj.pageSize,
-				// 'companyCode':'2'
-			}
-		};
-
-		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
-	}
-
-	masterHttp.updateApplicationAdminByID = function(paramsObj){
-		var paramsData = {
-			'apiPath':companyAccount,
-			paramsList:{
-			  'affiCompanyId': paramsObj.systemAdminCompanyId,
-			  'name': paramsObj.companyName,
-			  'adminName':paramsObj.adminName,
-			  'affiCompanyName':paramsObj.systemCompanyName,
-			  'operateAccountId': paramsObj.systemAdminId,
-			  'partyId': paramsObj.userId,
-			  'adminPartyId':paramsObj.companyId,
-			  'phoneNumber': paramsObj.phoneNumber,
-			  'status': '1',
-			  'companyCode':'8'
-			}
-		};
-
-		return  $http({ method: 'PUT',url:paramsData.apiPath,data:paramsData.paramsList,headers:{'Content-type':'application/json'}});
-	};
-
-	masterHttp.deleteApplicationAdminByID = function(paramsObj){
-		var paramsData = {
-			'apiPath':companyAccount,
-			paramsList:{
-			  'affiCompanyId': paramsObj.systemAdminCompanyId,
-			  'name': paramsObj.companyName,
-			  'adminName':paramsObj.adminName,
-			  'affiCompanyName':paramsObj.systemCompanyName,
-			  'operateAccountId': paramsObj.systemAdminId,
-			  'partyId': paramsObj.userId,
-			  'adminPartyId':paramsObj.companyId,
-			  'phoneNumber': paramsObj.phoneNumber,
-			  'status': '2',
-			  'companyCode':'8'
-			}
-		};
-		return  $http({ method: 'PUT',url:paramsData.apiPath,data:paramsData.paramsList,headers:{'Content-type':'application/json'}});
-	};
-
-	return masterHttp;
-});
 angular.module('constModule',[])
 
 .constant('APISERVICEPATH',{
 	//'accounts'              :'http://accountandauthority.apps.cl-cn-east-preprod01.cf.ford.com/api/NanjingShuttle/accounts/v1/',
-	'auths'            :'http://authentication.apps.cl-cn-east-preprod01.cf.ford.com/api/NanjingShuttle/auths/v1/',
-	'assignmentService':'http://routeandshuttlemeta.apps.cl-cn-east-preprod01.cf.ford.com/api/NanjingShuttle/assignments/v1/',
+	'auths'            :'https://services-cn.cx.ford.com/api/NanjingShuttle/auths/v1/',
+	'assignmentService':'https://services-cn.cx.ford.com/api/NanjingShuttle/assignments/v1/',
 	// 'devPassenger':'http://19.229.169.185:7073/api/v1/passengerAccount/',
 	// 'devLogin':'http://19.229.169.185:7072/api/v1/',
 	// 'dev_1':'http://192.168.43.163:7072/api/v1/',
@@ -636,27 +11,29 @@ angular.module('constModule',[])
 	//'busAPI':'http://19.229.169.228:7072/api/v1/vehicleService/',
 	//'div_2':'http://187.17.43.163:7073/api/v1/passengerAccount/',
 	'passengerDev'     :'./data/',
-	'tripHistorysByExcel':'http://reporting.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/tripHistorysDownload/',// error
-	'passengerTrip'      :'http://route.apps.cl-cn-east-preprod01.cf.ford.com/api/Nanjingshuttle/tripHistories/v1/', // done
+	'tripHistorysByExcel':'https://services-cn.cx.ford.com/api/v1/tripHistorysDownload/',// error
+	'passengerTrip'      :'https://services-cn.cx.ford.com/api/Nanjingshuttle/tripHistories/v1/', // done
 
-	'passengerAccount' :'http://profile.apps.cl-cn-east-preprod01.cf.ford.com/api/NanjingShuttle/profiles/v1/passenger/',
+	'passengerAccount' :'https://services-cn.cx.ford.com/api/NanjingShuttle/profiles/v1/passenger/',
+	'passengerComment' :'https://services-cn.cx.ford.com/api/NanjingShuttle/comments/v1/',
+
+	//'passengerProfile' :'https://services-cn.cx.ford.com/api/v1/passengerProfile/',
+	'companyAccount'   :'https://services-cn.cx.ford.com/api/NanjingShuttle/profiles/v1/company/',
 
 
-	//'passengerProfile' :'http://profile.apps.cl-cn-east-preprod01.cf.ford.com/api/v1/passengerProfile/',
-	'companyAccount'   :'http://profile.apps.cl-cn-east-preprod01.cf.ford.com/api/NanjingShuttle/profiles/v1/company/',
-
-
-	'vehicleService'   :'http://shuttle.apps.cl-cn-east-preprod01.cf.ford.com/api/NanjingShuttle/vehicles/v1/',
+	'vehicleService'   :'https://services-cn.cx.ford.com/api/NanjingShuttle/vehicles/v1/',
 	// 'prd':'http://19.229.169.202:7071/api/v1/passengerAccount/',
-	'driverAccount'    :'http://profile.apps.cl-cn-east-preprod01.cf.ford.com/api/NanjingShuttle/profiles/v1/',
+	'driverAccount'    :'https://services-cn.cx.ford.com/api/NanjingShuttle/profiles/v1/',
 
-	'stationService'   :'http://route.apps.cl-cn-east-preprod01.cf.ford.com/api/NanjingShuttle/routing/v1/',
-	'templateFile'	   :'http://route.apps.cl-cn-east-preprod01.cf.ford.com/api/NanjingShuttle/routing/v1/templateFile/',
-	'routeService'     :'http://route.apps.cl-cn-east-preprod01.cf.ford.com/api/NanjingShuttle/routing/v1/',
+	'stationService'   :'https://services-cn.cx.ford.com/api/NanjingShuttle/routing/v1/',
+	'templateFile'	   :'https://services-cn.cx.ford.com/api/NanjingShuttle/routing/v1/templateFile/',
+	'routeService'     :'https://services-cn.cx.ford.com/api/NanjingShuttle/routing/v1/',
 
 
-	'hrService'		   :'http://profile.apps.cl-cn-east-preprod01.cf.ford.com/api/NanjingShuttle/profiles/v1/hr/',
-	'schedulerService' :'http://profile.apps.cl-cn-east-preprod01.cf.ford.com/api/NanjingShuttle/profiles/v1/scheduler/'
+	'hrService'		   :'https://services-cn.cx.ford.com/api/NanjingShuttle/profiles/v1/hr/',
+	'schedulerService' :'https://services-cn.cx.ford.com/api/NanjingShuttle/profiles/v1/scheduler/',
+
+	'reportingService' :'https://services-cn.cx.ford.com/api/NanjingShuttle/report/v1/'
 })
 .constant('ERRORCODE',{
 	'activeProgress':'0100104',
@@ -697,8 +74,13 @@ angular.module('constModule',[])
 	'ERROR_CODE_0600100201':{'code':'0600100201','message':'可能遇到问题，请稍候再试'},
 	'ERROR_CODE_0600800201':{'code':'0600800201','message':'新增操作遇到问题，请重试'},
 	'ERROR_CODE_0600800202':{'code':'0600800202','message':'修改操作遇到问题，请重试'},
-	'ERROR_CODE_0600800203':{'code':'0600800203','message':'删除操作遇到问题，请重试'}
+	'ERROR_CODE_0600800203':{'code':'0600800203','message':'删除操作遇到问题，请重试'},
 
+	'ERROR_CODE_08005001001':{'code':'08005001001','message':'可能遇到问题，请稍候再试'},
+	'ERROR_CODE_08005003001':{'code':'08005003001','message':'可能遇到问题，请稍候再试'},
+	'ERROR_CODE_08005003002':{'code':'08005003002','message':'排班不存在，请返回列表，刷新再试'},
+	'ERROR_CODE_08005004002':{'code':'08005004002','message':'排班不存在，请返回列表，刷新再试'},
+	'ERROR_CODE_08005004004':{'code':'08005004004','message':'删除预约排班须至少提前两天'}
 
 })
 .constant('CHECK_ACCOUNT_ERROR',{
@@ -739,7 +121,8 @@ angular.module('constModule',[])
 	'STATUS_CODE_0200109':{'code':'0200109','message':'无效的请求'},
 	'STATUS_CODE_0200110':{'code':'0200110','message':'无效的请求'},
 	'STATUS_CODE_0200111':{'code':'0200111','message':'无效的请求'},
-	'STATUS_CODE_0200112':{'code':'0200112','message':'无效的请求'}
+	'STATUS_CODE_0200112':{'code':'0200112','message':'无效的请求'},
+	'STATUS_CODE_0200301':{'code':'0200301','message':'无效的用户'}
 })
 .constant('SMSCODE_ERROR',{
 	'STATUS_CODE_0100108':{'code':'0100108','message':'发送验证码失败,请稍候再试'},
@@ -770,14 +153,21 @@ angular.module('constModule',[])
 	'STATUS_CODE_0100113':{'code':'0100113','message':'重置密码可能遇到问题，请稍候再试'},
 	'STATUS_CODE_0100115':{'code':'0100115','message':'无效的请求'},
 	'STATUS_CODE_0100106':{'code':'0100106','message':'无效的请求'},
-	'STATUS_CODE_0200101':{'code':'0200101','message':'无效的请求'}
+	'STATUS_CODE_0200101':{'code':'0200101','message':'无效的请求'},
+	'STATUS_CODE_0100101':{'code':'0100101','message':'无效的手机号'},
+	// 'STATUS_CODE_0100103':{'code':'0100103','message':'重置密码可能遇到问题，请稍后再试。'},
 })
 .constant('TOKEN_ERROR',{
 	'STATUS_CODE_0200102':{'code':'0200102','message':'您的帐户信息已过期，请重新登录'},
 	'STATUS_CODE_0200105':{'code':'0200105','message':'您的帐户信息已过期，请重新登录'},
 	'STATUS_CODE_0200201':{'code':'0200201','message':'您的帐户信息已过期，请重新登录'}
-}).
-constant('USER_ACCOUNT',{
+})
+.constant('RESET_ACCOUNT_ERROR',{
+	'STATUS_CODE_0200101':{'code':'0200101','message':'旧密码不正确'},
+	'STATUS_CODE_0200110':{'code':'0200110','message':'无效的用户'},
+	'STATUS_CODE_0100113':{'code':'0100113','message':'重置密码可能遇到问题，请稍候再试'}
+})
+.constant('USER_ACCOUNT',{
 	'accountId':'',
 	'accessToken':'',
 	'refreshToken':'',
@@ -785,7 +175,7 @@ constant('USER_ACCOUNT',{
 	'ROLE_SYSADMIN':false,
 	'ROLE_COMPANY_ADMIN':false,
 
-	'ROLE_HR':false,
+	'ROLE_HR':'',
 	'ROLE_SCHEDULER':false,
 	'ROLE_PASSENGER':false,
 	'ROLE_DRIVER':false,
@@ -857,6 +247,7 @@ angular.module('injectModules',[
 	'listControllerModule',
 	'reportControllerModule',
 	'feedbackControllerModule',
+	'resetPasswordControllerModule',
 	
 	'schedulerControllerModule',
 	'schedulerHttpServiceModule',
@@ -879,8 +270,13 @@ angular.module('injectModules',[
 	'schedulerAddRouteControllerModule',
 	'schedulerUpdateRouteControllerModule',
 
-	'httpInterceptorModule',
+	'schedulerSpecialBusControllerModule',
+	'schedulerAddSpecialScheduleControllerModule',
+	'schedulerSpecialBusListControllerModule',
+	'schedulerAddOneDayScheduleControllerModule',
+	// 'schedulerSpecialBusEditControllerModule',
 
+	'httpInterceptorModule',
 
 	'companyControllerModule',
 	'companyListControllerModule',
@@ -892,7 +288,7 @@ angular.module('injectModules',[
 	'companySchedulerControllerModule',
 
 	'passengerReportDataControllerModule',
-	'passengerReportRouteControllerModule',
+	'passengerReportBusRouteControllerModule',
 	'passengerReportStationControllerModule',
 	'passengerReportPassengersControllerModule',
 	'passengerReportArrivalControllerModule',
@@ -938,7 +334,12 @@ angular.module('app',['injectModules'])
 		templateUrl:'modules/login/masterLogin.html',
 		controller:'masterLoginController'
 	})
-
+	.state('entry.reset',{
+		url:'/reset',
+		templateUrl:'modules/login/resetPassword.html',
+		params:{'userName':null,'password':null},
+		controller:'resetPasswordController'
+	})
 	.state('admin',{
 		url:'/admin',
 		templateUrl:'modules/admin/admin.html',
@@ -1049,10 +450,10 @@ angular.module('app',['injectModules'])
 		templateUrl:'modules/passengerMgmt/passenger.report.station.html',
 		controller:'passengerReportStationController'
 	})
-	.state('admin.passenger.report.route',{
-		url:'/route',
-		templateUrl:'modules/passengerMgmt/passenger.report.route.html',
-		controller:'passengerReportRouteController'
+	.state('admin.passenger.report.busRoute',{
+		url:'/busRoute',
+		templateUrl:'modules/passengerMgmt/passenger.report.busRoute.html',
+		controller:'passengerReportBusRouteController'
 	})
 	.state('admin.passenger.add',{
 		url:'/add',
@@ -1072,7 +473,9 @@ angular.module('app',['injectModules'])
 			'phoneNumber': null,
 			'schedulerId':  null,
 			'passengerId':null,
-			'status': null
+			'status': null,
+			'defaultStationName':null,
+			'defaultRouteName':null
 		},
 		templateUrl:'modules/passengerMgmt/passenger.detail.html',
 		controller:'passengerDetailController'
@@ -1247,6 +650,37 @@ angular.module('app',['injectModules'])
 		templateUrl:'modules/schedulerMgmt/scheduler.busCompany.html',
 		controller:'schedulerbusCompanyController'
 	})
+	.state('admin.scheduler.specialBus',{
+		url:'/specialBus',
+		templateUrl:'modules/schedulerMgmt/scheduler.specialBus.html',
+		controller:'schedulerSpecialBusController'
+	})
+	.state('admin.scheduler.addSpecialSchedule',{
+		url:'/specialSchedule',
+		templateUrl:'modules/schedulerMgmt/scheduler.addSpecialSchedule.html',
+		controller:'schedulerAddSpecialScheduleController'
+	})
+	.state('admin.scheduler.specialBusList',{
+		url:'/specialBusList',
+		templateUrl:'modules/schedulerMgmt/scheduler.specialBusList.html',
+		params:{'eventDay':null},
+		controller:'schedulerSpecialBusListController',
+		reload:true,  
+		cache:false
+	})
+	// .state('admin.scheduler.specialBusEdit',{
+	// 	url:'/specialBusEdit',
+	// 	templateUrl:'modules/schedulerMgmt/scheduler.specialBusEdit.html',
+	// 	params:{'assignmentId':null},
+	// 	controller:'schedulerSpecialBusEditController'
+	// })
+	.state('admin.scheduler.addOneDaySchedule',{
+		url:'/oneDaySchedule',
+		templateUrl:'modules/schedulerMgmt/scheduler.addOneDaySchedule.html',
+		params:{'eventDay':null,'dateTime':null},
+		controller:'schedulerAddOneDayScheduleController'
+	})
+
 	// .state('admin.company',{
 	// 	url:'/company',
 	// 	templateUrl:'modules/companyMgmt/company.html',
@@ -1312,6 +746,652 @@ angular.module('app',['injectModules'])
 	$urlRouterProvider.otherwise('entry/check')
 
 }]);
+angular.module('adminControllerModule',[])
+.controller('adminController',function($scope){
+
+	$scope.passengerIcon ='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAASCAYAAABrXO8xAAAAAXNSR0IArs4c6QAAAR5JREFUOBGlk89KAlEUh+eWK90EuRBx1SKIwB5BXCTi2jdo7Sp6gla+Qy/gC7hQCRSC1oKbQJI2QRBtRILK6fvdjnoJlFEPfHP+/c7MYe6Mi8ziOC4Q1qEMZ5AD2RuM4RF68OCcmzsGaiQNqMABXMEQQrsgubPCK/5Wg1OCjBXlOvAc5ApP4DKoTTX4TeEwKCYJf1KmusYPkkygKUEz0hOhmHBI+qJm9DJ2sr0H81s81mt3fqt7rzph1Ru437CyetJMvMaOo6qEOA2f8N9US5umSrw8jqy/SxQd4RcfhZW8U0092Z9W0zCDFrzAOlNPGmm/tN4AtrW+jkNrjOBUe2D6C959tLocE3YtfcKf+5jhNszhA8JfbNHPWE+atoq/NQP1DeFlCFoAAAAASUVORK5CYII=';
+	$scope.schedulerIcon ='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAASCAYAAABrXO8xAAAAAXNSR0IArs4c6QAAAR5JREFUOBGlk89KAlEUh+eWK90EuRBx1SKIwB5BXCTi2jdo7Sp6gla+Qy/gC7hQCRSC1oKbQJI2QRBtRILK6fvdjnoJlFEPfHP+/c7MYe6Mi8ziOC4Q1qEMZ5AD2RuM4RF68OCcmzsGaiQNqMABXMEQQrsgubPCK/5Wg1OCjBXlOvAc5ApP4DKoTTX4TeEwKCYJf1KmusYPkkygKUEz0hOhmHBI+qJm9DJ2sr0H81s81mt3fqt7rzph1Ru437CyetJMvMaOo6qEOA2f8N9US5umSrw8jqy/SxQd4RcfhZW8U0092Z9W0zCDFrzAOlNPGmm/tN4AtrW+jkNrjOBUe2D6C959tLocE3YtfcKf+5jhNszhA8JfbNHPWE+atoq/NQP1DeFlCFoAAAAASUVORK5CYII=';
+	$scope.cloudDataIcon ='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAASCAYAAABrXO8xAAAAAXNSR0IArs4c6QAAAR5JREFUOBGlk89KAlEUh+eWK90EuRBx1SKIwB5BXCTi2jdo7Sp6gla+Qy/gC7hQCRSC1oKbQJI2QRBtRILK6fvdjnoJlFEPfHP+/c7MYe6Mi8ziOC4Q1qEMZ5AD2RuM4RF68OCcmzsGaiQNqMABXMEQQrsgubPCK/5Wg1OCjBXlOvAc5ApP4DKoTTX4TeEwKCYJf1KmusYPkkygKUEz0hOhmHBI+qJm9DJ2sr0H81s81mt3fqt7rzph1Ru437CyetJMvMaOo6qEOA2f8N9US5umSrw8jqy/SxQd4RcfhZW8U0092Z9W0zCDFrzAOlNPGmm/tN4AtrW+jkNrjOBUe2D6C959tLocE3YtfcKf+5jhNszhA8JfbNHPWE+atoq/NQP1DeFlCFoAAAAASUVORK5CYII=';
+	$scope.icon ='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAASCAYAAABrXO8xAAAAAXNSR0IArs4c6QAAAR5JREFUOBGlk89KAlEUh+eWK90EuRBx1SKIwB5BXCTi2jdo7Sp6gla+Qy/gC7hQCRSC1oKbQJI2QRBtRILK6fvdjnoJlFEPfHP+/c7MYe6Mi8ziOC4Q1qEMZ5AD2RuM4RF68OCcmzsGaiQNqMABXMEQQrsgubPCK/5Wg1OCjBXlOvAc5ApP4DKoTTX4TeEwKCYJf1KmusYPkkygKUEz0hOhmHBI+qJm9DJ2sr0H81s81mt3fqt7rzph1Ru437CyetJMvMaOo6qEOA2f8N9US5umSrw8jqy/SxQd4RcfhZW8U0092Z9W0zCDFrzAOlNPGmm/tN4AtrW+jkNrjOBUe2D6C959tLocE3YtfcKf+5jhNszhA8JfbNHPWE+atoq/NQP1DeFlCFoAAAAASUVORK5CYII=';
+
+	$scope.menuArray =[
+		{
+			'title':{'name':'首页','icon':$scope.cloudDataIcon,'class':'cloudData','uiSref':'admin.cloudData','href':'cloudData'},
+			'permission':'ROLE_HR&ROLE_SCHEDULER'
+			//'permission':'ROLE_SYSADMIN'
+		},
+		{
+			'title':{'name':'乘客管理','icon':$scope.passengerIcon,'class':'passenger','uiSref':'admin.passenger.list'},
+			'permission':'ROLE_HR',
+			'menuList':[
+				{'name':'乘客列表','class':'','permission':'ROLE_HR','uiSref':'admin.passenger.list','href':'list'},
+				{'name':'乘客反馈','class':'','permission':'ROLE_HR','uiSref':'admin.passenger.feedback','href':'feedback'},
+				{'name':'乘坐情况','class':'','permission':'ROLE_HR','uiSref':'admin.passenger.report.data','href':'data'}
+			]
+		},
+		{
+			'title':{'name':'班车管理','icon':$scope.schedulerIcon,'class':'scheduler','uiSref':'admin.scheduler.route'},
+			'permission':'ROLE_SCHEDULER',
+			'menuList':[
+				{'name':'线路管理','class':'','permission':'ROLE_SCHEDULER','uiSref':'admin.scheduler.route','href':'route'},
+				{'name':'站点管理','class':'','permission':'ROLE_SCHEDULER','uiSref':'admin.scheduler.site','href':'site'},
+				{'name':'运营单位','class':'','permission':'ROLE_SCHEDULER','uiSref':'admin.scheduler.busCompany','href':'busCompany'},
+				{'name':'司机管理','class':'','permission':'ROLE_SCHEDULER','uiSref':'admin.scheduler.driver','href':'driver'},
+				{'name':'车辆管理','class':'','permission':'ROLE_SCHEDULER','uiSref':'admin.scheduler.bus','href':'bus'},
+				{'name':'排班管理','class':'','permission':'ROLE_SCHEDULER','uiSref':'admin.scheduler.calendar','href':'calendar'},
+				{'name':'专车排班','class':'','permission':'ROLE_SCHEDULER','uiSref':'admin.scheduler.specialBus','href':'specialBus'}
+			]
+		},
+		{
+			'title':{'name':'公司管理','icon':$scope.icon,'class':'masterTab',},
+			'permission':'ROLE_SYSADMIN',
+			'menuList':[
+				{'name':'公司列表','class':'','permission':'ROLE_SYSADMIN','uiSref':'admin.master','href':'master'}
+			]
+		},
+		{
+			'title':{'name':'公司管理','icon':$scope.icon,'class':'secondAdmin'},
+			'permission':'ROLE_SECONDADMIN',
+			'menuList':[
+				// {'name':'公司列表','class':'','permission':'ROLE_APPLICATIONADMIN','uiSref':'admin.companyList','href':'companyList'},
+				{'name':'乘客管理员','class':'','permission':'ROLE_SECONDADMIN','uiSref':'admin.companyAdminHR','href':'hrAdmin'},
+				{'name':'班车管理员','class':'','permission':'ROLE_SECONDADMIN','uiSref':'admin.companyAdminScheduler','href':'schedulerAdmin'}
+			]
+		},
+		{
+			'title':{'name':'公司管理','icon':$scope.icon,'class':'applicationAdmin'},
+			'permission':'ROLE_APPLICATIONADMIN',
+			'menuList':[
+				{'name':'公司列表','class':'','permission':'ROLE_APPLICATIONADMIN','uiSref':'admin.companyList','href':'companyList'},
+				// {'name':'乘客管理员','class':'','permission':'ROLE_SECONDADMIN','uiSref':'admin.companyAdminHR','href':'hrAdmin'},
+				// {'name':'班车管理员','class':'','permission':'ROLE_SECONDADMIN','uiSref':'admin.companyAdminScheduler','href':'schedulerAdmin'}
+			]
+		}
+	];
+
+})
+angular.module('masterAddControllerModule',[])
+.controller('masterAddController',function(applicationAdminHttpService,utilFactory,$stateParams,$state,$scope){
+
+	console.log('add master')
+	if($stateParams.systemAdminId){
+		// $scope.companyUuid = $stateParams.companyUuid;
+		$scope.params = {
+			'systemAdminId': $stateParams.systemAdminId,
+			'systemAdminCompanyId': $stateParams.systemAdminCompanyId,
+			'systemCompanyName':$stateParams.systemCompanyName
+			// 'name': $stateParams.name,
+			// 'phoneNumber': $stateParams.phoneNumber
+		};
+		$scope.active = true;
+		$scope.submitOnProgress = false;
+		$scope.submitStatusText = '完成';
+		$scope.breadcrumbText={
+			'lv1':'公司列表',
+			'lv2':'新增公司'
+		}
+	}else{
+		$state.go('admin.master')
+	}
+
+	// form information haven't been completed by user and then user trigger ‘取消’
+	// we should provide messages for user
+	$scope.close = function(){
+		alertify.confirm('请确认是否离开该页面,未保存的数据将在离开之后丢失。',function(){
+			$state.go('admin.master')
+		},function(){
+
+		});
+	}
+
+	// form information completed by user and the group params whin _params obj
+	// invoke API.Before invoke api we need to check all filed's status by 'setDirty'
+	// services.
+	$scope.addApplicationAdmin = function(formValidate){
+		// if all input filed empty and then user trigger submit button
+		// we will provide message for user to complete the requre filed.
+		
+		if(!formValidate) return utilFactory.setDirty($scope.formValidate)
+		// alertify.confirm('确认新增名为'+$scope.params.name+'的这个乘客？',function(){
+			
+		// },function(){
+		// 	console.log('cancel')
+		// })
+
+		var _params = {
+				'systemAdminCompanyId': $scope.params.systemAdminCompanyId,
+				'adminName':$scope.params.adminName,
+				'name': $scope.params.name,
+				'systemAdminId': $scope.params.systemAdminId,
+				'phoneNumber': $scope.params.phoneNumber,
+				'systemCompanyName':$scope.params.systemCompanyName
+		}
+
+		alertify.confirm('确认新增 "'+$scope.params.name+'"，并添加 "'+$scope.params.adminName+'" 为管理员吗？',function(){
+			applicationAdminHttpService.addApplicationAdmin(_params).then(function(result){
+				var responseData = result.data;
+				if(!responseData.error){
+				
+					alertify.alert('新增成功！',function(){
+						$scope.submitStatusText = '完成';
+						$scope.active = true;
+						$state.go('admin.master')
+					})
+				}else{
+					utilFactory.checkErrorCode(responseData.error.statusCode,responseData.error.message)
+				}
+			},function(errorResult){
+				alertify.alert(errorResult.error.message)
+			})
+		},function(){
+			
+		})
+	}
+})
+angular.module('masterControllerModule',[])
+.controller('masterController',function(loadData,applicationAdminHttpService,utilFactory,$stateParams,$state,$scope){
+
+	$scope.selectAllStatus = false;
+	$scope.pageConfigs={
+		params:{
+			'pageSize':'',
+			'pageNumber':'',
+			'systemAdminId':utilFactory.getAccountId(),
+			'systemAdminCompanyId':utilFactory.getSecondCompanyId()
+		},
+		list:null,
+		getList:function(params){
+			return applicationAdminHttpService.getApplicationAdminList(params)
+		},
+		loadData:function(){},
+		dataSet:function(result){
+			if(result.value != null){
+				var _result = result.value;
+				for(var i=0;i<_result.length;i++){
+					_result[i]['status'] =_result[i]['status'] == 0?'未激活':'已激活'
+				}
+			}
+		}
+		//extendParams:function(){}
+	}
+	var _params = {
+			'pageSize':'',
+			'pageNumber':'',
+			'systemAdminId':utilFactory.getAccountId(),
+			'systemAdminCompanyId':utilFactory.getSecondCompanyId()
+		};
+	$scope.pageConfigs.getList(_params)
+	$scope.queryByKeyObj = {
+		'active':{'key':'companyName','value':'公司名称'},
+		'list':[{'key':'phoneNumber','value':'管理员手机'}]
+	}
+
+	$scope.selectKey = function(activeObj){
+		$scope.queryByKeyObj.list.length = 0;
+		$scope.queryByKeyObj.list.push( {'key':$scope.queryByKeyObj.active.key,'value':$scope.queryByKeyObj.active.value})
+		$scope.queryByKeyObj.active.key = activeObj.key;
+		$scope.queryByKeyObj.active.value = activeObj.value;
+
+		$('.dropdown-menu').css('display','none')
+	}
+
+
+	$scope.searchFn = function(){
+		var _searchParams ={
+			// 'pageSize':'20',
+			// 'pageNo':'1'
+			'systemAdminId':utilFactory.getAccountId(),
+			'systemAdminCompanyId':utilFactory.getSecondCompanyId()
+		}
+		_searchParams[$scope.queryByKeyObj.active.key] = $scope.searchText;
+		console.log(1,_searchParams)
+		$scope.$broadcast('refreshPageList',_searchParams);
+	}
+	$scope.showQueryKeyList = function(){
+		$('.dropdown-menu').css('display','block')
+	}
+
+	$scope.addApplicationCompany = function(){
+		$state.go('admin.addMaster',{'systemAdminId':utilFactory.getAccountId(),'systemAdminCompanyId':utilFactory.getSecondCompanyId(),'systemCompanyName':utilFactory.getSecondCompanyName()})
+	};
+
+	$scope.tableConfig={
+		stableFlag:{
+			arrow:true,
+			index:true,
+			checkbox:false,
+			radio:true,
+			operate:[{
+				name:'查看详情',
+				ngIf:function(){
+					return true
+				},
+				fun:function(item){
+					var _params = {
+						'systemAdminCompanyId': item.secondCompanyId,
+						'companyName': item.name,
+						'adminName':item.adminName,
+						'userId': item.partyId,
+						'companyId':item.adminPartyId,
+						'systemCompanyName':utilFactory.getSecondCompanyName(),
+						'systemAdminId': utilFactory.getAccountId(),
+						'phoneNumber': item.adminPhoneNumber
+					}
+					$state.go('admin.detailMaster',_params);
+				}
+			},
+			{
+				name:'删除',
+				ngIf:function(){
+					return true
+				},
+				fun:function(item){
+
+					var _deleteParams = {
+						'systemAdminCompanyId': item.secondCompanyId,
+						'companyName': item.name,
+						'adminName':item.adminName,
+						'userId': item.partyId,
+						'systemCompanyName':utilFactory.getSecondCompanyName(),
+						'systemAdminId': utilFactory.getAccountId(),
+						'phoneNumber': item.adminPhoneNumber,
+						'companyName':item.name,
+						'companyId':item.adminPartyId
+					}
+
+					alertify.confirm('确认删除"'+item.name+'"吗?',function(){
+						applicationAdminHttpService.deleteApplicationAdminByID(_deleteParams).then(function(result){
+							var _resultData =result.data;
+							if(!_resultData.error){
+								$state.go('admin.master',{},{reload:true});
+							} else{
+								utilFactory.checkErrorCode(_resultData.error.statusCode,_resultData.error.message)
+							}
+						});
+					},function(){
+
+					}).set({labels:{ok:'确认', cancel: '取消'}, padding: true});
+		
+				}
+			}]
+		},
+		// height:290,
+		// head:[{name:'文件名',key:'filename'}],
+		// className:function(flag){},
+		// clickFun:function(){},
+		// rowClickFun:function(item){},
+		checkbox:{
+			checkArray:[]
+		},
+		defaultValue:'——',
+		// radioSelect:function(){},
+		operateIfFlag:true,
+		setHeadOptional:{
+			cancelSelectNum:5,
+			selectOptions:[
+				{
+					'parentKey':'',
+					'selfKey':{'key':'name','value':'公司名称'},
+					'checkFlag':true
+				},
+				{
+					'parentKey':'',
+					'selfKey':{'key':'adminName','value':'管理员'},
+					'checkFlag':true
+				},
+				{
+					'parentKey':'',
+					'selfKey':{'key':'adminPhoneNumber','value':'管理员手机'},
+					'checkFlag':true
+				}
+			]
+		}
+		// changeEnable:function(item){}
+	}
+	
+
+	$scope.dataIsEmpty = false;
+	if(loadData && (loadData.data.value == null)){
+		$scope.dataIsEmpty = true;
+		return
+	}else if(loadData && loadData.data.error){
+		utilFactory.checkErrorCode(loadData.data.error.statusCode);
+		return
+	}else{
+		$scope.$watch('$viewContentLoaded',function(event){ 
+			$scope.pageConfigs.getList(_params)
+  			$scope.$broadcast('refreshPageList',{pageSize:'',pageNo:''});
+		});	
+	}
+
+
+});
+angular.module('masterDetailControllerModule',[])
+.controller('masterDetailController',function(applicationAdminHttpService,utilFactory,$stateParams,$state,$scope){
+	if($stateParams.systemAdminId){
+
+		$scope.params = {
+			'systemAdminCompanyId': $stateParams.systemAdminCompanyId,
+			'companyName': $stateParams.companyName,
+			'adminName':$stateParams.adminName,
+			'systemAdminId': $stateParams.systemAdminId,
+			'companyId': $stateParams.companyId,
+			'phoneNumber': $stateParams.phoneNumber,
+			'userId': $stateParams.userId,
+			'systemCompanyName': $stateParams.systemCompanyName
+		};
+		$scope.active = false;
+		$scope.active_one = false;
+		$scope.submitOnProgress = false;
+		$scope.breadcrumbText={
+			'lv1':'公司列表',
+			'lv2':'公司详情'
+		}
+	}else{
+		$state.go('admin.master')
+	}
+
+	$scope.editCompany = function(flag){ $scope.active = !flag; };
+
+	$scope.editCompanyName = function(flag){ $scope.active_one = !flag }
+
+	$scope.updateCompany = function(){
+		$scope.submitOnProgress = true;
+		var _params = {
+			'systemAdminCompanyId': $scope.params.systemAdminCompanyId,
+			'companyName': $scope.params.companyName,
+			'adminName':$scope.params.adminName,
+			'companyId': $scope.params.companyId,
+			'userId':$scope.params.userId,
+			'systemAdminId': $scope.params.systemAdminId,
+			'companyId': $scope.params.companyId,
+			'phoneNumber': $scope.params.phoneNumber,
+			'systemCompanyName':$scope.params.systemCompanyName
+		}
+
+		applicationAdminHttpService.updateApplicationAdminByID(_params).then(function(result){
+			$scope.submitOnProgress = false;
+			var _resultData = result.data;
+			if(!_resultData.error){
+				alertify.alert('更新成功!',function(){
+					$state.go('admin.master')
+				})
+			}else{
+				utilFactory.checkErrorCode(_resultData.error.statusCode)
+			}
+		},function(){})
+	};
+})
+angular.module('applicationAdminHttpServiceModule',[])
+.factory('applicationAdminHttpService',function($http,ROLE_CODE,localStorageFactory,APISERVICEPATH){
+	var masterHttp = {};
+	var companyAccount = APISERVICEPATH.companyAccount;
+	
+	masterHttp.addApplicationAdmin = function(paramsObj){
+		var paramsData = {
+			'apiPath':companyAccount,
+			paramsList:{
+				'affiCompanyId': paramsObj.systemAdminCompanyId,
+				'name': paramsObj.name,
+				'adminName':paramsObj.adminName,
+				//'operateAccountId': paramsObj.applicationAdminId,
+				'phoneNumber': paramsObj.phoneNumber,
+				'companyCode':'8'
+			}
+		};
+		return  $http({ method: 'POST',url:paramsData.apiPath,headers:{'Content-type':'application/json'},data:paramsData.paramsList});
+	};
+	
+	masterHttp.getApplicationAdminList = function(paramsObj){
+		var paramsData = {
+			'apiPath':companyAccount+paramsObj.systemAdminId+"/parentCompanyId/"+paramsObj.systemAdminCompanyId+"/companyCode/8",
+			paramsList:{
+				// 'schedulerId': paramsObj.systemAdminId,
+				// 'parentCompanyId':paramsObj.systemAdminCompanyId,
+				'pageNumber': paramsObj.pageNumber,
+				'pageSize':paramsObj.pageSize,
+				'companyName': paramsObj.companyName,
+				'phoneNumber': paramsObj.phoneNumber
+				// 'companyCode':'2'
+			}
+		};
+
+		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
+	}
+
+	masterHttp.updateApplicationAdminByID = function(paramsObj){
+		var paramsData = {
+			'apiPath':companyAccount,
+			paramsList:{
+			  'affiCompanyId': paramsObj.systemAdminCompanyId,
+			  'name': paramsObj.companyName,
+			  'adminName':paramsObj.adminName,
+			  'affiCompanyName':paramsObj.systemCompanyName,
+			  'operateAccountId': paramsObj.systemAdminId,
+			  'partyId': paramsObj.userId,
+			  'adminPartyId':paramsObj.companyId,
+			  'phoneNumber': paramsObj.phoneNumber,
+			  'status': '1',
+			  'companyCode':'8'
+			}
+		};
+
+		return  $http({ method: 'PUT',url:paramsData.apiPath,data:paramsData.paramsList,headers:{'Content-type':'application/json'}});
+	};
+
+	masterHttp.deleteApplicationAdminByID = function(paramsObj){
+		var paramsData = {
+			'apiPath':companyAccount,
+			paramsList:{
+			  'affiCompanyId': paramsObj.systemAdminCompanyId,
+			  'name': paramsObj.companyName,
+			  'adminName':paramsObj.adminName,
+			  'affiCompanyName':paramsObj.systemCompanyName,
+			  'operateAccountId': paramsObj.systemAdminId,
+			  'partyId': paramsObj.userId,
+			  'adminPartyId':paramsObj.companyId,
+			  'phoneNumber': paramsObj.phoneNumber,
+			  'status': '2',
+			  'companyCode':'8'
+			}
+		};
+		return  $http({ method: 'PUT',url:paramsData.apiPath,data:paramsData.paramsList,headers:{'Content-type':'application/json'}});
+	};
+
+	return masterHttp;
+});
+angular.module('cloudDataControllerModule',[]).controller('cloudDataController',function($scope,utilFactory){
+
+	var map = new AMap.Map("container", {
+		resizeEnable: true,
+		center: [121.339766,31.196099],//地图中心点
+		zoom: 12 //地图显示的缩放级别
+	});		
+	addCloudLayer();  //叠加云数据图层
+
+	function addCloudLayer() {
+
+		var searchOptions = {
+			 filter: 'user_company_id:' + utilFactory.getSecondCompanyId()
+		};
+		var marker;
+		var icon;
+ 		var center = [121.339766,31.196099]
+		AMap.service(["AMap.CloudDataSearch"], function() {
+			
+				var search = new AMap.CloudDataSearch('598a6898305a2a4ed76a78e8', searchOptions); 
+				setInterval(randerData,10000)
+				function randerData(){
+					map.clearMap();
+		          	search.searchNearBy(center, 40000, function(status,result){
+		          		//console.log('xxxsafsfdasssdfasdf')
+		          					if(marker != null){
+						marker = null;
+						icon = null;
+					}
+		        	   if(result.datas){
+		        		    for (var i = 0; i < result.datas.length; i++) {
+		        				icon = new AMap.Icon({
+		        				    image: '../images/bus.png',
+		        				    size: new AMap.Size(50, 50),
+		        				    imageSize: new AMap.Size(50, 50)
+		        				});
+								var infoWindow = new AMap.InfoWindow({
+									isCustom: true,  //使用自定义窗体
+						       		offset: new AMap.Pixel(10, -15)
+					       		});
+		        				marker = new AMap.Marker({
+		        					icon: icon,
+		        					position: [result.datas[i]._location.lng,result.datas[i]._location.lat],
+		        					offset: new AMap.Pixel(-12,-12),
+		        					zIndex: 101,
+		        					title: result.datas[i]._name,
+		        					extData:{'bus_plate':result.datas[i].bus_plate,'_name':result.datas[i]._name,'_address':result.datas[i]._address,'id':result.datas[i]._id,'area_id':result.datas[i].area_id,'gps':result.datas[i]._location,'ismetro':result.datas[i].ismetro},
+		        					map: map
+		        				});
+
+
+		        				marker.on('click', markerClick);
+		       					marker.emit('click', {target: marker});
+		       					function markerClick(e) {
+							       infoWindow.setContent(createInfoWindow(e.target.G.extData.bus_plate,e.target.G.extData._name,e.target.G.extData._address));
+							       infoWindow.open(map, e.target.getPosition());
+		    					}
+		        		    }
+		        	   	}
+		        	});
+		        }
+		});
+
+
+ // AMapUI.load(['ui/misc/PathSimplifier', 'lib/$'], function(PathSimplifier, $) {
+ //        if (!PathSimplifier.supportCanvas) {
+ //            alert('当前环境不支持 Canvas！');
+ //            return;
+ //        }
+
+ //        var emptyLineStyle = {
+ //            lineWidth: 0,
+ //            fillStyle: null,
+ //            strokeStyle: null,
+ //            borderStyle: null
+ //        };
+
+ //        var pathSimplifierIns = new PathSimplifier({
+ //            zIndex: 100,
+ //            //autoSetFitView:false,
+ //            map: map, //所属的地图实例
+
+ //            getPath: function(pathData, pathIndex) {
+
+ //                return pathData.path;
+ //            },
+ //            getHoverTitle: function(pathData, pathIndex, pointIndex) {
+
+ //                return null;
+ //            },
+ //            renderOptions: {
+ //                //将点、线相关的style全部置emptyLineStyle
+ //                pathLineStyle: emptyLineStyle,
+ //                pathLineSelectedStyle: emptyLineStyle,
+ //                pathLineHoverStyle: emptyLineStyle,
+ //                keyPointStyle: emptyLineStyle,
+ //                startPointStyle: emptyLineStyle,
+ //                endPointStyle: emptyLineStyle,
+ //                keyPointHoverStyle: emptyLineStyle,
+ //                keyPointOnSelectedPathLineStyle: emptyLineStyle
+ //            }
+ //        });
+
+ //        window.pathSimplifierIns = pathSimplifierIns;
+ //        var path = [[116.41, 39.90],
+ //                [113.96, 40.55],
+ //                [111.48, 41.14],
+ //                [108.95, 41.67],
+ //                [106.38, 42.15],
+ //                [103.77, 42.57],
+ //                [101.14, 42.93],
+ //                [98.47, 43.23],
+ //                [95.78, 43.47],
+ //                [93.07, 43.64],
+ //                [90.35, 43.75],
+ //                [87.62, 43.79]]
+
+ //        var currentPath = [];
+ //        setInterval(function(){
+ //        	for(var i=0;i<path.length-i)
+ //        },1000)
+ //        for(var i =0;i<path.length;path++){
+
+ //        }
+ //        pathSimplifierIns.setData([{
+ //            name: '测试',
+ //            path: [
+                
+ //            ]
+ //        }]);
+
+ //        //initRoutesContainer(d);
+
+ //        function onload() {
+ //            pathSimplifierIns.renderLater();
+ //        }
+
+ //        function onerror(e) {
+ //            alert('图片加载失败！');
+ //        }
+
+ //        var navg1 = pathSimplifierIns.createPathNavigator(0, {
+ //            loop: true,
+ //            speed: 1000000,
+ //            pathNavigatorStyle: {
+ //                width: 50,
+ //                height: 50,
+ //                //使用图片
+ //                content: PathSimplifier.Render.Canvas.getImageContent('../images/bus.png', onload, onerror),
+ //                strokeStyle: null,
+ //                fillStyle: null,
+ //                //经过路径的样式
+ //                pathLinePassedStyle: {
+ //                    lineWidth: 0,
+ //                    strokeStyle: 'none',
+ //                    dirArrowStyle: {
+ //                        stepSpace: 1,
+ //                        strokeStyle: 'none'
+ //                    }
+ //                }
+ //            }
+ //        });
+
+ //        navg1.start();
+
+ //    });
+
+
+		function createInfoWindow (bus_plate,_name,_address){
+			var addSitePop = document.createElement("div"),formContent = document.createElement("div");
+			formContent.innerHTML = '<div class="busInfo-wrapper container-shadow-border">'
+									+'<p>'+_address+'</p>'
+									+'<p>司机姓名：'+_name+'</p>'
+									+'<p>驾照信息：'+bus_plate+'</p>'
+									+'</div>';
+			addSitePop.appendChild(formContent);
+			return addSitePop;
+		}
+
+    }    
+
+    
+    AMapUI.loadUI(['control/BasicControl'], function(BasicControl) {
+
+        var zoomCtrl1 = new BasicControl.Zoom({
+                theme: 'light',
+                // position: 'tl'
+
+            })
+        map.addControl(zoomCtrl1);
+    });
+})
 angular.module('HRControllerModule',[])
 .controller('HRController',function(loadData,companyHttpService,utilFactory,$stateParams,$state,$scope){
 
@@ -1323,7 +1403,9 @@ angular.module('HRControllerModule',[])
 	$scope.submitOnProgress = false;
 	$scope.breadcrumbText={ 'lv1':'乘客管理员'}
 
-
+	$scope.searchFn = function () {
+		$scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1','hrName':$scope.searchText});
+	}
 	$scope.addHR = function(formValidateIsInvalid){
 		if(formValidateIsInvalid){
 			return utilFactory.setDirty($scope.formValidate);
@@ -1411,7 +1493,9 @@ angular.module('HRControllerModule',[])
 			operateIfFlag:true,
 			operate:[{
 				name:'编辑',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item,event){
 
 					$scope.updateParams = {
@@ -1425,7 +1509,9 @@ angular.module('HRControllerModule',[])
 			},
 			{
 				name:'删除',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item){
 					var _deleteParams = {
 						'name':item.name,
@@ -1591,7 +1677,9 @@ angular.module('companySchedulerControllerModule',[])
 	$scope.active = false;
 	$scope.submitOnProgress = false;
 	$scope.breadcrumbText={ 'lv1':'班车管理员'};
-
+	$scope.searchFn = function(){
+		$scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1','schedulerName':$scope.searchText});
+	}
 	$scope.addScheduler = function(formValidateIsInvalid){
 		if(formValidateIsInvalid){
 			return utilFactory.setDirty($scope.formValidate);
@@ -1681,7 +1769,9 @@ angular.module('companySchedulerControllerModule',[])
 			operateIfFlag:true,
 			operate:[{
 				name:'编辑',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item,event){
 
 					$scope.updateParams = {
@@ -1695,7 +1785,9 @@ angular.module('companySchedulerControllerModule',[])
 			},
 			{
 				name:'删除',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item){
 					console.log(1,item)
 					var _deleteParams = {
@@ -1784,6 +1876,8 @@ angular.module('companyHttpServiceModule',[])
 		var paramsData = {
 			'apiPath':companyAccount+paramsObj.applicationAdminId+'/parentCompanyId/'+paramsObj.secondCompanyId+'/companyCode/9',
 			paramsList:{
+				'companyName': paramsObj.companyName,
+				'phoneNumber': paramsObj.phoneNumber,
 				// 'schedulerId': paramsObj.applicationAdminId,
 				// 'parentCompanyId':paramsObj.secondCompanyId,
 				'pageNumber': paramsObj.pageNumber,
@@ -1855,6 +1949,7 @@ angular.module('companyHttpServiceModule',[])
 		var paramsData = {
 			'apiPath':hrService+'superAdminId/'+paramsObj.secondCompanyAdminId+'/userCompanyId/'+paramsObj.secondCompanyId,
 			paramsList:{
+				'hrName': paramsObj.hrName,
 				'pageSize':paramsObj.pageSize,
 				'pageNumber':paramsObj.pageNumber
 			}
@@ -1915,6 +2010,7 @@ angular.module('companyHttpServiceModule',[])
 		var paramsData = {
 			'apiPath':schedulerService+'superAdminId/'+paramsObj.secondCompanyAdminId+'/userCompanyId/'+paramsObj.secondCompanyId,
 			paramsList:{
+				'schedulerName': paramsObj.schedulerName,
 				'pageSize':paramsObj.pageSize,
 				'pageNumber':paramsObj.pageNumber
 				// 'superAdminId': paramsObj.secondCompanyAdminId,
@@ -1998,9 +2094,13 @@ angular.module('companyDetailControllerModule',[])
 		$state.go('company.list')
 	}
 
-	$scope.editCompany = function(flag){ $scope.active = !flag; };
+	$scope.editCompany = function(flag){
+		$scope.active = !flag; 
+	};
 
-	$scope.editCompanyName = function(flag){ $scope.active_one = !flag }
+	$scope.editCompanyName = function(flag){ 
+		$scope.active_one = !flag; 
+	};
 
 	$scope.updateCompany = function(){
 		$scope.submitOnProgress = true;
@@ -2020,7 +2120,10 @@ angular.module('companyDetailControllerModule',[])
 			var _resultData = result.data;
 			if(!_resultData.error){
 				alertify.alert('更新成功!',function(){
-					$state.go('company.list')
+					// $state.go('admin.companyList')
+					$scope.active = false;
+					$scope.active_one = false;
+					$scope.$apply();
 				})
 			}else{
 				utilFactory.checkErrorCode(_resultData.error.statusCode)
@@ -2041,15 +2144,14 @@ angular.module('companyListControllerModule',[])
 		
 	}
 
-
-	$scope.selectAllStatus = false;
 	$scope.pageConfigs={
 		params:{
-			'pageSize':'',
-			'pageNumber':'',
+			// 'pageSize':'20',
+			// 'pageNumber':'1',
+			// 'pageNo': '1',
 			'applicationAdminId':utilFactory.getAccountId(),
 			'secondCompanyId':utilFactory.getSecondCompanyId(),
-			'secondCompanyName':utilFactory.getSecondCompanyName()
+			// 'secondCompanyName':utilFactory.getSecondCompanyName()
 		},
 		list:null,
 		getList:function(params){
@@ -2064,17 +2166,10 @@ angular.module('companyListControllerModule',[])
 				}
 			}
 		}
-		//extendParams:function(){}
 	}
-	var _params = {
-			'pageSize':'',
-			'pageNumber':'',
-			'applicationAdminId':utilFactory.getAccountId(),
-			'secondCompanyId':utilFactory.getSecondCompanyId()
-		};
-	$scope.pageConfigs.getList(_params)
+	$scope.selectAllStatus = false;
 	$scope.queryByKeyObj = {
-		'active':{'key':'name','value':'管理员'},
+		'active':{'key':'companyName','value':'公司名称'},
 		'list':[{'key':'phoneNumber','value':'管理员手机'}]
 	}
 
@@ -2087,6 +2182,19 @@ angular.module('companyListControllerModule',[])
 		$('.dropdown-menu').css('display','none')
 	}
 
+	$scope.searchFn = function () {
+		var _searchParams = {
+			// 'pageSize':'20',
+			// 'pageNumber':'1',
+			// 'pageNo': '1',
+			'applicationAdminId':utilFactory.getAccountId(),
+			'secondCompanyId':utilFactory.getSecondCompanyId(),
+			'secondCompanyName':utilFactory.getSecondCompanyName()
+		}
+		_searchParams[$scope.queryByKeyObj.active.key] = $scope.searchText;
+		//$scope.pageConfigs.getList(_searchParams)
+		$scope.$broadcast('refreshPageList',_searchParams);
+	}
 	$scope.showQueryKeyList = function(){
 		$('.dropdown-menu').css('display','block')
 	}
@@ -2103,7 +2211,9 @@ angular.module('companyListControllerModule',[])
 			radio:true,
 			operate:[{
 				name:'查看详情',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item){
 					var _params = {
 						'secondCompanyId': item.secondCompanyId,
@@ -2120,7 +2230,9 @@ angular.module('companyListControllerModule',[])
 			},
 			{
 				name:'删除',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item){
 
 					var _deleteParams = {
@@ -2150,11 +2262,6 @@ angular.module('companyListControllerModule',[])
 				}
 			}]
 		},
-		// height:290,
-		// head:[{name:'文件名',key:'filename'}],
-		// className:function(flag){},
-		// clickFun:function(){},
-		// rowClickFun:function(item){},
 		checkbox:{
 			checkArray:[]
 		},
@@ -2183,12 +2290,19 @@ angular.module('companyListControllerModule',[])
 		}
 		// changeEnable:function(item){}
 	}
-	
-	$scope.$watch('$viewContentLoaded',function(event){ 
-		$scope.pageConfigs.getList(_params)
-  		$scope.$broadcast('refreshPageList',{pageSize:'',pageNo:''});
+
+	$scope.$watch('$viewContentLoaded',function(event){
+		var _params = {
+			'pageSize':'20',
+			'pageNumber':'1',
+			'applicationAdminId':utilFactory.getAccountId(),
+			'secondCompanyId':utilFactory.getSecondCompanyId()
+		};
+		// $scope.pageConfigs.getList(_params)
+  		$scope.$broadcast('refreshPageList',_params);
 	});
 })
+
 /**
  * @description
  * goback component works in html files
@@ -2208,11 +2322,18 @@ angular.module('breadcrumbModule',[]).directive('breadcrumbComponent',function($
 		scope:{
 			gopath:'@',
 			breadcrumbParams:'=',
-			breadcrumbText:'='
+			breadcrumbText:'=',
+			goToTop:'@'
 		},
 		controller:function($scope){
 			$scope.goBack = function(){
-				window.history.go(-1)
+				if($scope.goToTop) {
+					window.history.go(-2)
+				}else{
+					window.history.go(-1)
+				}
+				console.log()
+				
 			}
 		},
 		link:function(scope,elements,attrs){
@@ -2360,11 +2481,22 @@ angular.module('httpInterceptorModule',[])
 .factory('httpInterceptor',function(localStorageFactory,$q, $injector) {  
 	var httpInterceptor = {
 		'request':function(request){
-			request.headers.ApplicationId ='BACKGROUND';
-			if(localStorageFactory.getObject('account',null)){
-				request.headers.Authorization ='Bearer '+localStorageFactory.getObject('account',null).accessToken;
-				request.headers.operateAccountId =localStorageFactory.getObject('account',null).accountId;
+
+            console.log(1,request)
+            console.log()
+            var _isGaode = request.url.indexOf('http://yuntuapi.amap.com/datasearch/')
+
+            if(_isGaode == 0){
+                return request;
+            }else{
+                request.headers.ApplicationId ='BACKGROUND';
+                request.headers['Application-Id'] = 'ED8D2C72-628A-47A6-9893-AF0B1151A8D3';
+                if(localStorageFactory.getObject('account',null)){
+                    request.headers.Authorization ='Bearer '+localStorageFactory.getObject('account',null).accessToken;
+                    request.headers.operateAccountId =localStorageFactory.getObject('account',null).accountId;
+                }
             }
+	
             
             return request; 
         },
@@ -2413,7 +2545,7 @@ angular.module("leftNavModule",[])
 				+	'<div class="menu-list">'
 				+	'	<ul class="menu-group">'
 				+	'		<li ng-repeat="menuItem in menuArray track by $index" class="menuItemTitle" data-link = "{{menuItem.title.uiSref}}"  has-permission="{{menuItem.permission}}">'
-				+				'<div class="title-wrapper">'
+				+				'<div class="title-wrapper {{menuItem.title.class}}"">'
 				+       			'<img class="menu-icon" ng-src={{menuItem.title.icon}} />'
 				+					'<span style = "width:70px;display:inline-block;text-align:left;">{{menuItem.title.name}}</span>'
 				+				'</div>'
@@ -2440,6 +2572,7 @@ angular.module("leftNavModule",[])
 			$(document).off('click','.menuItemTitle').on('click','.menuItemTitle',function(event){
 				$('.menuItemList li').removeClass('activeSelected')
 				$('.menuItemTitle').removeClass('activeSelected')
+				$('.cloudData').removeClass('activeSelected')
 				$(this).find('ul').css('display') === 'none'?$(this).find('ul').css('display','block'):$(this).find('ul').css('display','none');
 				
 				console.log($(this).find('ul >li').length)
@@ -2465,6 +2598,7 @@ angular.module("leftNavModule",[])
 			})
 
 			$scope.goTo=function(targetState,currentMenuItemObj,event){
+				$('.menuItemTitle').removeClass('activeSelected')
 				$('.menuItemList li').removeClass('activeSelected')
 				$(event.currentTarget).addClass('activeSelected')
 
@@ -2480,14 +2614,13 @@ angular.module("leftNavModule",[])
 		$rootScope.$watch(function(){
         	return $location.path();
         },function(newValue,oldValue){
-			console.log(oldValue+"oldValue")
-			console.log(newValue+"newValue")
+   //      	$('.menuItemList li').removeClass('activeSelected')
+			$('.cloudData').removeClass('activeSelected')
 			var currentPahtArray = newValue.split('/');
 			var currentActiveTab = currentPahtArray[currentPahtArray.length-1];
 
 			var menuItemArray = $scope.menuArray;
 			for(var j=0;j<menuItemArray.length;j++){
-				console.log(1,menuItemArray[j])
 				if(menuItemArray[j]['menuList']){
 					for(var i=0;i<menuItemArray[j].menuList.length;i++){
 						if(menuItemArray[j].menuList[i]['href'] === currentActiveTab){
@@ -2501,13 +2634,16 @@ angular.module("leftNavModule",[])
 								$('.menuItemList li').removeClass('activeSelected')
 								$('.'+currentActiveTab).addClass('activeSelected')
 							},200)
-
-							return
 						}
-						return
 					}
-					return
+				}else{
+					if(menuItemArray[j]['title']['href'] === currentActiveTab){
 					
+							var activeTab = menuItemArray[j]['title']['class'];
+							setTimeout(function(){
+								$('.'+currentActiveTab).addClass('activeSelected')
+							},200)
+					}
 				}
 			}
         })
@@ -2619,7 +2755,7 @@ angular.module('paginationModule',[])
 									_rewriteToken.refreshToken = _tokenRes.refreshToken;
 									localStorageFactory.setObject('account',_rewriteToken);
 									scope.$broadcast('refreshAPI')
-								}else if(_tokenRes.error.statusCode == TOKEN_ERROR.STATUS_CODE_0200105.code){
+  								}else if(_tokenRes.error.statusCode == TOKEN_ERROR.STATUS_CODE_0200105.code){
 									localStorageFactory.remove('account');
 									$state.go('entry.check')
 								}else if(_tokenRes.error.statusCode == '0200104'){
@@ -2643,22 +2779,33 @@ angular.module('paginationModule',[])
 					}else{
 						var _total;
 						var data = data.data;
-						if(scope.pageConfigs.dataSet){
-							scope.pageConfigs.dataSet(data)
+							// if(scope.pageConfigs.dataSet){
+						// 	scope.pageConfigs.dataSet(data)
+						// }
+						if(scope.pageConfigs.dataSet && data.value){
+							// scope.pageConfigs.dataSet(data);
+							if(scope.pageConfigs.dataSet && data.value.list.length){
+								scope.pageConfigs.dataSet(data);
+							}
 						}
 
 						if(!data.value) {
+							_total = '1'
+							scope.pageConfigs.list = null;
+						}else if (!data.value.list){
+							_total = '1'
 							scope.pageConfigs.list = null;
 						}else{
 							scope.pageConfigs.list = data.value.list;
 							_total = data.value.totalNumber
-							
 						}
-						if(!data.value.totalNumber){
-							_total = '1'
-						}else if (data.value == undefined){
-							_total = data.value.length;
-						}
+
+						// if(!data.value.totalNumber){
+						// 	_total = '1'
+						// }else if (data.value == undefined){
+						// 	_total = data.value.length;
+						// }
+
 
 						deffered.resolve(_total);
 					}
@@ -2812,7 +2959,7 @@ angular.module('searchByTextModule',[]).directive('searchByText',function($state
  * @sleep={booleans}: true => init component status by "获取验证码",false => init component status by "重新获取"
  *
  */
-angular.module('smsCodeModule',[]).directive('smsCodeComponent',function(loginHttpService,REQUESTTYPE,$state){
+angular.module('smsCodeModule',[]).directive('smsCodeComponent',function(loginHttpService,REQUESTTYPE,$state,utilFactory){
 	return {
 		restrict:"EA",
 		template:'<button  id="smsCodeBtn" class="btn-normal" ng-class="{\'smsActive\': isActive,\'smsSheep\': !isActive}"  ng-click="invokeSmsCode()">{{defaultValue}}</button>',
@@ -2844,6 +2991,7 @@ angular.module('smsCodeModule',[]).directive('smsCodeComponent',function(loginHt
 					}else{
 						utilFactory.checkErrorCode(responseData.error.statusCode,responseData.error.message)
 						scope.activeText = "激活";
+						scope.isActive = true;
 						scope.disabled = false;
 					}
 				},function(error){
@@ -2923,9 +3071,9 @@ angular.module('tableComponentModule',[]).directive('tableComponent',function(lo
 				+'				</span>'
 				+'				<span ng-repeat="head in tableConfig.head">{{(item[head.parentKey]?item[head.parentKey][head.selfKey.key] :item[head.selfKey.key] )|| tableConfig.defaultValue}}</span>'
 				// +'				<span ><a>编辑</a></span>'
-				+'				<span class="item-operate"  ng-click="preventPropagation($event)" ng-if="tableConfig.operateIfFlag || (stableFlag.operate && stableFlag.operate.Length !=0 && (o.ngIf(item) ||o.ngIf ==undefined))">'
+				+'				<span class="item-operate"  ng-click="preventPropagation($event)" ng-if="tableConfig.operateIfFlag || (stableFlag.operate && stableFlag.operate.length !=0)">'
 				
-				+'					  <a class="operateBtnForTableList" ng-click="o.fun(item,$event)" ng-repeat="o in stableFlag.operate"  ng-if="tableConfig.operateIfFlag || (o.ngIf(item) || o.ngIf ==undefined)">{{o.name}}</a> '     	
+				+'					  <a class="operateBtnForTableList" ng-click="o.fun(item,$event)" ng-repeat="o in stableFlag.operate"  ng-if="tableConfig.operateIfFlag && (o.ngIf(item) || o.ngIf ==undefined)">{{o.name}}</a> '     	
 				+'				</span>'
 				+'			</li>'
 				+'		</ul>'
@@ -3032,18 +3180,52 @@ angular.module('utilFactoryModule',[])
 	var fn = {};
 	
 	fn.getLocalTime = function(timestamp){
-		var date = new Date(parseInt(timestamp));
-		var y = 1900+date.getYear();
-	    var m = "0"+(date.getMonth()+1);
-	    var d = "0"+date.getDate();
-	    return m.substring(m.length-2,m.length)+"/"+d.substring(d.length-2,d.length)+"/"+y;
-		//return .toLocaleString().replace(/:\d{1,2}$/,' ');     
+
+	    var time = new Date(parseInt(timestamp));
+        var year = time.getFullYear();
+        var month = (time.getMonth() + 1) > 9 && (time.getMonth() + 1) || ('0' + (time.getMonth() + 1));
+        var day = time.getDate() > 9 && time.getDate() || ('0' + time.getDate());
+        var hour = time.getHours() > 9 && time.getHours() || ('0' + time.getHours());
+        var minute = time.getMinutes() > 9 && time.getMinutes() || ('0' + time.getMinutes());
+        var YmdHm = month + '/' + day + '/'+ year + ' ' + hour + ':' + minute;
+        return YmdHm;
 	}
- 	
+	fn.getCurrentMonth = function(timestamp){
+
+	    var time = new Date(parseInt(timestamp));
+        var year = time.getFullYear();
+        var month = (time.getMonth() + 1) > 9 && (time.getMonth() + 1) || ('0' + (time.getMonth() + 1));
+        var Ym = year + '/' + month;
+        return Ym;
+	}
+	fn.getCurrentDate = function(timestamp){
+
+	    var time = new Date(parseInt(timestamp));
+        var year = time.getFullYear();
+        var month = (time.getMonth() + 1) > 9 && (time.getMonth() + 1) || ('0' + (time.getMonth() + 1));
+        var day = time.getDate() > 9 && time.getDate() || ('0' + time.getDate());
+        var Ymd = year + '/' + month + '/'+ day;
+        return Ymd;
+	}
+ 	fn.getCurrentTime = function(timestamp){
+	    var time = new Date(parseInt(timestamp));
+        var hour = time.getHours() > 9 && time.getHours() || ('0' + time.getHours());
+        var minute = time.getMinutes() > 9 && time.getMinutes() || ('0' + time.getMinutes());
+        var Hm = hour + ':' + minute;
+        return Hm;
+	}
+ 		
  	fn.getTimestamp = function(localTime){
  		return new Date(localTime).getTime();
  	}
-
+	fn.getNewDate = function(countDay) {
+		var dd = new Date();
+		var now = dd.setDate(dd.getDate()+countDay);//获取2天后的日期
+		var y = dd.getFullYear();
+		var m = dd.getMonth()+1;//获取当前月份的日期
+		var d = dd.getDate();
+		return y+"-"+m+"-"+d;
+	};
  	fn.getAccountId = function(){
  		return localStorageFactory.getObject('account',null).accountId;
  	}
@@ -3079,11 +3261,29 @@ angular.module('utilFactoryModule',[])
  	fn.setDirty = function(form){ 
  		return (function(form) {
 		   angular.forEach(form, function(value, key) {
+		   	console.log('--------')
+		   	  console.log(1,form[key])
 		      if(!/^\$/.test(key)) form[key].$setDirty()
 		    })
   		})(form)
  	}
  	fn.checkErrorCode = function(errorCode,errorMessage){
+ 	// fn.checkErrorCode = function(type, errorCode,errorMessage){
+ 		// var CONSTANT = {
+			// ERRORCODE_CONSTANT: ERRORCODE_CONSTANT,
+			// SMSCODE_ERROR: SMSCODE_ERROR,
+			// ERRORCODE_CONSTANT: ERRORCODE_CONSTANT,
+			// ROLE_CODE: ROLE_CODE,
+			// USER_ACCOUNT: USER_ACCOUNT,
+			// FORGET_ACCOUNT_ERROR: FORGET_ACCOUNT_ERROR,
+			// CHECK_ACCOUNT_ERROR: CHECK_ACCOUNT_ERROR,
+			// LOGIN_ACCOUNT_ERROR: LOGIN_ACCOUNT_ERROR,
+			// ACTIVE_ACCOUNT_ERROR: ACTIVE_ACCOUNT_ERROR,
+			// TOKEN_ERROR: TOKEN_ERROR	
+ 		// }
+
+ 		// alertify.alert(CONSTANT[type][ERROR_CODE_ + errorCode].message,function(){})
+
  		switch(errorCode){
  			case ERRORCODE_CONSTANT.ERROR_CODE_1000100201.code :alertify.alert(ERRORCODE_CONSTANT.ERROR_CODE_1000100201.message,function(){})
  				break;
@@ -3117,7 +3317,8 @@ angular.module('utilFactoryModule',[])
  				break;
  			case ERRORCODE_CONSTANT.ERROR_CODE_1000100302.code :alertify.alert(ERRORCODE_CONSTANT.ERROR_CODE_1000100302.message,function(){})
  				break;
- 			case TOKEN_ERROR.STATUS_CODE_0200201.code:alertify.alert(ERRORCODE_CONSTANT.ERROR_CODE_1000100302.message,function(){$state.go('entry.check')})
+ 				// wrong
+ 			case TOKEN_ERROR.STATUS_CODE_0200201.code: alertify.alert(TOKEN_ERROR.STATUS_CODE_0200101.message,function(){$state.go('entry.check')})
  				break;
  			case TOKEN_ERROR.STATUS_CODE_0200102.code: alertify.alert(TOKEN_ERROR.STATUS_CODE_0200102.message,function(){$state.go('entry.check')})
  				break;
@@ -3133,7 +3334,8 @@ angular.module('utilFactoryModule',[])
  				break;
  			case ERRORCODE_CONSTANT.ERROR_CODE_0600700201.code :alertify.alert(ERRORCODE_CONSTANT.ERROR_CODE_0600700201.message,function(){})
  				break;
-
+ 			// case ERRORCODE_CONSTANT.ERROR_CODE_0800100601.code :alertify.alert(ERRORCODE_CONSTANT.ERROR_CODE_0800100601.message,function(){})
+ 			// 	break;
 
  			case ERRORCODE_CONSTANT.ERROR_CODE_0600800201.code :alertify.alert(ERRORCODE_CONSTANT.ERROR_CODE_0600800201.message,function(){})
  				break;
@@ -3141,6 +3343,16 @@ angular.module('utilFactoryModule',[])
  				break;
  			case ERRORCODE_CONSTANT.ERROR_CODE_0600800203.code :alertify.alert(ERRORCODE_CONSTANT.ERROR_CODE_0600800203.message,function(){})
  				break;
+ 			case ERRORCODE_CONSTANT.ERROR_CODE_08005001001.code :alertify.alert(ERRORCODE_CONSTANT.ERROR_CODE_08005001001.message,function(){})
+ 				break; 		
+ 			case ERRORCODE_CONSTANT.ERROR_CODE_08005003001.code :alertify.alert(ERRORCODE_CONSTANT.ERROR_CODE_08005003001.message,function(){})
+ 				break;
+ 			case ERRORCODE_CONSTANT.ERROR_CODE_08005003002.code :alertify.alert(ERRORCODE_CONSTANT.ERROR_CODE_08005003002.message,function(){})
+ 				break;
+ 			case ERRORCODE_CONSTANT.ERROR_CODE_08005004002.code :alertify.alert(ERRORCODE_CONSTANT.ERROR_CODE_08005004002.message,function(){})
+ 				break;		
+ 			case ERRORCODE_CONSTANT.ERROR_CODE_08005004004.code :alertify.alert(ERRORCODE_CONSTANT.ERROR_CODE_08005004004.message,function(){})
+ 				break;	
 			case CHECK_ACCOUNT_ERROR.STATUS_CODE_401.code:alertify.alert(CHECK_ACCOUNT_ERROR.STATUS_CODE_401.message,function(){})
 				break;
 			case CHECK_ACCOUNT_ERROR.STATUS_CODE_0100103.code:alertify.alert(CHECK_ACCOUNT_ERROR.STATUS_CODE_0100103.message,function(){})
@@ -3180,6 +3392,8 @@ angular.module('utilFactoryModule',[])
 			case LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200111.code:alertify.alert(LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200111.message,function(){})
 				break;
 			case LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200112.code:alertify.alert(LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200112.message,function(){})
+				break;
+			case LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200301.code:alertify.alert(LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200301.message,function(){})
 				break;
 			case ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0100113.code:alertify.alert(ACTIVE_ACCOUNT_ERROR.STATUS_CODE_0100113.message,function(){})
 				break;
@@ -3385,11 +3599,11 @@ angular.module("activeControllerModule",[])
 						}
 						
 						if(USER_ACCOUNT.ROLE_SECONDADMIN){
-							return $state.go('companyAdmin.HR');
+							return $state.go('admin.companyAdminHR');
 						}
 
 						if(USER_ACCOUNT.ROLE_APPLICATIONADMIN){
-							return $state.go('company.list')
+							return $state.go('admin.companyList')
 						}
 
 						if(USER_ACCOUNT.ROLE_DRIVER){
@@ -3564,8 +3778,7 @@ angular.module("checkControllerModule",[])
 	}
 });
 angular.module("forgetControllerModule",[])
-.controller("forgetController",function(utilFactory,loginHttpService,REQUESTTYPE,FORGET_ACCOUNT_ERROR,$scope,$state,$stateParams){
-
+.controller("forgetController",function(utilFactory,loginHttpService,REQUESTTYPE,FORGET_ACCOUNT_ERROR,LOGIN_ACCOUNT_ERROR,$scope,$state,$stateParams){
 	if(!$stateParams.phoneNumber){
 		$state.go('entry.check')
 	}
@@ -3592,6 +3805,7 @@ angular.module("forgetControllerModule",[])
 	}
 
 	$scope.restPassword = function(){
+console.log('code', FORGET_ACCOUNT_ERROR.STATUS_CODE_0200101.code)
 
 		//var regex = new RegExp( /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,32}$/);
 		var regex = new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,32}$/);
@@ -3622,20 +3836,34 @@ angular.module("forgetControllerModule",[])
 			loginHttpService.smsCode({'phoneNumber':$scope.phoneNumber,'requestType':REQUESTTYPE.forgetAccount,'smsCode':$scope.smsCode,'password':$scope.password})
 			.then(function(result){
 				var responseData = result.data;
+				console.log(responseData.error.statusCode)
 				if(!responseData.error){
 					alertify.alert('密码重置成功,请重新登录',function(){
 						$state.go('entry.login',{"phoneNumber":$scope.phoneNumber})
 					})
-				}else{
-					if(responseData.error.statusCode == LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200104.code){
-						$state.go('entry.login')
-					}else{
-						utilFactory.checkErrorCode(responseData.error.statusCode,responseData.error.statusText)
-					}
-					
+				}
+				if(responseData.error.statusCode == LOGIN_ACCOUNT_ERROR.STATUS_CODE_0200104.code){
+					$state.go('entry.login')
+				} else if(responseData.error.statusCode == FORGET_ACCOUNT_ERROR.STATUS_CODE_0100113.code){
+					alertify.alert('重置密码可能遇到问题，请稍后再试。',function(){
+						return
+					})
+				} else if(responseData.error.statusCode == FORGET_ACCOUNT_ERROR.STATUS_CODE_0100101.code){
+					alertify.alert('无效的手机号',function(){
+						return
+					})
+				} else if(responseData.error.statusCode == FORGET_ACCOUNT_ERROR.STATUS_CODE_0200101.code){
+					alertify.alert('无效的请求',function(){
+						return
+					})
+				} else{
+					utilFactory.checkErrorCode(responseData.error.statusCode)
 					$scope.restText="重置密码";
 					$scope.disabled = false;
 				}
+				
+				$scope.restText="重置密码";
+				$scope.disabled = false;
 			},function(error){
 					alertify.alert(error.data.message,function(){});
 					$scope.restText="重置密码";
@@ -3692,17 +3920,19 @@ angular.module("loginControllerModule",[])
 							localStorageFactory.remove('account');
 							utilFactory.assignRole(_getRoleArray);
 							localStorageFactory.setObject('account',USER_ACCOUNT);
-							if(USER_ACCOUNT.ROLE_HR || USER_ACCOUNT.ROLE_SCHEDULER || USER_ACCOUNT.ROLE_APPLICATIONADMIN || USER_ACCOUNT.ROLE_SECONDADMIN){
+							if(USER_ACCOUNT.ROLE_HR || USER_ACCOUNT.ROLE_SCHEDULER ){
 								return $state.go('admin.cloudData');
 							}
-							
-							// if(USER_ACCOUNT.ROLE_SECONDADMIN){
-							// 	return $state.go('companyAdmin.HR');
-							// }
 
-							// if(USER_ACCOUNT.ROLE_APPLICATIONADMIN){
-							// 	return $state.go('company.list')
-							// }
+
+							
+							if(USER_ACCOUNT.ROLE_SECONDADMIN){
+								return $state.go('admin.companyAdminHR');
+							}
+
+							if(USER_ACCOUNT.ROLE_APPLICATIONADMIN){
+								return $state.go('admin.companyList')
+							}
 
 							if(USER_ACCOUNT.ROLE_DRIVER){
 								return alertify.alert('未分配权限,请联系统管理员',function(){
@@ -3720,6 +3950,7 @@ angular.module("loginControllerModule",[])
 									$scope.$apply();
 								})
 							}
+							
 						}
 					})
 
@@ -3756,7 +3987,7 @@ angular.module("loginControllerModule",[])
 angular.module('loginHttpServiceModule',[]).factory('loginHttpService',function($http,APISERVICEPATH){
 	var loginHttp = {};
 	var auths = APISERVICEPATH.auths;
- 
+ 	
 	/**
 	 * @description
 	 * check user phonenumbser status,if user recorded in system already, go to step 2(login progress)
@@ -3825,6 +4056,7 @@ angular.module('loginHttpServiceModule',[]).factory('loginHttpService',function(
 				"username":paramsObj.phoneNumber,
 				"password":paramsObj.password,
 				"client_id":"client_auth_mode",
+				"grant_type":"password",
 				"state":randomNum(5),
 				"scope":"read write",
 				"redirect_uri":"http://f-shuttlebus-authentication-management.apps.cl-cn-north-preprod01.cf.ford.com/api/v1/",
@@ -3899,6 +4131,21 @@ angular.module('loginHttpServiceModule',[]).factory('loginHttpService',function(
 		}
 
 		return  $http({ method: 'POST',url:paramsData.apiPath,data:paramsData.paramsList,headers:paramsData.setHeader});
+	}
+	
+
+	loginHttp.passwordReset = function(paramsObj){
+		var paramsData = {
+			"apiPath":auths+'auth/admin/password',
+			paramsList:{
+				"password": paramsObj.password,
+  				"phoneNumber": paramsObj.phoneNumber,
+				"previousPassword": paramsObj.previousPassword
+			},
+			setHeader: {'ApplicationId':'BACKGROUND','X-Requested-With':'XMLHttpRequest'}
+		}
+
+		return $http({method: 'POST', url:paramsData.apiPath, data:paramsData.paramsList,headers:{'Content-type':'application/json','ApplicationId':'BACKGROUND','X-Requested-With':'XMLHttpRequest'}});
 	}
 	return loginHttp;
 });
@@ -3981,18 +4228,36 @@ angular.module("masterLoginControllerModule",[])
 					responseData = result.data;
 				}else{
 					return
-				}
+				} 
+
 				if(!responseData.error){
-					utilFactory.assignRole(ROLE_CODE.ROLE_CODE_SYSADMIN);
-					USER_ACCOUNT.phoneNumber = $scope.userName;
-					USER_ACCOUNT.accessToken = responseData.value.accessToken;
-					USER_ACCOUNT.refreshToken = responseData.value.refreshToken;
-					USER_ACCOUNT.accountId = responseData.value.accountId;
-					USER_ACCOUNT.secondCompanyName = responseData.value.secondCompanyName;
-					USER_ACCOUNT.secondCompanyId = responseData.value.secondCompanyId;
-					localStorageFactory.remove('account');
-					localStorageFactory.setObject('account',USER_ACCOUNT);
-					$state.go('admin.master')
+
+					var lastUpdateTime = utilFactory.getTimestamp(responseData.value.lastUpdatePasswordTime);
+					var now = Date.parse(new Date());
+					var daysDifference = (now - lastUpdateTime) / 1000 / 60 / 60 / 24;
+
+					if(daysDifference < 90) {
+
+						utilFactory.assignRole(ROLE_CODE.ROLE_CODE_SYSADMIN);
+						USER_ACCOUNT.phoneNumber = $scope.userName;
+						USER_ACCOUNT.accessToken = responseData.value.accessToken;
+						USER_ACCOUNT.refreshToken = responseData.value.refreshToken;
+						USER_ACCOUNT.accountId = responseData.value.accountId;
+						USER_ACCOUNT.secondCompanyName = responseData.value.secondCompanyName;
+						USER_ACCOUNT.secondCompanyId = responseData.value.secondCompanyId;
+						localStorageFactory.remove('account');
+						localStorageFactory.setObject('account',USER_ACCOUNT);
+
+						$state.go('admin.master');
+					} else {
+						alertify.alert('您的密码已过期，请重置密码！',function(){
+							$scope.disabled = false;
+							$state.go('entry.reset',{'userName':$scope.userName,'password':$scope.password});
+						}).set('label', '重置密码');
+					}
+					// 'label', 'Alright!'
+					// {label:'重置密码'}
+					
 				}else{
 					$scope.loginText = "登录";
 					$scope.disabled = false;
@@ -4017,10 +4282,114 @@ angular.module("masterLoginControllerModule",[])
 
 	
 });
+angular.module("resetPasswordControllerModule",[])
+.controller("resetPasswordController",function($scope,$state,$stateParams,RESET_ACCOUNT_ERROR,utilFactory,loginHttpService){
+                                              
+
+	$scope.passwordStatus = false; //default status for password false:hidden,true:show
+	$scope.restText="重置";
+
+	
+	$scope.disabled=false;
+	$scope.displayPasswordStatus = function(passwordPosition,passwordStatus){
+		var _input = document.getElementsByTagName('Input');
+		console.log(_input);
+		for(var i=0;i<_input.length;i++) {		 
+			if(passwordStatus){
+				if(passwordPosition == 'passwordOld') {
+					$scope.passwordOld = false;
+				}else if(passwordPosition == 'passwordFirst') {
+					$scope.passwordFirst = false;
+				} else {
+					$scope.passwordSecond = false;
+				}
+				document.getElementById(passwordPosition).setAttribute('type',"password");
+			}else{
+				if(passwordPosition == 'passwordOld') {
+					$scope.passwordOld = true;
+				} else if(passwordPosition == 'passwordFirst') {
+					$scope.passwordFirst = true;
+				} else {
+					$scope.passwordSecond = true;
+				}
+				document.getElementById(passwordPosition).setAttribute('type',"text");
+			}		 
+		}	
+	}
+
+	$scope.restPassword = function(){
+
+		//var regex = new RegExp( /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,32}$/);
+		var regex = new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,32}$/);		
+		
+		if($stateParams.userName){
+			console.log($stateParams.userName);
+		}
+		if(!$scope.previousPassword){
+			alertify.alert('请输入旧密码').set('label', '确定');
+			return;
+		}
+		if(!$scope.password){
+			alertify.alert('请输入新密码').set('label', '确定');
+			return;
+		}
+		if(!regex.test($scope.password)){
+			alertify.alert('请输入8-32位密码,必须由数字,字母以及至少包含一个大写字母组成。').set('label', '确定');
+			return;
+		}
+		if(!$scope.twicePassword){
+			alertify.alert('请输入确认密码').set('label', '确定');
+			return;
+		}
+
+		
+		if($scope.previousPassword == $scope.password) {
+			alertify.alert('旧密码与新密码不能相同').set('label', '确定');
+			return;			
+		}
+
+		if($scope.twicePassword == $scope.password){
+			$scope.restText="正在重置...";
+			$scope.disabled=true;
+
+			loginHttpService.passwordReset({'phoneNumber':$stateParams.userName,'password':$scope.password,'previousPassword':$scope.previousPassword})
+			.then(function(result){
+				var responseData = result.data;
+				if(!responseData.error){
+					alertify.alert('密码重置成功,请重新登录',function(){
+						$state.go('entry.master')
+					}).set('label', '确定');
+				}else{
+					if(responseData.error.statusCode == RESET_ACCOUNT_ERROR.STATUS_CODE_0200101.code){
+						alertify.alert('旧密码不正确',function(){}).set('label', '确定');						
+					} else if(responseData.error.statusCode == RESET_ACCOUNT_ERROR.STATUS_CODE_0200110.code) {
+						alertify.alert('无效的用户',function(){}).set('label', '确定');
+					} else if(responseData.error.statusCode == RESET_ACCOUNT_ERROR.STATUS_CODE_0100113.code) {
+						alertify.alert('重置密码可能遇到问题，请稍候再试',function(){}).set('label', '确定');
+					} else {
+						utilFactory.checkErrorCode(responseData.error.statusCode,responseData.error.message);
+					}
+					$scope.restText="重置密码";
+					$scope.disabled = false;
+				}
+			},function(error){
+					alertify.alert(error.data.message,function(){}).set('label', '确定');
+					$scope.restText="重置密码";
+					$scope.disabled=false;
+			});	
+		}else {
+			alertify.alert('密码不一致').set('label', '确定');
+		}
+	}
+
+});
+
+
+
 angular.module('feedbackControllerModule',[]).controller('feedbackController',function($scope,passengerHttpService,utilFactory){
 	$scope.pageConfigs={
 		params:{
-			'hrId':utilFactory.getAccountId(),
+			'schedulerId':utilFactory.getAccountId(),
 			'secondCompanyId':utilFactory.getSecondCompanyId(),
 			'pageSize':'20',
 			'pageNumber':'1'
@@ -4030,7 +4399,16 @@ angular.module('feedbackControllerModule',[]).controller('feedbackController',fu
 			return passengerHttpService.getPassengerFeedback(params)
 		},
 		loadData:function(){},
-		dataSet:function(result){}
+		dataSet:function(result){
+			var _data = result.value.list;
+			console.log("_data"+_data);
+			for(var i =0;i<_data.length;i++){
+				_data[i]['routeType'] =_data[i]['routeType'] == 'AM'?'上行':'下行';
+				_data[i]['routeTemplateName'] =  _data[i]['routeTemplateName']+'(' +_data[i]['routeType'] +')'+' - '+ _data[i]['vehicleLicensePlate']+' - '+ _data[i]['driverName']
+				_data[i]['beginTime'] = utilFactory.getCurrentTime((_data[i]['beginTime']));
+				_data[i]['bookingCount'] = _data[i]['bookingCount'] ? _data[i]['bookingCount'] : '0'
+			}
+		}
 		//extendParams:function(){}
 	}
 
@@ -4040,29 +4418,29 @@ angular.module('feedbackControllerModule',[]).controller('feedbackController',fu
 			index:true,
 			checkbox:false,
 			radio:true,
-			operate:[{
-				name:'编辑',
-				ngIf:function(){},
-				fun:function(item){
-					var _params = {
-						'secondCompanyId': item.secondCompanyId,
-						'employeeId': item.employeeId,
-						'name': item.name,
-						'phoneNumber': item.phoneNumber,
-						'schedulerId':  item.accountId,
-						'status': item.status,
-						'passengerId': item.partyId
-					}
-					$state.go('admin.passenger.detail',_params);
-				}
-			},
-			{
-				name:'删除',
-				ngIf:function(){},
-				fun:function(item){
-					alertify.alert('正在建设中...')
-				}
-			}]
+			// operate:[{
+			// 	name:'编辑',
+			// 	ngIf:function(){},
+			// 	fun:function(item){
+			// 		var _params = {
+			// 			'secondCompanyId': item.secondCompanyId,
+			// 			'employeeId': item.employeeId,
+			// 			'name': item.name,
+			// 			'phoneNumber': item.phoneNumber,
+			// 			'schedulerId':  item.accountId,
+			// 			'status': item.status,
+			// 			'passengerId': item.partyId
+			// 		}
+			// 		$state.go('admin.passenger.detail',_params);
+			// 	}
+			// },
+			// {
+			// 	name:'删除',
+			// 	ngIf:function(){},
+			// 	fun:function(item){
+			// 		alertify.alert('正在建设中...')
+			// 	}
+			// }]
 		},
 		// height:290,
 		// head:[{name:'文件名',key:'filename'}],
@@ -4080,27 +4458,27 @@ angular.module('feedbackControllerModule',[]).controller('feedbackController',fu
 			selectOptions:[
 				{
 					'parentKey':'',
-					'selfKey':{'key':'name','value':'反馈编号'},
+					'selfKey':{'key':'id','value':'反馈编号'},
 					'checkFlag':true
 				},
 				{
 					'parentKey':'',
-					'selfKey':{'key':'phoneNumber','value':'员工姓名'},
+					'selfKey':{'key':'passengerName','value':'员工姓名'},
 					'checkFlag':true
 				},
 				{
 					'parentKey':'',
-					'selfKey':{'key':'defautStationName','value':'乘车历史'},
+					'selfKey':{'key':'routeTemplateName','value':'乘车历史'},
 					'checkFlag':true
 				},
 				{
 					'parentKey':'',
-					'selfKey':{'key':'defautRouteName','value':'星级'},
+					'selfKey':{'key':'rate','value':'星级'},
 					'checkFlag':true
 				},
 				{
 					'parentKey':'',
-					'selfKey':{'key':'status','value':'反馈内容'},
+					'selfKey':{'key':'commentContent','value':'反馈内容'},
 					'checkFlag':true
 				}
 			]
@@ -4113,19 +4491,50 @@ angular.module('feedbackControllerModule',[]).controller('feedbackController',fu
   		$scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1'});
 	});
 })
-angular.module('listControllerModule',[]).controller('listController',function(loadData,passengerHttpService,localStorageFactory,utilFactory,APISERVICEPATH,$state,$scope,$window){
+angular.module('listControllerModule',[]).controller('listController',function(loadData,passengerHttpService,localStorageFactory,utilFactory,APISERVICEPATH,$scope,$state,$window){
 
-	var uploadPassengerUrl = APISERVICEPATH.passengerAccount+'batching/?affiCompanyId='+utilFactory.getSecondCompanyId()+'&affiCompanyName='+utilFactory.getSecondCompanyName()+'&accountId='+utilFactory.getAccountId();
+	var uploadPassengerUrl = APISERVICEPATH.passengerAccount+'batching/?affiCompanyId='+utilFactory.getSecondCompanyId()+'&affiCompanyName='+encodeURI(utilFactory.getSecondCompanyName())+'&accountId='+utilFactory.getAccountId();
 	
 	// If data empty wil use empry page replace table.
 	$scope.dataIsEmpty = false;
-	if(!loadData.data.error &&loadData.data.value.list.length == 0 ){
+	if(!loadData.data.error && !loadData.data.value ){
 		$scope.dataIsEmpty = true;
 	}else if(loadData.data.error){
 		utilFactory.checkErrorCode(loadData.data.error.statusCode)
 	}
-	
+
 	$scope.selectAllStatus = false;
+	$scope.queryByKeyObj = {
+		'active':{'key':'name','value':'员工姓名'},
+		'list':[{'key':'phoneNumber','value':'手机号'}]
+	}
+
+	$scope.selectKey = function(activeObj){
+		$scope.queryByKeyObj.list.length = 0;
+		$scope.queryByKeyObj.list.push( {'key':$scope.queryByKeyObj.active.key,'value':$scope.queryByKeyObj.active.value})
+		$scope.queryByKeyObj.active.key = activeObj.key;
+		$scope.queryByKeyObj.active.value = activeObj.value;
+
+		$('.dropdown-menu').css('display','none')
+	}
+
+	$scope.showQueryKeyList = function(){
+		$('.dropdown-menu').css('display','block')
+	}
+
+	$scope.searchFn = function(){
+		var _searchParams = {
+			'pageSize':'20',
+			'pageNumber':'1',
+			'pageNo': '1',
+			'hrId':utilFactory.getAccountId(),
+			'secondCompanyId':utilFactory.getSecondCompanyId()
+		}
+		_searchParams[$scope.queryByKeyObj.active.key] = $scope.searchText;
+		$scope.pageConfigs.getList(_searchParams);
+		$scope.$broadcast('refreshPageList',_searchParams);
+	}
+
 	$scope.pageConfigs={
 		params:{
 			'pageSize':'20',
@@ -4148,23 +4557,8 @@ angular.module('listControllerModule',[]).controller('listController',function(l
 		}
 		//extendParams:function(){}
 	}
-	$scope.queryByKeyObj = {
-		'active':{'key':'name','value':'员工姓名'},
-		'list':[{'key':'phoneNumber','value':'手机号'}]
-	}
 
-	$scope.selectKey = function(activeObj){
-		$scope.queryByKeyObj.list.length = 0;
-		$scope.queryByKeyObj.list.push( {'key':$scope.queryByKeyObj.active.key,'value':$scope.queryByKeyObj.active.value})
-		$scope.queryByKeyObj.active.key = activeObj.key;
-		$scope.queryByKeyObj.active.value = activeObj.value;
 
-		$('.dropdown-menu').css('display','none')
-	}
-
-	$scope.showQueryKeyList = function(){
-		$('.dropdown-menu').css('display','block')
-	}
 
 	$scope.downloadTemplate = function(){
 		passengerHttpService.downloadTemplateFile().then(function(data){
@@ -4179,14 +4573,14 @@ angular.module('listControllerModule',[]).controller('listController',function(l
 			URL.revokeObjectURL(objectUrl);
 		})
 	}
-	$scope.selectAll = function(){
-		//$scope.tableConfig.checkbox.selectAll = true;
-		alertify.alert('正在建设中....')
-		var _selectAllStatus  = !$scope.selectAllStatus;
-		$scope.$broadcast('checkboxSelectAll',{'status':_selectAllStatus})
-	}
+	// $scope.selectAll = function(){
+	// 	//$scope.tableConfig.checkbox.selectAll = true;
+	// 	alertify.alert('正在建设中....')
+	// 	var _selectAllStatus  = !$scope.selectAllStatus;
+	// 	$scope.$broadcast('checkboxSelectAll',{'status':_selectAllStatus})
+	// }
 
-	$scope.deletePassenger = function(){alertify.alert('正在建设中....')};
+	// $scope.deletePassenger = function(){alertify.alert('正在建设中....')};
 
 	$scope.addPassenger = function(){
 		console.log('xxx')
@@ -4201,7 +4595,9 @@ angular.module('listControllerModule',[]).controller('listController',function(l
 			radio:true,
 			operate:[{
 				name:'查看详情',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item){
 					
 					var _params = {
@@ -4209,16 +4605,22 @@ angular.module('listControllerModule',[]).controller('listController',function(l
 						'employeeId': item.employeeId,
 						'name': item.name,
 						'phoneNumber': item.phoneNumber,
-						'schedulerId':  item.accountId,
+						// 'schedulerId':  item.accountId,
 						'status': item.status,
-						'passengerId': item.partyId
+						// 'passengerId': item.accountId,
+						'passengerId': item.partyId,
+						'defaultRouteName': item.defautRouteName,
+						'defaultStationName': item.defautStationName
 					}
+					console.log(1,_params);
 					$state.go('admin.passenger.detail',_params);
 				}
 			},
 			{
 				name:'删除',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item){
 					var _params = {
 						'secondCompanyId': item.secondCompanyId,
@@ -4318,19 +4720,29 @@ angular.module('listControllerModule',[]).controller('listController',function(l
 				PostInit: function(up, files) {
 					document.getElementById('filelist').innerHTML = '';
 					document.getElementById('uploadfiles').onclick = function() {
-						uploader.start();
-						return false;
+						if(up.files.length == 0) {
+							alertify.alert('请先选择要上传的文件',function(){
+								return
+							})
+						}else {
+							up.files[0].status = 1;
+							up.start();
+						}
 					};
 				},
 
 				FilesAdded: function(up, files) {
 					if(up.files.length>1){
-						uploader.removeFile(up.files[1].id)
+						alertify.alert('只能上传一个文件', function(){
+							up.removeFile(up.files[1].id)
+						})
+						
 						return 
+					} else{
+						plupload.each(up.files, function(file) {
+							document.getElementById('filelist').innerHTML += '<div id="' + file.id + '">' + file.name + ' (' + plupload.formatSize(file.size) + ') <span class="fa fa-close" data-id="'+file.id+'" id="removeFile"></span><b></b></div>';
+						});				
 					}
-					plupload.each(files, function(file) {
-						document.getElementById('filelist').innerHTML += '<div id="' + file.id + '">' + file.name + ' (' + plupload.formatSize(file.size) + ') <span class="fa fa-close" data-id="'+file.id+'" id="removeFile"></span><b></b></div>';
-					});
 				},
 
 				UploadProgress: function(up, file) {
@@ -4349,9 +4761,46 @@ angular.module('listControllerModule',[]).controller('listController',function(l
 						alertify.alert('上传成功',function(){
 							$state.go('admin.passenger.list',{},{reload:true})
 						})
-					}else{
-						utilFactory.checkErrorCode(_resultResponse.error.statusCode)
+					} else{
+						if(_resultResponse.error.statusCode === '0600900501'){
+							var a = JSON.parse(_resultResponse.error.message);	
+							var _name = {
+								'lineNumber':'',
+								'name':'员工姓名',
+								'message':''
+							}
+							var _phone = {
+								'lineNumber':'',
+								'name':'手机号码',
+								'message':''
+							}
+							for(var j=0; j<a.length; j++) {
+								var curEle = a[j];
+								if(a[j]['name']){
+									var _lineNumber = a[j]['name']; 
+									_name.lineNumber = _lineNumber.substring(0,_lineNumber.length-1);
+								}
+								if(a[j]['phone']){
+									var _lineNumber = a[j]['phone']; 
+									_phone.lineNumber = _lineNumber.substring(0,_lineNumber.length-1);
+								}							
+							}
+							if((_name.lineNumber.length) ||(_phone.lineNumber.length)){
+								_name.message = _name.name + '第'+_name.lineNumber+'行格式错误';
+								_phone.message = _phone.name + '第'+_phone.lineNumber+'行格式错误';
+
+								var _nameError = _name.lineNumber.length?_name.message+'<br>':'';
+								var _phoneError = _phone.lineNumber.length?_phone.message+'<br>':'';
+
+								alertify.alert(_nameError+_phoneError,function(){
+									return 
+								});
+							}
+						} else{
+							utilFactory.checkErrorCode(_resultResponse.error.statusCode)
+						}
 					}
+					
 				}
 			}
 		});
@@ -4415,6 +4864,8 @@ angular.module('passengerAddControllerModule',[])
 	$scope.addPassengerProfile = function(formValidate){
 		// if all input filed empty and then user trigger submit button
 		// we will provide message for user to complete the requre filed.
+		console.log("*******")
+		console.log(1, $scope.formValidate)
 		if(!formValidate) return utilFactory.setDirty($scope.formValidate)
 
 
@@ -4537,24 +4988,24 @@ angular.module('passengerDetailControllerModule',[])
 		}).set({labels:{ok:'确认', cancel: '取消'}, padding: true});
 	};
 
+
 	$scope.pageConfigs={
 		params:{
 			'pageSize':'20',
 			'pageNumber':'1',
-			'hrId':utilFactory.getAccountId(),
-			'passengerId':$scope.params.passengerId
+			'passengerId': $scope.params.passengerId
 		},
 		list:null,
 		getList:function(params){
 			return passengerHttpService.getPassengerTrip(params)
 		},
-		loadData:function(){},
+		loadData:function(){
+		},
 		dataSet:function(result){
 			for(var i=0;i<result.length;i++){
 				result[i]['status'] =result[i]['status'] == 0?'未激活':'已激活'
 			}
 		}
-		//extendParams:function(){}
 	}
 
 
@@ -4564,7 +5015,7 @@ angular.module('passengerDetailControllerModule',[])
 			index:true,
 			checkbox:false,
 			radio:true,
-			operateIfFlag:false,
+			// operateIfFlag:false,
 			operate:[]
 		},
 		// height:290,
@@ -4577,28 +5028,29 @@ angular.module('passengerDetailControllerModule',[])
 		},
 		defaultValue:'——',
 		// radioSelect:function(){},
+		defaultEmptyText:'暂无乘车记录',
 		operateIfFlag:false,
 		setHeadOptional:{
 			cancelSelectNum:5,
 	    	selectOptions:[
 				{
 					'parentKey':'',
-					'selfKey':{'key':'passengerUuid','value':'上车时间'},
+					'selfKey':{'key':'dateTime','value':'上车时间'},
 					'checkFlag':true
 				},
 				{
 					'parentKey':'',
-					'selfKey':{'key':'phoneNumber','value':'上车站点'},
+					'selfKey':{'key':'startStationName','value':'上车站点'},
 					'checkFlag':true
 				},
 				{
 					'parentKey':'',
-					'selfKey':{'key':'stationName','value':'乘坐线路'},
+					'selfKey':{'key':'routeName','value':'乘坐线路'},
 					'checkFlag':true
 				},
 				{
 					'parentKey':'',
-					'selfKey':{'key':'routeName','value':'乘坐车辆'},
+					'selfKey':{'key':'vehicleLicensePlate','value':'乘坐车辆'},
 					'checkFlag':true
 				}
 	    	]
@@ -4606,42 +5058,774 @@ angular.module('passengerDetailControllerModule',[])
 		// changeEnable:function(item){}
 	}
 
-
 	$scope.$watch('$viewContentLoaded',function(event){ 
   		$scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1'});
 	});
 })
 angular.module('passengerReportArrivalControllerModule',[]).controller('passengerReportArrivalController',function(passengerHttpService,utilFactory,$scope){
+	
+	$scope.submitOnProgress = false;
+	var currentMonth = utilFactory.getCurrentMonth(new Date().getTime())
+	$("#selectMonth").val(currentMonth);
+	$scope.params = {
+		'selectMonth':$("#selectMonth").val(),
+		'routeTemplateName':'',
+		// 'routeTemplate':'',
+		// 'routeTemplateId':'',
+		'vehiclePlate':'',
+		'vehicleId':'',
+		'vehicleList':''
+	}
+
+	$('.datepicker').datepicker({ 
+	    language: "zh-CN",
+		format: 'yyyy/mm',  
+		startView: 1,
+	    minViewMode: 1
+	});
+
+	var dateArray = $("#selectMonth").val().split("/");
+	var countDay = new Date(dateArray[0],dateArray[1],0);
+	console.log(countDay.getDate());
+	var currentDate = countDay.getDate();
+	var beginTime = utilFactory.getTimestamp($scope.params.selectMonth + '/01'+ ' 00:00');
+	var endTime = utilFactory.getTimestamp($scope.params.selectMonth + '/01'+ ' 00:00')+(24*60*60*1000*currentDate);
+
+	// $("#noData").hide();
+
+	$scope.importData = function(){
+
+		passengerHttpService.downloadArrivalTime({'beginTime':beginTime,'endTime':endTime}).then(function(data){
+			var blob = new Blob([data.data], {type: "application/vnd.ms-excel;charset=utf-8"});
+			var objectUrl = URL.createObjectURL(blob);
+			var a = document.createElement('a');
+			document.body.appendChild(a);
+			var _result = data.data;
+			var decodedString = String.fromCharCode.apply(null, new Uint8Array(_result));
+			console.log(1,decodedString);
+
+			var _decodedString = JSON.stringify(decodedString)
+			// localStorage.setItem('key', JSON.stringify(_decodedString));
+			var _obj = JSON.parse(_decodedString || '');
+
+			var _errorStr = 'error';
+			if(_obj.indexOf(_errorStr) >= 0) {
+				console.log('error');
+				alertify.alert('暂无报表信息',function(){
+				});
+				return
+			}
+			a.setAttribute('style', 'display:none');
+			a.setAttribute('href', objectUrl);
+			a.setAttribute('download', '线路到达时间数据报表');
+			a.click();
+			URL.revokeObjectURL(objectUrl);
+		})
 
 
+	}
+	var _baseParams = {
+		'beginTime':beginTime,
+		'endTime':endTime,
+		// 'beginTime':"1514131200000",
+		// 'endTime':"1514217600000",
+		'vehicleInfoFlag':"Y"
+	};
+
+	passengerHttpService.getRouteTemplateList(_baseParams).then(function(result){
+		var _resultJSON = result.data;
+		if(!_resultJSON.error){
+			if(_resultJSON.value == null) {
+				// $scope.params.routeTemplate = '';
+				// $scope.params.vehicles = '';
+				// alertify.alert('请选择线路',function(){
+				// 	return
+				// });
+			} else {
+				var _targetObj = _resultJSON.value;
+				$scope.params.routeTemplate = _targetObj? _targetObj: '';
+				// for(var i=0;i<_targetObj.length;i++){
+				// 	$scope.params.vehicles = _targetObj[i].vehicleList.length? _targetObj[i].vehicleList: '';
+				// 	console.log("_targetObj[i].vehicleList"+_targetObj[i].vehicleList);
+				// }
+				$scope.$watch('params.routeTemplateObj',function(newRoute, oldRoute){ 
+					if (newRoute === oldRoute) { 
+						return
+					} else {
+						
+						var _routeTemplateList = $scope.params.routeTemplate;
+						console.log(1,_routeTemplateList);
+						var _selectRouteId = $scope.params.routeTemplateObj.routeTemplateId;
+						console.log("12121212121212");	
+
+						var _vehicleList = [];
+						for (var i = 0; i < _routeTemplateList.length; i++) {
+							var compareRouteId = _routeTemplateList[i].routeTemplateId;
+							if (compareRouteId == _selectRouteId) {
+								_vehicleList.push(_routeTemplateList[i].vehicleList);
+								console.log(1,_vehicleList);
+							} 
+						}
+						// sort vehicleList by vehicleId
+						var _newVehicleList = _vehicleList[0].sort(function(a,b){  
+				         	return a.vehicleId - b.vehicleId;  
+				        });  
+				        console.log(_newVehicleList);
+						var newArr = [_vehicleList[0][0]];
+						for(var i=0; i<_newVehicleList.length; i++){
+						       if(_newVehicleList[i].vehicleId !== newArr[newArr.length-1].vehicleId){//获取没重复的最右一值放入新数组
+						           	newArr.push(_newVehicleList[i]);
+						       } 
+			                
+						   	console.log(newArr);
+						}
+						$scope.params.vehicles = newArr;
+						console.log(1,$scope.params.vehicles);
+
+					}  	
+							
+				});
+			
+
+			}
+			
+		}else{
+			utilFactory.checkErrorCode(_resultJSON.error.statusCode);
+		}
+	})
+
+	
+	$scope.$watch('params.selectMonth',function(newValue, oldValue){ 
+		if (newValue === oldValue) { 
+			return
+		} else {
+			dateArray = $("#selectMonth").val().split("/");
+			countDay = new Date(dateArray[0],dateArray[1],0);
+			currentDate = countDay.getDate();
+			beginTime = utilFactory.getTimestamp(newValue + '/01'+ ' 00:00');
+			// console.log(beginTime);
+			endTime = utilFactory.getTimestamp(newValue + '/01'+ ' 00:00')+(24*60*60*1000*currentDate);
+			// console.log(endTime);
+			var _baseParams = {
+				'beginTime':beginTime,
+				'endTime':endTime,
+				'routeTemplateType':"AM",
+				'vehicleInfoFlag':"Y"
+			};
+
+			passengerHttpService.getRouteTemplateList(_baseParams).then(function(result){
+				var _resultJSON = result.data;
+				if(!_resultJSON.error){
+					var _targetObj = _resultJSON.value;
+					$scope.params.routeTemplate = _targetObj? _targetObj: '';
+				}else{
+					utilFactory.checkErrorCode(_resultJSON.error.statusCode)
+				}
+			})
+
+			$scope.importData = function(){
+
+				passengerHttpService.downloadArrivalTime({'beginTime':beginTime,'endTime':endTime}).then(function(data){
+					var blob = new Blob([data.data], {type: "application/vnd.ms-excel;charset=utf-8"});
+					var objectUrl = URL.createObjectURL(blob);
+					var a = document.createElement('a');
+					document.body.appendChild(a);
+					var _result = data.data;
+					var decodedString = String.fromCharCode.apply(null, new Uint8Array(_result));
+					console.log(1,decodedString);
+
+					var _decodedString = JSON.stringify(decodedString)
+					// localStorage.setItem('key', JSON.stringify(_decodedString));
+					var _obj = JSON.parse(_decodedString || '');
+
+					var _errorStr = 'error';
+					if(_obj.indexOf(_errorStr) >= 0) {
+						console.log('error');
+					
+						alertify.alert('暂无报表信息',function(){
+						});
+						return
+					}
+					a.setAttribute('style', 'display:none');
+					a.setAttribute('href', objectUrl);
+					a.setAttribute('download', '线路到达时间数据报表');
+					a.click();
+					URL.revokeObjectURL(objectUrl);
+				})
+
+			}
+
+		}  	
+
+		// $scope.$watch('$viewContentLoaded',function(event){ 
+	 //  		$scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1'});
+		// });
+
+	});
+
+	$scope.$watch('params.routeTemplateObj',function(newRoute, oldRoute){ 
+		if (newRoute === oldRoute) { 
+			return
+		} else {
+			
+			var _routeTemplateList = $scope.params.routeTemplate;
+			console.log(1,_routeTemplateList);
+			var _selectRouteId = $scope.params.routeTemplateObj.routeTemplateId;
+			console.log("12121212121212");	
+			var _vehicleList = [];
+			for (var i = 0; i < _routeTemplateList.length; i++) {
+				var compareRouteId = _routeTemplateList[i].routeTemplateId;
+				if (compareRouteId == _selectRouteId) {
+					_vehicleList.push(_routeTemplateList[i].vehicleList);
+					console.log(1,_vehicleList);
+				} 
+			}
+			 
+			var _newVehicleList = _vehicleList[0].sort(function(a,b){  
+	         	return a.vehicleId-b.vehicleId;  
+	        });  
+	        console.log(_newVehicleList);
+			var newArr = [_vehicleList[0][0]];
+			for(var i=0; i<_newVehicleList.length; i++){
+			       if(_newVehicleList[i].vehicleId !== newArr[newArr.length-1].vehicleId){//获取没重复的最右一值放入新数组
+			           	newArr.push(_newVehicleList[i]);
+			       } 
+                
+			   	console.log(newArr);
+			}
+			$scope.params.vehicles = newArr;
+			console.log(1,$scope.params.vehicles);
+
+		}  	
+		
+				
+	});
+	$scope.arrivalSubmit = function(formValidateIsInvalid){
+		// dateArray = $("#selectMonth").val().split("/");
+
+		dateArray = $("#selectMonth").val().split("/");
+		countDay = new Date(dateArray[0],dateArray[1],0);
+		currentDate = countDay.getDate();
+		beginTime = utilFactory.getTimestamp($scope.params.selectMonth + '/01'+ ' 00:00');
+		endTime = utilFactory.getTimestamp($scope.params.selectMonth + '/01'+ ' 00:00')+(24*60*60*1000*currentDate);
+
+		if(formValidateIsInvalid){		
+			return utilFactory.setDirty($scope.formValidate);
+		}
+
+		if(!$scope.params.selectMonth){
+			alertify.alert('请选择月份',function(){
+			});
+			return
+		}
+
+		if(!$scope.params.routeTemplateObj){
+			alertify.alert('请选择线路',function(){
+			});
+			return
+		}
+
+		if(!$scope.params.vehicleObj){
+			alertify.alert('请选择车辆',function(){
+			});
+			return
+		}
+		// $("#noData").hide();
+
+		
+
+		// display scatter plot
+		var myChart = echarts.init(document.getElementById('main'));
+
+		var allData = [];
+		var preData = [];
+		var date = [];
+
+		var time = [];
+		var singelDay = [];
+		var singelTime = [];
+		var _y = [];
+		var _mockData = [];
+		var option = null;
+
+		var options = {
+			  year: 'numeric', month: 'numeric', day: 'numeric',
+			  hour: 'numeric', minute: 'numeric', second: 'numeric',
+			  hour12: false,
+			  timeZone: 'Asia/Shanghai' 
+		};
+
+		var _baseParams = {
+			'beginTime':beginTime,
+			'endTime':endTime,
+			'routeTemplateId':$scope.params.routeTemplateObj.routeTemplateId,
+			'vehicleId':$scope.params.vehicleObj.vehicleId,
+			'routeTemplateType':"AM",
+			'vehicleInfoFlag':"Y"
+		};
+
+		passengerHttpService.getArrivalTime(_baseParams).then(function(result){
+			var _resultJSON = result.data;
+			if(!_resultJSON.error){
+				var arrivalData = _resultJSON;
+
+				if (arrivalData.value == null) {
+					alertify.alert('该车辆暂无排班',function(){
+						$("#noData").show();
+						myChart.dispose(document.getElementById('main'));
+						return
+					});				
+				}
+
+				for(i=0; i<arrivalData.value.length; i++) {
+					if (arrivalData.value[i].vehicleList) {
+						(_mockData).push(arrivalData);
+					} else {
+						alertify.alert('该车辆暂无到达时间',function(){
+							$("#noData").show();
+							myChart.dispose(document.getElementById('main'));
+							return
+						});
+					}
+					
+				}
+				
+				console.log(1,_mockData);
+				var vehicleArr = (_mockData[0]).value[0].vehicleList;
+				console.log(1,vehicleArr);		
+				for(var i=vehicleArr.length-1;i>=0;i--){ 
+					if(vehicleArr[i].vehicleActualEndTime == null) {
+						vehicleArr.splice(i,1);
+						console.log(vehicleArr);
+					}
+				}
+				if(vehicleArr.length == 0) {
+					alertify.alert('该车辆暂无到达时间',function(){
+						$("#noData").show();
+						myChart.dispose(document.getElementById('main'));
+						return
+					});
+				} else {
+					$("#noData").hide();
+					for(var j=0;j<currentDate;j++) {
+						var currentDay = j+1;
+						console.log(currentDay);
+						date.push(currentDay);
+
+						for(var i=0;i<vehicleArr.length;i++){
+							var _vehicleActualArr = [];
+							_vehicleActualArr.push(vehicleArr[i].vehicleActualEndTime);
+							
+							var _date = new Intl.DateTimeFormat('zh-cn', options).format(vehicleArr[i].vehicleActualEndTime).split(' ')[0];
+							var _datePre = new Intl.DateTimeFormat('zh-cn', options).format(vehicleArr[i].vehicleEndTime).split(' ')[0];
+							var _singelDay = new Intl.DateTimeFormat('zh-cn', options).format(vehicleArr[i].vehicleActualEndTime).split(' ')[0].split('/')[2];
+							var _time =  utilFactory.getTimestamp(vehicleArr[i].vehicleActualEndTime);
+							var _singelTime = utilFactory.getTimestamp(vehicleArr[i].vehicleActualEndTime) - utilFactory.getTimestamp(_date+ ' 00:00')
+							var _preTime = utilFactory.getTimestamp(vehicleArr[i].vehicleEndTime) - utilFactory.getTimestamp(_datePre+ ' 00:00')
+							console.log("_preTime"+_preTime);
+
+							singelDay.push(_singelDay);
+							singelTime.push(_singelTime);
+							time.push(_time);
+							_y.push([[vehicleArr[i].vehicleActualEndTime]])
+							
+							allData.push([_singelDay,_singelTime]);
+							preData.push([_singelDay,_preTime]);	
+						}		
+							
+					}
+					option = {
+						// noDataLoadingOption: {
+	     //                    text: '暂无数据',
+	     //                    effect: 'bubble',
+	     //                    effectOption: {
+	     //                        effect: {
+	     //                            n: 0
+	     //                        }
+	     //                    }
+						// },
+					    title : {
+					        text: '线路月度到达时间分布图',
+					    },
+					    grid: {
+					        left: '3%',
+					        right: '4%',
+					        bottom: '3%',
+					        containLabel: true
+					    },
+					    tooltip : {
+					        trigger: 'item',
+					        showDelay : 0,
+					        formatter : function (params) {
+					        	console.log(1,params)
+					        	var _date = utilFactory.getTimestamp($scope.params.selectMonth + '/'+ params.data[0]);
+
+						        if (params.value.length > 1) {
+						            return  utilFactory.getLocalTime(_date).split(' ')[0] +'<br/>到达时间' +  utilFactory.getCurrentTime(1512057600000+params.data[1])
+						        } else {
+						        	// var aveData = Math.floor(params.value);
+						            return params.name + ' : '
+						            + utilFactory.getCurrentTime(1512057600000+aveData) +'<br/>';
+						        }
+					        }
+					    },
+				        // axisPointer:{
+				        //     show: true,
+				        //     type : 'cross',
+				        //     lineStyle: {
+				        //         type : 'dashed',
+				        //         width : 1
+				        //     }
+				        // },
+					    xAxis : [
+					        {
+					            type : 'category',
+					            name:'日期',
+					            scale:true,
+					            // axisLabel : {
+					            //     formatter: function(params){
+					            //     	return new Intl.DateTimeFormat('zh-cn').format(params)
+					            //     }
+					            // },
+					            data: date,
+					            splitLine: {
+					                lineStyle: {
+					                    type: 'dashed'
+					                }
+					            }
+					        }
+					    ],
+					    yAxis : [
+					    	{
+					            type : 'time',
+					            name:'时间点',
+					            scale:true,
+					           	data: singelTime,
+					           	axisLabel: {
+						            formatter: function (singelTime, index) {
+									    // 格式化成月/日，只在第一个刻度显示年份
+									    var date = new Date(1512057600000 + singelTime);
+									    var minute = date.getMinutes() > 9 && date.getMinutes() || ('0' + date.getMinutes());
+									    console.log(date);
+									    var texts = [(date.getHours()), minute];
+									    // if (index === 0) {
+									    //     texts.unshift(date.getYear());
+									    // }
+									    return texts.join(':');
+									}
+						        },
+					            splitLine: {
+					                show: false
+					            }
+
+					        }
+					    ],
+					    series : [
+							{
+								name:'',
+								type:'scatter',
+								data:allData,
+								markLine:{
+						            lineStyle: {
+						                normal: {
+						                    type: 'dashed'
+						                }
+						            }
+					        	}
+							},
+
+					        {
+					            name:'预计到达时间',
+					            type:'line',
+					            lineStyle: {
+					                type : 'dashed',
+					                width : 0.5
+					            },
+					            data:preData,
+					            // data:[[1, 40380000], [3, 40380000+10*60*1000],[4, 40380000+20*60*1000],[5, 40380000+10*60*1000],[6, 40380000+10*60*1000]],
+					        },
+							
+					    ]
+					};
+					myChart.setOption(option)	
+					} 
+
+				// console.log("date"+date)
+		
+			} else{
+				utilFactory.checkErrorCode(_resultJSON.error.statusCode)
+			}
+		});
+
+	}
+})
+angular.module('passengerReportBusRouteControllerModule',[])
+.controller('passengerReportBusRouteController',function(passengerHttpService,utilFactory,$scope){
+
+	var currentMonth = utilFactory.getCurrentMonth(new Date().getTime());
+	$("#selectMonth").val(currentMonth);
+	// $("#selectMonth").val("2017/12");
+	$scope.params = {
+		'selectMonth':$("#selectMonth").val()
+	}
+	var dateTime = utilFactory.getTimestamp($scope.params.selectMonth);
+
+	// Config datepikcer 
+	$('.datepicker').datepicker({ 
+		language: "zh-CN",
+		format: 'yyyy/mm',  
+		startView: 1,
+	    minViewMode: 1,
+	});
+
+	var dateArray = $("#selectMonth").val().split("/");
+	var countDay = new Date(dateArray[0],dateArray[1],0);
+	console.log(countDay.getDate());
+	var currentDate = countDay.getDate();
+	var beginTime = utilFactory.getTimestamp($scope.params.selectMonth + '/01'+ ' 00:00');
+	console.log(beginTime);
+	var endTime = utilFactory.getTimestamp($scope.params.selectMonth + '/01'+ ' 00:00')+(24*60*60*1000*currentDate);
+	console.log(endTime);
+
+	$scope.pageConfigs={
+		params:{
+			'pageSize':'20',
+			'pageNumber':'1',
+			'beginTime':beginTime,
+			'endTime':endTime
+		},
+		
+		list:null,
+		getList:function(params){
+			return passengerHttpService.getBusRoute(params)
+		},
+		loadData:function(){
+		},
+		dataSet:function(result){
+			if(result.value){
+				var _data = result.value.list;
+				for(var i=0;i<_data.length;i++){
+					_data[i]['routeType'] =_data[i]['routeType'] == 'AM'?'上行':'下行';
+				}
+			}
+		}
+	}
+
+	//export report
+	$scope.importData = function(){
+
+		passengerHttpService.downloadBusRoute({'beginTime':beginTime,'endTime':endTime}).then(function(data){
+			var blob = new Blob([data.data], {type: "application/vnd.ms-excel;charset=utf-8"});
+			var objectUrl = URL.createObjectURL(blob);
+			var a = document.createElement('a');
+			document.body.appendChild(a);
+			var _result = data.data;
+			var decodedString = String.fromCharCode.apply(null, new Uint8Array(_result));
+			console.log(1,decodedString);
+
+			var _decodedString = JSON.stringify(decodedString)
+			// localStorage.setItem('key', JSON.stringify(_decodedString));
+			var _obj = JSON.parse(_decodedString || '');
+
+			var _errorStr = 'error';
+			if(_obj.indexOf(_errorStr) >= 0) {
+				console.log('error');
+			
+				alertify.alert('暂无报表信息',function(){
+				});
+				return
+			}
+			a.setAttribute('style', 'display:none');
+			a.setAttribute('href', objectUrl);
+			a.setAttribute('download', '线路到达时间数据报表');
+			a.click();
+			URL.revokeObjectURL(objectUrl);
+		})
+
+	}
+
+	$scope.tableConfig={
+		stableFlag:{
+			arrow:true,
+			index:true,
+			checkbox:false,
+			radio:true,
+			operate:[]
+		},
+		checkbox:{
+			checkArray:[]
+		},
+		defaultValue:'——',
+		defaultEmptyText:'暂无班车线路',
+		operateIfFlag:false,
+		setHeadOptional:{
+			cancelSelectNum:5,
+			selectOptions:[
+				{
+					'parentKey':'',
+					'selfKey':{'key':'routeTemplateName','value':'线路名称'},
+					'checkFlag':true
+				},
+				{
+					'parentKey':'',
+					'selfKey':{'key':'routeType','value':'属性'},
+					'checkFlag':true
+				},
+				{
+					'parentKey':'',
+					'selfKey':{'key':'dailyPassenger','value':'日均载客数'},
+					'checkFlag':true
+				},
+				{
+					'parentKey':'',
+					'selfKey':{'key':'sumVehicleSeats','value':'总座位数'},
+					'checkFlag':true
+				},
+				{
+					'parentKey':'',
+					'selfKey':{'key':'attendence','value':'上座率'},
+					'checkFlag':true
+				}
+			]
+		}
+	}
+	
+	$scope.$watch('params.selectMonth',function(newValue, oldValue){ 
+		if (newValue === oldValue) { 
+			return
+		} else {
+
+			dateArray = $("#selectMonth").val().split("/");
+			countDay = new Date(dateArray[0],dateArray[1],0);
+			var currentDate = countDay.getDate();
+			beginTime = utilFactory.getTimestamp(newValue + '/01'+ ' 00:00');
+			endTime = utilFactory.getTimestamp(newValue + '/01'+ ' 00:00')+(24*60*60*1000*currentDate);
+			var params = {
+				'pageSize':'20',
+				'pageNumber':'1',
+				'beginTime':beginTime,
+				'endTime':endTime
+			}
+			$scope.pageConfigs.getList(params);
+
+			$scope.$broadcast('refreshPageList',params);
+
+			$scope.importData = function(){
+
+				passengerHttpService.downloadBusRoute({'beginTime':beginTime,'endTime':endTime}).then(function(data){
+
+					var blob = new Blob([data.data], {type: "application/vnd.ms-excel;charset=utf-8"});
+					var objectUrl = URL.createObjectURL(blob);
+					var a = document.createElement('a');
+					document.body.appendChild(a);
+					var _result = data.data;
+					var decodedString = String.fromCharCode.apply(null, new Uint8Array(_result));
+					console.log(1,decodedString);
+
+					var _decodedString = JSON.stringify(decodedString)
+					// localStorage.setItem('key', JSON.stringify(_decodedString));
+					var _obj = JSON.parse(_decodedString || '');
+
+					var _errorStr = 'error';
+					if(_obj.indexOf(_errorStr) >= 0) {
+						console.log('error');
+					
+						alertify.alert('暂无报表信息',function(){
+						});
+						return
+					}
+					a.setAttribute('style', 'display:none');
+					a.setAttribute('href', objectUrl);
+					a.setAttribute('download', '线路到达时间数据报表');
+					a.click();
+					URL.revokeObjectURL(objectUrl);
+				})
+			}
+
+		}  		
+	});
+
+	$scope.$watch('$viewContentLoaded',function(event){ 
+  		$scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1'});
+	});
 })
 angular.module('passengerReportDataControllerModule',[]).controller('passengerReportDataController',function(passengerHttpService,utilFactory,$scope){
 	$scope.pageConfigs={
 		params:{
-			'hrId':utilFactory.getAccountId(),
-			'secondCompanyId':utilFactory.getSecondCompanyId(),
 			'pageSize':'20',
-			'pageNumber':'1'
+			'pageNumber':'1',
+			'schedulerId':utilFactory.getAccountId(),
+			'secondCompanyId':utilFactory.getSecondCompanyId()
 		},
 		list:null,
 		getList:function(params){
-			return passengerHttpService.passenger(params)
+			return passengerHttpService.getAllTripHistory(params)
 		},
 		loadData:function(){},
 		dataSet:function(result){
-			if(result.value != null){
-				var _result = result.value;
-				for(var i=0;i<_result.length;i++){
-					_result[i]['status'] =_result[i]['status'] == 0?'未激活':'已激活'
-				}
-			}
 		}
 		//extendParams:function(){}
 	}
 
+
+	$scope.tableConfig={
+		stableFlag:{
+			arrow:true,
+			index:true,
+			checkbox:false,
+			radio:true,
+			operate:[]
+		},
+		checkbox:{
+			checkArray:[]
+		},
+		defaultValue:'——',
+		// defaultEmptyText:'暂无数据',
+		// radioSelect:function(){},
+		operateIfFlag:false,
+		setHeadOptional:{
+			cancelSelectNum:5,
+			selectOptions:[
+				{
+					'parentKey':'',
+					'selfKey':{'key':'id','value':'记录编号'},
+					'checkFlag':true
+				},
+				{
+					'parentKey':'accountDTO',
+					'selfKey':{'key':'name','value':'乘车人员'},
+					'checkFlag':true
+				},
+				{
+					'parentKey':'',
+					'selfKey':{'key':'licensePlate','value':'乘坐车辆'},
+					'checkFlag':true
+				},
+				{
+					'parentKey':'',
+					'selfKey':{'key':'routeName','value':'线路名称'},
+					'checkFlag':true
+				},
+				{
+					'parentKey':'',
+					'selfKey':{'key':'startStationName','value':'起点站'},
+					'checkFlag':true
+				},
+				{
+					'parentKey':'',
+					'selfKey':{'key':'arrivalStationName','value':'终点站'},
+					'checkFlag':true
+				}
+			]
+		}
+		// changeEnable:function(item){}
+	}
+
+	
+	$scope.selectAllStatus = false;
 	$scope.queryByKeyObj = {
-		'active':{'key':'name','value':'乘车人员'},
-		'list':[{'key':'phoneNumber','value':'记录编号'}]
+		'active':{'key':'passengerName','value':'乘车人员'},
+		'list':[{'key':'tripHistoryId','value':'记录编号'}]
 	}
 
 	$scope.selectKey = function(activeObj){
@@ -4657,10 +5841,23 @@ angular.module('passengerReportDataControllerModule',[]).controller('passengerRe
 		$('.dropdown-menu').css('display','block')
 	}
 
+	$scope.searchFn = function(searchText){
+		var _searchParams = {
+			'pageSize':'20',
+			'pageNumber':'1',
+			'pageNo': '1',
+			'schedulerId':utilFactory.getAccountId(),
+			'secondCompanyId':utilFactory.getSecondCompanyId()
+		}
+		_searchParams[$scope.queryByKeyObj.active.key] = $scope.searchText;
+		// $scope.pageConfigs.getList(_searchParams)
+		$scope.$broadcast('refreshPageList',_searchParams);
+
+	}
 
 	$scope.importData = function(){
 
-		passengerHttpService.tripHistorysByExcel({'schedulerAccountId':utilFactory.getAccountId()}).then(function(data){
+		passengerHttpService.downloadTripHistory({'schedulerId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId()}).then(function(data){
 			var blob = new Blob([data.data], {type: "application/vnd.ms-excel;charset=utf-8"});
 			var objectUrl = URL.createObjectURL(blob);
 			var a = document.createElement('a');
@@ -4674,65 +5871,6 @@ angular.module('passengerReportDataControllerModule',[]).controller('passengerRe
 
 	}
 
-
-	$scope.tableConfig={
-		stableFlag:{
-			arrow:true,
-			index:true,
-			checkbox:false,
-			radio:true,
-			operate:[]
-		},
-		// height:290,
-		// head:[{name:'文件名',key:'filename'}],
-		// className:function(flag){},
-		// clickFun:function(){},
-		// rowClickFun:function(item){},
-		checkbox:{
-			checkArray:[]
-		},
-		defaultValue:'——',
-		// radioSelect:function(){},
-		operateIfFlag:false,
-		setHeadOptional:{
-			cancelSelectNum:5,
-			selectOptions:[
-				{
-					'parentKey':'',
-					'selfKey':{'key':'name','value':'记录编号'},
-					'checkFlag':true
-				},
-				{
-					'parentKey':'accountDTO',
-					'selfKey':{'key':'phoneNumber','value':'乘车人员'},
-					'checkFlag':true
-				},
-				{
-					'parentKey':'',
-					'selfKey':{'key':'defautStationName','value':'乘坐车辆'},
-					'checkFlag':true
-				},
-				{
-					'parentKey':'',
-					'selfKey':{'key':'defautRouteName','value':'线路名称'},
-					'checkFlag':true
-				},
-				{
-					'parentKey':'',
-					'selfKey':{'key':'status','value':'起点站'},
-					'checkFlag':true
-				},
-				{
-					'parentKey':'',
-					'selfKey':{'key':'status','value':'终点站'},
-					'checkFlag':true
-				}
-			]
-		}
-		// changeEnable:function(item){}
-	}
-
-
 	$scope.$watch('$viewContentLoaded',function(event){ 
   		$scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1'});
 	});
@@ -4740,42 +5878,93 @@ angular.module('passengerReportDataControllerModule',[]).controller('passengerRe
 angular.module('passengerReportPassengersControllerModule',[])
 .controller('passengerReportPassengersController',function(passengerHttpService,utilFactory,$scope){
 
+	var currentDate = utilFactory.getCurrentDate(new Date().getTime())
+	$("#selectDay").val(currentDate);
 	$scope.params = {
-		'routeList':[{
-			'routeName':'线路1'
-		},
-		{
-			'routeName':'线路2'
-		},
-		{
-			'routeName':'线路3'
-		}]
+		'selectDay':$("#selectDay").val(),
+		'routeTemplateName':'',
+		'routeTemplateId':'',
+		'newDateTime':''
 	}
+	var dateTime = utilFactory.getTimestamp($scope.params.selectDay);
+
+	$.fn.datepicker.dates['zh-CN'] = {
+		days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
+		daysShort: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
+		daysMin:  ["日", "一", "二", "三", "四", "五", "六"],
+		months: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+		monthsShort: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+		today: "今日",
+		clear: "清除",
+		format: "yyyy/mm/dd",
+		titleFormat: "yyyy/mm",
+		weekStart: 1
+	};
+	
+	$('.datepicker').datepicker({ 
+		language: "zh-CN",
+	});
+
+	
+	var _baseParams = {
+		'beginTime':dateTime,
+		'endTime':dateTime+24*60*60*1000,
+		// 'beginTime':"1514131200000",
+		// 'endTime':"1514217600000"
+	};
+
+	passengerHttpService.getRouteTemplateList(_baseParams).then(function(result){
+		var _resultJSON = result.data;
+		if(!_resultJSON.error){
+			var _targetObj = _resultJSON.value;
+			$scope.params.routeTemplate = _targetObj.length? _targetObj: '';
+			console.log("12121212121212")
+		}else{
+			utilFactory.checkErrorCode(_resultJSON.error.statusCode)
+		}
+	})
+
+
 	$scope.pageConfigs={
-		params:{},
+		params:{
+			'pageSize':'20',
+			'pageNumber':'1',
+			'schedulerId':utilFactory.getAccountId(),
+			'userCompanyId':utilFactory.getSecondCompanyId(),
+			'dateTime':dateTime,
+			// 'routeTemplateId':$scope.params.routeTemplateObj.routeTemplateId || ""
+		},
 		list:null,
-		getList:function(){
-			//return passengerHttpService.passenger({'hrId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId()})
+		getList:function(params){
+			return passengerHttpService.getEmployeeList(params)			
 		},
 		loadData:function(){
-			console.log('load data')
-			
 		},
 		dataSet:function(result){
-			if(result.value != null){
-				var _result = result.value;
-				for(var i=0;i<_result.length;i++){
-					_result[i]['status'] =_result[i]['status'] == 0?'未激活':'已激活'
-				}
-			}
+			// if(result.value != null){
+			// 	var _result = result.value;
+			// 	for(var i=0;i<_result.length;i++){
+			// 	}
+			// }
 		}
-		//extendParams:function(){}
 	}
-
 
 	$scope.importData = function(){
-		alertify.alert('正在建设中...')
+
+		passengerHttpService.downloadEmployeeList({'createTime':dateTime,'userCompanyId':utilFactory.getSecondCompanyId()}).then(function(data){
+			var blob = new Blob([data.data], {type: "application/vnd.ms-excel;charset=utf-8"});
+			var objectUrl = URL.createObjectURL(blob);
+			var a = document.createElement('a');
+			document.body.appendChild(a);
+			a.setAttribute('style', 'display:none');
+			a.setAttribute('href', objectUrl);
+			a.setAttribute('download', '线路到达时间数据报表');
+			a.click();
+			URL.revokeObjectURL(objectUrl);
+		})
+
 	}
+
 
 
 	$scope.tableConfig={
@@ -4786,16 +5975,11 @@ angular.module('passengerReportPassengersControllerModule',[])
 			radio:true,
 			operate:[]
 		},
-		// height:290,
-		// head:[{name:'文件名',key:'filename'}],
-		// className:function(flag){},
-		// clickFun:function(){},
-		// rowClickFun:function(item){},
 		checkbox:{
 			checkArray:[]
 		},
 		defaultValue:'——',
-		// radioSelect:function(){},
+		defaultEmptyText:'暂无乘车人员信息',
 		operateIfFlag:false,
 		setHeadOptional:{
 			cancelSelectNum:5,
@@ -4807,185 +5991,402 @@ angular.module('passengerReportPassengersControllerModule',[])
 				},
 								{
 					'parentKey':'',
-					'selfKey':{'key':'phoneNumber','value':'员工工号'},
+					'selfKey':{'key':'employeeId','value':'员工工号'},
 					'checkFlag':true
 				},
 				{
 					'parentKey':'',
-					'selfKey':{'key':'phoneNumber','value':'联系方式'},
+					'selfKey':{'key':'cellPhoneNumber','value':'联系方式'},
 					'checkFlag':true
 				},
 				{
 					'parentKey':'',
-					'selfKey':{'key':'defautStationName','value':'部门'},
-					'checkFlag':true
-				},
-				{
-					'parentKey':'',
-					'selfKey':{'key':'defautRouteName','value':'上车站点'},
+					'selfKey':{'key':'startStationName','value':'上车站点'},
 					'checkFlag':true
 				}
 			]
 		}
-		// changeEnable:function(item){}
 	}
+	$scope.$watch('params.selectDay',function(newValue, oldValue){ 
+		if (newValue === oldValue) { 
+			return
+		} else {
+			dateTime = utilFactory.getTimestamp(newValue);
+			$scope.params.newDateTime = utilFactory.getTimestamp(newValue);
+			$scope.importData = function(){
 
-
-	$scope.$watch('$viewContentLoaded',function(event){ 
-  		$scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1'});
-	});
-})
-angular.module('passengerReportRouteControllerModule',[])
-.controller('passengerReportRouteController',function(passengerHttpService,utilFactory,$scope){
-
-	$scope.pageConfigs={
-		params:{},
-		list:null,
-		getList:function(){
-			//return passengerHttpService.passenger({'hrId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId()})
-		},
-		loadData:function(){
-			console.log('load data')
-			
-		},
-		dataSet:function(result){
-			if(result.value != null){
-				var _result = result.value;
-				for(var i=0;i<_result.length;i++){
-					_result[i]['status'] =_result[i]['status'] == 0?'未激活':'已激活'
-				}
+				passengerHttpService.downloadEmployeeList({'createTime':dateTime,'userCompanyId':utilFactory.getSecondCompanyId()}).then(function(data){
+					var blob = new Blob([data.data], {type: "application/vnd.ms-excel;charset=utf-8"});
+					var objectUrl = URL.createObjectURL(blob);
+					var a = document.createElement('a');
+					document.body.appendChild(a);
+					a.setAttribute('style', 'display:none');
+					a.setAttribute('href', objectUrl);
+					a.setAttribute('download', '线路到达时间数据报表');
+					a.click();
+					URL.revokeObjectURL(objectUrl);
+				})
 			}
-		}
-		//extendParams:function(){}
-	}
+
+			// var params = {
+			// 	'pageSize':'20',
+			// 	'pageNumber':'1',
+			// 	'schedulerId':utilFactory.getAccountId(),
+			// 	'userCompanyId':utilFactory.getSecondCompanyId(),
+			// 	'dateTime':dateTime,
+			// 	// 'routeTemplateId':$scope.params.routeTemplateObj.routeTemplateId || ""
+			// }
+			// $scope.pageConfigs.getList(params);		
 
 
-	$scope.importData = function(){
-		alertify.alert('正在建设中...')
-	}
-
-
-	$scope.tableConfig={
-		stableFlag:{
-			arrow:true,
-			index:true,
-			checkbox:false,
-			radio:true,
-			operate:[]
-		},
-		// height:290,
-		// head:[{name:'文件名',key:'filename'}],
-		// className:function(flag){},
-		// clickFun:function(){},
-		// rowClickFun:function(item){},
-		checkbox:{
-			checkArray:[]
-		},
-		defaultValue:'——',
-		// radioSelect:function(){},
-		operateIfFlag:false,
-		setHeadOptional:{
-			cancelSelectNum:5,
-			selectOptions:[
-				{
-					'parentKey':'',
-					'selfKey':{'key':'name','value':'线路名称'},
-					'checkFlag':true
-				},
-				{
-					'parentKey':'accountDTO',
-					'selfKey':{'key':'phoneNumber','value':'属性'},
-					'checkFlag':true
-				},
-				{
-					'parentKey':'',
-					'selfKey':{'key':'defautStationName','value':'日均载客数'},
-					'checkFlag':true
-				},
-				{
-					'parentKey':'',
-					'selfKey':{'key':'defautRouteName','value':'总座位数'},
-					'checkFlag':true
-				},
-				{
-					'parentKey':'',
-					'selfKey':{'key':'status','value':'上座率'},
-					'checkFlag':true
+			var _baseParams = {
+				'beginTime':dateTime,
+				'endTime':dateTime + 24*60*60*1000,
+				'vehicleInfoFlag': "Y"
+			};
+			passengerHttpService.getRouteTemplateList(_baseParams).then(function(result){
+				var _resultJSON = result.data;
+				if(!_resultJSON.error){
+					var _targetObj = _resultJSON.value;
+					$scope.params.routeTemplate = _targetObj.length? _targetObj: '';
+				}else{
+					utilFactory.checkErrorCode(_resultJSON.error.statusCode)
 				}
-			]
-		}
-		// changeEnable:function(item){}
-	}
+			})	
 
+			// $scope.$broadcast('refreshPageList',params);
+		}  	
+
+		// $scope.$watch('$viewContentLoaded',function(event){ 
+	 //  		$scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1'});
+		// });
+
+	});
+	
+	$scope.$watch('params.routeTemplateObj',function(newRoute, oldRoute){ 
+		if (newRoute === oldRoute) { 
+			return
+		} else {
+			var params = {
+				'pageSize':'20',
+				'pageNumber':'1',
+				'schedulerId':utilFactory.getAccountId(),
+				'userCompanyId':utilFactory.getSecondCompanyId(),
+				'dateTime':$scope.params.newDateTime || dateTime,
+				'routeTemplateId':$scope.params.routeTemplateObj.routeTemplateId || ""
+			}
+			$scope.pageConfigs.getList(params);		
+
+			$scope.$broadcast('refreshPageList',params);
+		}  	
+
+		$scope.$watch('$viewContentLoaded',function(event){ 
+	  		$scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1'});
+		});
+				
+	});
 
 	$scope.$watch('$viewContentLoaded',function(event){ 
   		$scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1'});
 	});
 })
-angular.module('passengerReportStationControllerModule',[])
+ angular.module('passengerReportStationControllerModule',[])
 .controller('passengerReportStationController',function(passengerHttpService,utilFactory,$scope){
-	$scope.pageConfigs={
-		params:{},
-		list:null,
-		getList:function(){
-			//return passengerHttpService.passenger({'hrId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId()})
-		},
-		loadData:function(){
-			console.log('load data')
-			
-		},
-		dataSet:function(result){
-			if(result.value != null){
-				var _result = result.value;
-				for(var i=0;i<_result.length;i++){
-					_result[i]['status'] =_result[i]['status'] == 0?'未激活':'已激活'
-				}
-			}
-		}
-		//extendParams:function(){}
+
+	var currentMonth = utilFactory.getCurrentMonth(new Date().getTime());
+	$("#selectMonth").val(currentMonth);
+	$scope.params = {
+		'selectMonth':$("#selectMonth").val(),
+		'routeTemplateName':'',
+		'vehicleObj':'',
+		'vehiclePlate':'',
+		'vehicleId':'',
+		'newBeginTime':'',
+		'newEndTime':''
 	}
 
+	$('.datepicker').datepicker({ 
+	    language: "zh-CN",
+		format: 'yyyy/mm',  
+		startView: 1,
+	    minViewMode: 1
+	});
+
+	var dateArray = $("#selectMonth").val().split("/");
+	var countDay = new Date(dateArray[0],dateArray[1],0);
+	console.log(countDay.getDate());
+	var currentDate = countDay.getDate();
+	var beginTime = utilFactory.getTimestamp($scope.params.selectMonth + '/01'+ ' 00:00');
+	var endTime = utilFactory.getTimestamp($scope.params.selectMonth + '/01'+ ' 00:00')+(24*60*60*1000*currentDate);
+
+
+	var _baseParams = {
+		'beginTime':beginTime,
+		'endTime':endTime,
+		// 'vehicleInfoFlag':"Y"
+	};
+
+	passengerHttpService.getRouteTemplateList(_baseParams).then(function(result){
+		var _resultJSON = result.data;
+		if(!_resultJSON.error){
+			if(_resultJSON.value == null) {
+				// alertify.alert('请选择线路',function(){
+				// 	return
+				// });
+			} else {
+				var _targetObj = _resultJSON.value;
+				$scope.params.routeTemplate = _targetObj? _targetObj: '';
+			}
+			
+		}else{
+			utilFactory.checkErrorCode(_resultJSON.error.statusCode);
+		}
+	})
 
 	$scope.importData = function(){
-		alertify.alert('正在建设中...')
-	}
 
-
-	$scope.tableConfig={
-		stableFlag:{
-			arrow:true,
-			index:true,
-			checkbox:false,
-			radio:true,
-			operate:[]
-		},
-		// height:290,
-		// head:[{name:'文件名',key:'filename'}],
-		// className:function(flag){},
-		// clickFun:function(){},
-		// rowClickFun:function(item){},
-		checkbox:{
-			checkArray:[]
-		},
-		defaultValue:'——',
-		// radioSelect:function(){},
-		operateIfFlag:false,
-		setHeadOptional:{
-			cancelSelectNum:5,
-			selectOptions:[
-				{
-					'parentKey':'',
-					'selfKey':{'key':'name','value':'站点名称'},
-					'checkFlag':true
-				}
-			]
+		if(!$scope.params.routeTemplateObj){
+			alertify.alert('请选择线路',function(){
+			});
+			return
 		}
-		// changeEnable:function(item){}
+		console.log($scope.params.routeTemplateObj.routeTemplateId);
+		var _params = {
+			'routeTemplateId':$scope.params.routeTemplateObj.routeTemplateId,
+			'routeTemplateName':$scope.params.routeTemplateObj.routeTemplateName,
+			'downloadMonth':dateArray[1],
+			'beginTime':beginTime,
+			'endTime':endTime,
+			'routeType':"AM"
+		}		
+		passengerHttpService.downloadRouteStationList(_params).then(function(data){
+			var blob = new Blob([data.data], {type: "application/vnd.ms-excel;charset=utf-8"});
+			var objectUrl = URL.createObjectURL(blob);
+			var a = document.createElement('a');
+			document.body.appendChild(a);
+			var _result = data.data;
+			var decodedString = String.fromCharCode.apply(null, new Uint8Array(_result));
+			console.log(1,decodedString);
+
+			var _decodedString = JSON.stringify(decodedString)
+			var _obj = JSON.parse(_decodedString || '');
+
+			var _errorStr = 'error';
+			if(_obj.indexOf(_errorStr) >= 0) {
+				console.log('error');
+				alertify.alert('暂无报表信息',function(){
+				});
+				return
+			}
+			a.setAttribute('style', 'display:none');
+			a.setAttribute('href', objectUrl);
+			a.setAttribute('download', '班车站点数据报表');
+			a.click();
+			URL.revokeObjectURL(objectUrl);
+		})
+
 	}
 
+	$scope.$watch('params.selectMonth',function(newValue, oldValue){ 
+		if (newValue === oldValue) { 
+			return
+		} else {
 
-	$scope.$watch('$viewContentLoaded',function(event){ 
-  		$scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1'});
+
+			dateArray = $("#selectMonth").val().split("/");
+			countDay = new Date(dateArray[0],dateArray[1],0);
+			currentDate = countDay.getDate();
+			$scope.params.newBeginTime = utilFactory.getTimestamp(newValue + '/01'+ ' 00:00');
+			// beginTime = utilFactory.getTimestamp(newValue + '/01'+ ' 00:00');
+			// console.log(beginTime);
+			$scope.params.newEndTime = utilFactory.getTimestamp(newValue + '/01'+ ' 00:00')+(24*60*60*1000*currentDate);
+			// console.log(endTime);
+			var _baseParams = {
+				'beginTime':$scope.params.newBeginTime,
+				'endTime':$scope.params.newEndTime,
+				// 'routeTemplateType':"AM",
+				// 'vehicleInfoFlag':"Y"
+			};
+
+			passengerHttpService.getRouteTemplateList(_baseParams).then(function(result){
+				var _resultJSON = result.data;
+				if(!_resultJSON.error){
+					var _targetObj = _resultJSON.value;
+					$scope.params.routeTemplate = _targetObj? _targetObj: '';
+				}else{
+					utilFactory.checkErrorCode(_resultJSON.error.statusCode)
+				}
+			})
+
+			$scope.importData = function(){
+
+				if(!$scope.params.routeTemplateObj){
+					alertify.alert('请选择线路',function(){
+					});
+					return
+				}
+				console.log($scope.params.routeTemplateObj.routeTemplateId);
+				var _params = {
+					'routeTemplateId':$scope.params.routeTemplateObj.routeTemplateId,
+					'routeTemplateName':$scope.params.routeTemplateObj.routeTemplateName,
+					'downloadMonth':dateArray[1],
+					'beginTime':$scope.params.newBeginTime,
+					'endTime':$scope.params.newEndTime,
+					'routeType':"AM"
+				}		
+				passengerHttpService.downloadRouteStationList(_params).then(function(data){
+					var blob = new Blob([data.data], {type: "application/vnd.ms-excel;charset=utf-8"});
+					var objectUrl = URL.createObjectURL(blob);
+					var a = document.createElement('a');
+					document.body.appendChild(a);
+					var _result = data.data;
+					var decodedString = String.fromCharCode.apply(null, new Uint8Array(_result));
+					console.log(1,decodedString);
+
+					var _decodedString = JSON.stringify(decodedString)
+					var _obj = JSON.parse(_decodedString || '');
+
+					var _errorStr = 'error';
+					if(_obj.indexOf(_errorStr) >= 0) {
+						console.log('error');
+						alertify.alert('暂无报表信息',function(){
+						});
+						return
+					}
+					a.setAttribute('style', 'display:none');
+					a.setAttribute('href', objectUrl);
+					a.setAttribute('download', '班车站点数据报表');
+					a.click();
+					URL.revokeObjectURL(objectUrl);
+				})
+			}
+
+		}  	
+	});
+
+
+	$scope.$watch('params.routeTemplateObj',function(newRoute, oldRoute){ 
+		if (newRoute === oldRoute) { 
+			return
+		} else {	
+			var date = [];
+			var myChart = echarts.init(document.getElementById('main'));
+			var _baseParams = {
+				'routeTemplateId':$scope.params.routeTemplateObj.routeTemplateId,
+				'beginTime':$scope.params.newBeginTime || beginTime,
+				'endTime':$scope.params.newEndTime || endTime,
+				'routeType': 'AM'
+			}
+
+			for(var j=0;j<currentDate;j++) {
+				var currentDay = j+1;
+				console.log(currentDay);
+				date.push(currentDay);
+			}
+
+			passengerHttpService.getRouteStationList(_baseParams).then(function(result){
+				var _resultJSON = result.data;
+				if(!_resultJSON.error){
+					if(_resultJSON.value == null) {
+						alertify.alert('暂无数据',function(){
+							$("#noData").show();
+							myChart.dispose(document.getElementById('main'));
+							return
+						});
+					} 
+
+					$("#noData").hide();
+
+					var stationRecord = [];
+					var stationNameList = [];
+					var recordArray = [];
+					var allData = [];
+
+					var _targetObj = _resultJSON.value;
+					stationRecord.push(_targetObj);
+					console.log(1,stationRecord);
+					console.log("12121212121212");
+
+					for(var i = 0; i<stationRecord[0].length; i++) {
+						var _stationName = stationRecord[0][i].stationName;
+						var _recordArray = stationRecord[0][i].recordArray;
+						stationNameList.push(_stationName);
+						recordArray.push(_recordArray);
+						console.log(1,stationNameList);
+
+					}
+
+				  	for( var i = 0; i < stationNameList.length; i++ ) {
+						allData.push(
+							{'name': stationNameList[i],
+							'type': 'bar',
+							'stack': '总量',
+							label: {
+				                normal: {
+				                    show: true,
+				                    position: 'insideBottom'
+				                }
+				            },
+				            // 'data': [20, 3, 5, 34, 30, 30, 20,0,0,0,10,0,0,0,0,8,0,0,0,0,0,0,0,0,0,0,0,0,0]
+				            'data': recordArray[i]
+				        })
+						console.log(1,allData)
+					}
+					
+					var option = null;
+
+					var options = {
+						year: 'numeric', month: 'numeric', day: 'numeric',
+						hour: 'numeric', minute: 'numeric', second: 'numeric',
+						hour12: false,
+						timeZone: 'Asia/Shanghai' 
+					};
+					// console.log(1,stationRecord[0]);
+
+					option = {
+					    title : {
+					        text: '站点月度上车人数分布图',
+					    },
+					    tooltip : {
+					        trigger: 'axis',
+					        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+					            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+					        }
+					    },
+					    legend: {
+					        data: stationNameList,
+					        type: 'scroll',
+    						top: 25
+					    },
+					    grid: {
+					        left: '3%',
+					        right: '4%',
+					        bottom: '3%',
+					        containLabel: true
+					    },
+					    yAxis:  {
+					        type: 'value'
+					    },
+					    xAxis: {
+					        type: 'category',
+					        // data: ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31']
+					    	data: date
+					    },
+					    
+					    series: allData
+					};
+					myChart.clear();
+					myChart.setOption(option);
+				
+
+				}else{
+					utilFactory.checkErrorCode(_resultJSON.error.statusCode);
+				}
+			})
+
+			
+
+		}  	
 	});
 
 })
@@ -4994,11 +6395,14 @@ angular.module('passengerHttpServiceModule',[]).factory('passengerHttpService',f
 	var passengerAccount = APISERVICEPATH.passengerAccount;
 	//var passengerAccount = APISERVICEPATH.prd;
 	//var passengerProfile = APISERVICEPATH.passengerProfile;
-	var passengerTrip    = APISERVICEPATH.passengerTrip;
+	// var passengerTrip    = APISERVICEPATH.passengerTrip;
+	var stationService = APISERVICEPATH.stationService;
 	var uploadTripHistorysByExcelAPI = APISERVICEPATH.tripHistorysByExcel;
+	var passengerComment = APISERVICEPATH.passengerComment;
+	var reportingService = APISERVICEPATH.reportingService;
 	passengerHttp.getPassengerTrip = function(paramsObj){
 		var paramsData = {
-			'apiPath':passengerTrip+'web/'+paramsObj.passengerId,
+			'apiPath':stationService+'web/'+paramsObj.passengerId,
 			'paramsList':{
 				'pageSize':paramsObj.pageSize,
 				'pageNumber':paramsObj.pageNumber
@@ -5015,7 +6419,9 @@ angular.module('passengerHttpServiceModule',[]).factory('passengerHttpService',f
 				// 'hrId': paramsObj.hrId,
 				// 'secondCompanyId':paramsObj.secondCompanyId,
 				'pageSize':paramsObj.pageSize,
-				'pageNumber':paramsObj.pageNumber
+				'pageNumber':paramsObj.pageNumber,
+				'name':paramsObj.name,
+				'phoneNumber':paramsObj.phoneNumber
 			}
 		};
 
@@ -5091,18 +6497,187 @@ angular.module('passengerHttpServiceModule',[]).factory('passengerHttpService',f
 		return  $http({ method: 'POST',url:paramsData.apiPath,headers:{'Content-type':'application/json'},data:paramsData.paramsList});
 	};
 
-	// passengerHttp.getPassengerFeedback = function(){
+	passengerHttp.getPassengerFeedback = function(paramsObj){
 
-		// var paramsData = {
-	// 		// 'apiPath':passengerProfile+'passengerByID',
-	// 		// paramsList:{
-	// 		// 	'passengerUUID':paramsObj.passengerUUID
-	// 		// }
+		var paramsData = {
+			'apiPath':passengerComment+paramsObj.secondCompanyId+'/'+paramsObj.schedulerId,
+			paramsList:{
+				// 'secondCompanyId':paramsObj.secondCompanyId,
+				// 'schedulerId':paramsObj.schedulerId,
+				'pageSize':paramsObj.pageSize,
+				'pageNumber':paramsObj.pageNumber,
+				// 'Authorization':paramsObj.pageNumber,
+				// 'operateAccountId':paramsObj.pageNumber,
+				// 'ApplicationId':paramsObj.pageNumber,
+			}
+		};
+
+		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
+	}
+
+	passengerHttp.getBusRoute = function(paramsObj){
+		var paramsData = {
+			'apiPath':reportingService+'display/attendence/'+paramsObj.beginTime+'/endTime/'+paramsObj.endTime,
+			paramsList:{
+				// 'pageSize':paramsObj.pageSize,
+				// 'pageNumber':paramsObj.pageNumber,
+			}
+		};
+
+		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
+	}
+
+	passengerHttp.downloadBusRoute = function(paramsObj){
+		var paramsData = {
+			'apiPath':reportingService+'download/attendence/'+paramsObj.beginTime+'/endTime/'+paramsObj.endTime,
+			paramsList:{
+				// 'schedulerAccountId':paramsObj.schedulerAccountId
+			}
+		};
+
+		console.log(1,paramsObj)
+		return  $http({ method: 'GET',url:paramsData.apiPath,responseType:'arraybuffer',data:paramsData.paramsList});
+	}
+
+	passengerHttp.getAllTripHistory = function(paramsObj){
+		var paramsData = {
+			'apiPath':reportingService+'scheduler/'+paramsObj.schedulerId+'/secondCompany/'+paramsObj.secondCompanyId,
+			paramsList:{
+				'pageSize':paramsObj.pageSize,
+				'pageNumber':paramsObj.pageNumber,
+				'tripHistoryId': paramsObj.tripHistoryId,
+				// 'vehicleLicensePlate': paramsObj.vehicleLicensePlate,
+				'passengerName': paramsObj.passengerName
+			}
+		};
+
+		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
+	}
+
+	passengerHttp.downloadTripHistory = function(paramsObj){
+		var paramsData = {
+			'apiPath':reportingService+'excel/scheduler/'+paramsObj.schedulerId+'/secondCompany/'+paramsObj.secondCompanyId,
+			paramsList:{
+				// 'schedulerAccountId':paramsObj.schedulerAccountId
+			}
+		};
+
+		console.log(1,paramsObj)
+		return  $http({ method: 'GET',url:paramsData.apiPath,responseType:'arraybuffer',data:paramsData.paramsList});
+	}
+
+	passengerHttp.getArrivalTime = function(paramsObj){
+		var paramsData = {
+			'apiPath':reportingService+'display/arrivalTime/'+paramsObj.routeTemplateId,
+			paramsList:{
+				'beginTime':paramsObj.beginTime,
+				'endTime':paramsObj.endTime,
+				// 'routeTemplateId':paramsObj.routeTemplateId,
+				'vehicleId':paramsObj.vehicleId,
+				'routeTemplateType':paramsObj.routeTemplateType,
+				'vehicleInfoFlag':paramsObj.vehicleInfoFlag
+			}
+		};
+
+		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
+	}
+	passengerHttp.downloadArrivalTime = function(paramsObj){
+		var paramsData = {
+			'apiPath':reportingService+'download/arrivalTime/'+paramsObj.beginTime+'/endTime/'+paramsObj.endTime,
+			// paramsList:{
+			// 	// 'schedulerAccountId':paramsObj.schedulerAccountId
+			// }
+		};
+		return  $http({ method: 'GET',url:paramsData.apiPath,responseType:'arraybuffer'});
+	}
+	passengerHttp.getEmployeeList = function(paramsObj){
+		var paramsData = {
+			'apiPath':reportingService+'web/tripHistory/'+paramsObj.userCompanyId+'/dateTime/'+paramsObj.dateTime,
+			paramsList:{
+				'pageSize':paramsObj.pageSize,
+				'pageNumber':paramsObj.pageNumber,
+				'routeTemplateId':paramsObj.routeTemplateId,
+			}
+		};
+
+		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
+	}
+	passengerHttp.downloadEmployeeList = function(paramsObj){
+		var paramsData = {
+			'apiPath':reportingService+'tripHistory/'+paramsObj.userCompanyId+'/createTime/'+paramsObj.createTime,
+		};
+		return  $http({ method: 'GET',url:paramsData.apiPath,responseType:'arraybuffer'});
+	}
+	passengerHttp.getRouteTemplateList = function(paramsObj){
+		var paramsData = {
+			'apiPath':reportingService+'routeTemplateList/'+paramsObj.beginTime+'/endTime/'+paramsObj.endTime,
+			paramsList:{
+				// 'pageSize':paramsObj.pageSize,
+				// 'pageNumber':paramsObj.pageNumber,
+				'vehicleInfoFlag':paramsObj.vehicleInfoFlag,
+
+				
+			}
+		};
+
+		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
+	}
+	// passengerHttp.getRouteStationList = function(paramsObj){
+	// 	var paramsData = {
+	// 		'apiPath':reportingService+'routeTemplateList/'+paramsObj.beginTime+'/endTime/'+paramsObj.endTime,
+	// 		paramsList:{
+	// 			// 'pageSize':paramsObj.pageSize,
+	// 			// 'pageNumber':paramsObj.pageNumber,
+	// 			'vehicleInfoFlag':paramsObj.vehicleInfoFlag,
+	// 		}
 	// 	};
 
-	// 	//return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
-	// }
+	// 	return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
+	// }	
+	passengerHttp.getArrivalTime = function(paramsObj){
+		var paramsData = {
+			'apiPath':reportingService+'display/arrivalTime/'+paramsObj.routeTemplateId,
+			paramsList:{
+				'beginTime':paramsObj.beginTime,
+				'endTime':paramsObj.endTime,
+				// 'routeTemplateId':paramsObj.routeTemplateId,
+				'vehicleId':paramsObj.vehicleId,
+				'routeTemplateType':paramsObj.routeTemplateType,
+				'vehicleInfoFlag':paramsObj.vehicleInfoFlag
+			}
+		};
 
+		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
+	}
+	passengerHttp.getRouteStationList = function(paramsObj){
+		var paramsData = {
+			'apiPath':reportingService+'count/'+paramsObj.routeTemplateId,
+			paramsList:{
+				'beginTime':paramsObj.beginTime,
+				'endTime':paramsObj.endTime,
+				'routeType':paramsObj.routeType
+			}
+		};
+
+		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
+	}
+
+	passengerHttp.downloadRouteStationList = function(paramsObj){
+		var paramsData = {
+			// http://reporting.apps.cl-cn-east-preprod01.cf.ford.com/api/NanjingShuttle/reportings/v1/count/download/2?routeTemplateName=3&downloadMonth=4&beginTime=5&endTime=6
+			'apiPath':reportingService+'count/download/'+paramsObj.routeTemplateId+'?routeTemplateName='+encodeURIComponent(paramsObj.routeTemplateName)
+			+'&downloadMonth='+encodeURIComponent(paramsObj.downloadMonth)+'&beginTime='+encodeURIComponent(paramsObj.beginTime)+'&endTime='
+			+encodeURIComponent(paramsObj.endTime)+'&routeType='+encodeURIComponent(paramsObj.routeType),
+			// paramsList:{
+			// 	'routeTemplateName':paramsObj.routeTemplateName,
+			// 	'downloadMonth':paramsObj.downloadMonth,
+			// 	'beginTime':paramsObj.beginTime,
+			// 	'endTime':paramsObj.endTime,
+			// 	'routeType':paramsObj.routeType
+			// }
+		};
+		return  $http({ method: 'GET',url:paramsData.apiPath,responseType:'arraybuffer'});
+	}
 	return passengerHttp;
 });
 angular.module('reportControllerModule',[]).controller('reportController',function($scope){
@@ -5111,11 +6686,89 @@ angular.module('reportControllerModule',[]).controller('reportController',functi
 		{'name':'到达时间','url':'admin.passenger.report.arrival'},
 		{'name':'乘车人员','url':'admin.passenger.report.passengers'},
 		{'name':'班车站点','url':'admin.passenger.report.station'},
-		{'name':'班车线路','url':'admin.passenger.report.route'}
+		{'name':'班车线路','url':'admin.passenger.report.busRoute'}
 	]
 })
+angular.module('schedulerAddOneDayScheduleControllerModule',[])
+.controller('schedulerAddOneDayScheduleController',function(schedulerHttpService,TOKEN_ERROR,utilFactory,$scope,$state,$stateParams,$compile){
+             
+	$scope.active = true;
+	$scope.submitOnProgress =  false;
+	$scope.params = {
+		'beginDate':'',
+		'departureTime':'',
+		'endDate':'',
+		'includingSaturday':true,
+		'includingSunday':true,
+		'bookingRoute':'',
+		'bookingStartStation':'',
+		'bookingEndStation':'',
+		'schedulerId':'',
+		'secondCompanyId':''
+	};
 
+	$scope.breadcrumbText={
+		'lv1':'专车排班',
+		'lv2':'新增排班'
+	};
 
+	$scope.eventDay = ($stateParams.eventDay).replace(/\//g,'.');
+
+	$('.clockpicker').clockpicker({
+		placement: 'top',
+		align: 'left',
+		donetext: '确定'
+	});
+
+	$scope.submit = function(formValidateOneIsInvalid){
+
+		if(formValidateOneIsInvalid){
+			return utilFactory.setDirty($scope.formValidateOne);
+		}
+		var startTime = $("#departureTime").val();
+		var _formateDepartureTime = (utilFactory.getTimestamp($stateParams.eventDay + ' '+startTime) - utilFactory.getTimestamp($stateParams.eventDay + ' 00:00'));
+		console.log(_formateDepartureTime);
+		console.log(utilFactory.getTimestamp($stateParams.eventDay + ' '+startTime));
+		console.log(utilFactory.getTimestamp($stateParams.eventDay + ' 00:00'));
+
+		var _baseParams = {
+			'schedulerId':utilFactory.getAccountId(),
+			'secondCompanyId':utilFactory.getSecondCompanyId(),
+			'beginDate':$stateParams.dateTime,
+			'endDate':$stateParams.dateTime,
+			'bookingRoute':$scope.params.bookingRoute,
+			'includingSaturday':$scope.params.includingSaturday,
+			'includingSunday':$scope.params.includingSunday,
+			'bookingStartStation':$scope.params.bookingStartStation,
+			'bookingEndStation':$scope.params.bookingEndStation,
+			'departureTime': _formateDepartureTime
+		};
+
+		schedulerHttpService.addBookingAssignment(_baseParams).then(function(result){
+			var _resultData = result.data;
+
+			if(!_resultData.error){
+				alertify.alert('新增成功!',function(){
+					$state.go('admin.scheduler.specialBus');
+				});
+				
+			} else{
+				utilFactory.checkErrorCode(_resultData.error.statusCode);
+			}
+
+		})
+
+	}
+
+	$scope.close = function(){
+		$state.go('admin.scheduler.specialBus')
+	}
+	// var myDate = new Date();
+	// var startTime = myDate.getHours()+":"+myDate.getMinutes();
+
+	// $("#departureTime").val(startTime);
+
+});
 angular.module('schedulerAddScheduleControllerModule',[])
 .controller('schedulerAddScheduleController',function(schedulerHttpService,TOKEN_ERROR,utilFactory,$scope,$state,$compile){
 
@@ -5128,6 +6781,7 @@ angular.module('schedulerAddScheduleControllerModule',[])
 		'beginDate':'',
 		'departureTime':'',
 		'driverID':'',
+		'driverName':'',
 		'endDate':'',
 		'includeSaturday':false,
 		'includeSunday':false,
@@ -5162,9 +6816,15 @@ angular.module('schedulerAddScheduleControllerModule',[])
 		weekStart: 1
 	};
 	
-	$('.datepicker').datepicker({ language: "zh-CN"});
+	$('.datepicker').datepicker({ 
+		language: "zh-CN",
+		startDate: new Date()
+	});
 
-
+	$scope.close = function(){
+		$state.go('admin.scheduler.calendar')
+	}
+	
 	$scope.stepOneSubmit = function(formValidateOneIsInvalid){
 
 		if(formValidateOneIsInvalid){
@@ -5191,13 +6851,11 @@ angular.module('schedulerAddScheduleControllerModule',[])
 				// $scope.params.driverObj = _targetObj.drivers[0];
 				// $scope.params.routeTemplateObj = _targetObj.routeTemplate[0];
 				// $scope.params.vehicleObj = _targetObj.vehicles[0];
-
-
 				
 				// get select value
-				$scope.params.drivers = _targetObj.drivers.length?_targetObj.drivers:_targetObj.drivers=[{'driverName':'暂无数据'}];
-				$scope.params.routeTemplate = _targetObj.routeTemplate.length? _targetObj.routeTemplate: _targetObj.routeTemplate = [{'routeTemplateName':'暂无数据'}];
-				$scope.params.vehicles = _targetObj.vehicles.length? _targetObj.vehicles: _targetObj.vehicles = [{'licensePlate':'暂无数据'}];
+				$scope.params.drivers = _targetObj.drivers.length?_targetObj.drivers:'';
+				$scope.params.routeTemplate = _targetObj.routeTemplate.length? _targetObj.routeTemplate: '';
+				$scope.params.vehicles = _targetObj.vehicles.length? _targetObj.vehicles: '';
 
 				// $scope.params.drivers.unshift({'driverName':'请选择司机','driverId':null});
 				// $scope.params.routeTemplate.unshift({'routeTemplateName':'请选择线路','routeTemplateId':null});
@@ -5216,13 +6874,12 @@ angular.module('schedulerAddScheduleControllerModule',[])
 					var _routeTemplate = !_targetObj.routeTemplate.length?'线路名称':'';
 					var _vehicles = !_targetObj.vehicles.length?'牌照信息':'';
 					alertify.alert('在该时间内暂无'+_drivers +' '+_routeTemplate+' '+_vehicles+' '+',请重新选择时间范围',function(){
-
+						return 
 					});
+					return 
 				}else{
 					$scope.stepOne = false;
 					$scope.stepTwo = true;
-
-					
 				}
 
 
@@ -5236,7 +6893,8 @@ angular.module('schedulerAddScheduleControllerModule',[])
 	}
 
 	var myDate = new Date();
-	var startTime = myDate.getHours()+":"+myDate.getMinutes();
+	var minute = myDate.getMinutes() > 9 && myDate.getMinutes() || ('0' + myDate.getMinutes());
+	var startTime = myDate.getHours()+":"+minute;
 
 	$("#departureTime").val(startTime)
 
@@ -5247,17 +6905,21 @@ angular.module('schedulerAddScheduleControllerModule',[])
 		afterDone: function(){
 			var _selectedTime = $("#departureTime").val();
 			if($scope.params.routeType ==='AM' && (_selectedTime.split(":")[0]>12)){
-				alertify.alert('上行线路发车时间不能晚于上午12点,请重新选择发车时间',function(){
+				alertify.alert('上行线路发车时间不能晚于中午12点,请重新选择发车时间',function(){
 
 				});
+				startTime = $("#departureTime").val();
 				return;
 			}else if($scope.params.routeType ==='PM' && (_selectedTime.split(":")[0]<12)){
-				alertify.alert('下行线路发车时间不能早于上午12点,请重新选择发车时间',function(){
+				alertify.alert('下行线路发车时间不能早于中午12点,请重新选择发车时间',function(){
 
 				});
+				startTime = $("#departureTime").val();
 				return;
 			}else{
+
 				startTime = $("#departureTime").val();
+				console.log('startTime:'+startTime)
 			}
 		}
 	});
@@ -5288,14 +6950,16 @@ angular.module('schedulerAddScheduleControllerModule',[])
 		}
 
 		if($scope.params.routeType ==='AM' && (startTime.split(":")[0]>12)){
-			alertify.alert('上行线路发车时间不能晚于上午12点,请重新选择发车时间',function(){
+			alertify.alert('上行线路发车时间不能晚于中午12点,请重新选择发车时间',function(){
 
 			});
+			startTime = $("#departureTime").val();
 			return;
 		}else if($scope.params.routeType ==='PM' && (startTime.split(":")[0]<12)){
-			alertify.alert('下行线路发车时间不能早于上午12点,请重新选择发车时间',function(){
+			alertify.alert('下行线路发车时间不能早于中午12点,请重新选择发车时间',function(){
 				
 			});
+			startTime = $("#departureTime").val();
 			return;
 		}
 		// Group params from step One
@@ -5307,7 +6971,7 @@ angular.module('schedulerAddScheduleControllerModule',[])
 			'includeSunday':$scope.params.includeSunday
 		}
 		
-		var _formateDepartureTime = (utilFactory.getTimestamp($scope.params.beginDate + ' '+startTime) - utilFactory.getTimestamp($scope.params.beginDate));
+		var _formateDepartureTime = (utilFactory.getTimestamp($scope.params.beginDate + ' '+startTime) - utilFactory.getTimestamp($scope.params.beginDate + ' 00:00'));
 
 		var _stepTwoParams = {
   			'beginDate': _stepOneParams.beginDate,
@@ -5321,7 +6985,8 @@ angular.module('schedulerAddScheduleControllerModule',[])
 			// 'routeId':2358710021965824,
 			'schedulerId': utilFactory.getAccountId(),
 			'secondCompanyId': utilFactory.getSecondCompanyId(),
-			'vehicleId': $scope.params.vehicleObj.vehicleId
+			'vehicleId': $scope.params.vehicleObj.vehicleId,
+			'driverName': $scope.params.driverObj.driverName
 		};
 
 		schedulerHttpService.addAssignment(_stepTwoParams).then(function(result){
@@ -5356,6 +7021,109 @@ angular.module('schedulerAddScheduleControllerModule',[])
 		$scope.stepTwo = false;
 	}
 });
+angular.module('schedulerAddSpecialScheduleControllerModule',[])
+.controller('schedulerAddSpecialScheduleController',function(schedulerHttpService,TOKEN_ERROR,utilFactory,$scope,$state,$compile){
+
+	$scope.active = true;
+	$scope.submitOnProgress =  false;
+	$scope.params = {
+		'beginDate':'',
+		'departureTime':'',
+		'endDate':'',
+		'includingSaturday':false,
+		'includingSunday':false,
+		'bookingRoute':'',
+		'bookingStartStation':'',
+		'bookingEndStation':'',
+		'schedulerId':'',
+		'secondCompanyId':''
+	}
+
+	$scope.breadcrumbText={
+		'lv1':'专车排班',
+		'lv2':'新增排班'
+	}
+
+	// Config datepikcer 
+	$.fn.datepicker.dates['zh-CN'] = {
+		days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
+		daysShort: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
+		daysMin:  ["日", "一", "二", "三", "四", "五", "六"],
+		months: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+		monthsShort: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+		today: "今日",
+		clear: "清除",
+		format: "yyyy/mm/dd",
+		titleFormat: "yyyy/mm",
+		weekStart: 1,
+		startDate: "2017-12-10"
+	};
+
+
+
+	$('.datepicker').datepicker({ 
+		language: "zh-CN",
+		startDate: utilFactory.getNewDate(2)
+	});
+
+	$scope.close = function(){
+		$state.go('admin.scheduler.specialBus')
+	}
+
+	$('.clockpicker').clockpicker({
+		placement: 'top',
+		align: 'left',
+		donetext: '确定'
+		// afterDone: function(){
+			// startTime = $("#departureTime").val();
+			// console.log('startTime:'+startTime)
+		// }
+	});
+
+	$scope.submit = function(formValidateOneIsInvalid){
+
+		if(formValidateOneIsInvalid){
+			return utilFactory.setDirty($scope.formValidateOne);
+		}
+		// $("#departureTime").val();
+		var startTime = $("#departureTime").val();
+		var _formateDepartureTime = (utilFactory.getTimestamp($scope.params.beginDate + ' '+startTime) - utilFactory.getTimestamp($scope.params.beginDate + ' 00:00'));
+		console.log(_formateDepartureTime);
+		var _baseParams = {
+			'schedulerId':utilFactory.getAccountId(),
+			'secondCompanyId':utilFactory.getSecondCompanyId(),
+			'beginDate':utilFactory.getTimestamp($scope.params.beginDate),
+			'endDate':utilFactory.getTimestamp($scope.params.endDate),
+			'bookingRoute':$scope.params.bookingRoute,
+			'includingSaturday':$scope.params.includingSaturday,
+			'includingSunday':$scope.params.includingSunday,
+			'bookingStartStation':$scope.params.bookingStartStation,
+			'bookingEndStation':$scope.params.bookingEndStation,
+			'departureTime': _formateDepartureTime
+		};
+
+		schedulerHttpService.addBookingAssignment(_baseParams).then(function(result){
+			var _resultData = result.data;
+
+			if(!_resultData.error){
+				alertify.alert('新增成功!',function(){
+					$state.go('admin.scheduler.specialBus');
+				});
+				
+			} else{
+				utilFactory.checkErrorCode(_resultData.error.statusCode);
+			}
+
+		})
+
+	}
+
+	// var myDate = new Date();
+	// var startTime = myDate.getHours()+":"+myDate.getMinutes();
+
+	// $("#departureTime").val(startTime);
+
+});
 angular.module('schedulerAddBusControllerModule',[])
 .controller('schedulerAddBusController',function(schedulerHttpService,utilFactory,$stateParams,$state,$scope){
 	if($stateParams.secondCompanyId && $stateParams.schedulerId){ 
@@ -5368,6 +7136,7 @@ angular.module('schedulerAddBusControllerModule',[])
 		  "schedulerId": $stateParams.schedulerId,
 		  "secondCompanyId": $stateParams.secondCompanyId,
 		  'busCompany':[{'name':'数据加载中...','id':null}],
+		  'noDataForOptionList':false
 		  // "shuttleCompanyId": $stateParams.shuttleCompanyId,
 		  // "vehicleLicense": $stateParams.vehicleLicense,
 		  // "vehicleModel": $stateParams.vehicleModel,
@@ -5390,7 +7159,7 @@ angular.module('schedulerAddBusControllerModule',[])
 
 			if(!_resultData.error){
 				$scope.params.busCompany.length = 0;
-				_resultData.value.list.length? $scope.params.busCompany = _resultData.value.list :$scope.params.busCompany.push({'name':'暂无数据','id':null});
+				_resultData.value.list.length? $scope.params.busCompany = _resultData.value.list :$scope.params.noDataForOptionList = true
 			} else{
 				utilFactory.checkErrorCode(_resultData.error.statusCode)
 			}
@@ -5444,7 +7213,7 @@ angular.module('schedulerAddBusControllerModule',[])
 				"licensePlate": $scope.params.licensePlate,
 				"schedulerId": utilFactory.getAccountId(),
 				"secondCompanyId": utilFactory.getSecondCompanyId(),
-				"shuttleCompanyId":$scope.params.busCompanyObj.partyId,
+				"shuttleCompanyId":$scope.params.busCompanyObj.id,
 				'shuttleCompanyName': $scope.params.busCompanyObj.name,
 				"vehicleLicense": $scope.params.vehicleLicense,
 				"vehicleModel": $scope.params.vehicleModel,
@@ -5506,6 +7275,9 @@ angular.module('schedulerBusControllerModule',[])
 	}
 
 
+	$scope.searchFn = function(){
+		$scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1','licensePlate':$scope.searchText});
+	}
 	$scope.addBus = function(){
 		$state.go('admin.scheduler.addBus',{'schedulerId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId()})
 	};
@@ -5518,7 +7290,9 @@ angular.module('schedulerBusControllerModule',[])
 			radio:true,
 			operate:[{
 				name:'查看详情',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item){
 					var paramsObj = item;
 					$state.go('admin.scheduler.busDetail',{
@@ -5540,7 +7314,9 @@ angular.module('schedulerBusControllerModule',[])
 			},
 			{
 				name:'删除',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item){
 
 					alertify.confirm('该车辆可能有排班任务，如继续删除，排班任务也将被清空！',function(){
@@ -5622,6 +7398,7 @@ angular.module('schedulerBusDetailControllerModule',[])
 			'vehicleModel': $stateParams.vehicleModel || '——',
 			'vin': $stateParams.vin || '——',
 			'busCompany':[{'name':'数据加载中...','id':null}],
+			'noDataForOptionList':false
 		}
 
 
@@ -5636,7 +7413,7 @@ angular.module('schedulerBusDetailControllerModule',[])
 
 			if(!_resultData.error){
 				$scope.params.busCompany.length = 0;
-				_resultData.value.list.length? $scope.params.busCompany = _resultData.value.list :$scope.params.busCompany.push({'name':'暂无数据','id':null});
+				_resultData.value.list.length? $scope.params.busCompany = _resultData.value.list :$scope.params.noDataForOptionList = true;
 			} else{
 				utilFactory.checkErrorCode(_resultData.error.statusCode)
 			}
@@ -5652,7 +7429,7 @@ angular.module('schedulerBusDetailControllerModule',[])
 		$scope.params['vehicleLicense'] = $stateParams.vehicleLicense  || '';
 		$scope.params['vehicleModel'] = $stateParams.vehicleModel  || '';
 		$scope.params['vin'] = $stateParams.vin  || '';
-		$scope.params.busCompanyObj = {'name':$scope.params.shuttleCompanyName,'partyId':$scope.params.shuttleCompanyId};
+		$scope.params.busCompanyObj = {'name':$scope.params.shuttleCompanyName,'id':$scope.params.shuttleCompanyId};
 	
 		$scope.active = !flag;
 	};
@@ -5682,7 +7459,7 @@ angular.module('schedulerBusDetailControllerModule',[])
 				"licensePlate": $scope.params.licensePlate,
 				"schedulerId": $scope.params.schedulerId,
 				"secondCompanyId": $scope.params.secondCompanyId,
-				"shuttleCompanyId": $scope.params.busCompanyObj.partyId,
+				"shuttleCompanyId": $scope.params.busCompanyObj.id,
 				"shuttleCompanyName": $scope.params.busCompanyObj.name,
 				"vehicleLicense": $scope.params.vehicleLicense,
 				"vehicleModel": $scope.params.vehicleModel,
@@ -5815,7 +7592,9 @@ angular.module('schedulerbusCompanyControllerModule',[])
 			operateIfFlag:true,
 			operate:[{
 				name:'编辑',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item,event){
 					$scope.updateParams = {
 						'name':item.name,
@@ -5828,7 +7607,9 @@ angular.module('schedulerbusCompanyControllerModule',[])
 			,
 			{
 				name:'删除',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item){
 					var _deleteParams = {
 						'name':item.name,
@@ -5914,35 +7695,6 @@ angular.module('schedulerCalendarControllerModule',[])
 		currentTimezone: 'America/Chicago' // an option!
 	};
 
-	/* event source that contains custom events on the scope */
-	schedulerHttpService.assignmentService({'schedulerId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId(),'beginDate':$scope.beginDate || '1504195200000','endDate':'1506787200000'}).then(function(result){
-		var _resultData = '';
-		if(result){
-			_resultData = result.data;
-		}
-		if(!_resultData.error){
-			for(var i in _resultData.value){
-				$scope.events.push({
-					start:i,
-					title:'班次'+' ' +_resultData.value[i].totalShifts
-				})
-			}
-		}else{
-			alertify.alert(_resultData.error.message)
-		}
-	})
-
-
-	// $scope.calEventsExt = {
- //       color: '#f00',
- //       textColor: 'yellow',
- //       events: [ 
- //          {type:'party',title: 'Lunch',start: new Date(y, m, d, 12, 0),end: new Date(y, m, d, 14, 0),allDay: false},
- //          {type:'party',title: 'Lunch 2',start: new Date(y, m, d, 12, 0),end: new Date(y, m, d, 14, 0),allDay: false},
- //          {type:'party',title: 'Click for Google',start: new Date(y, m, 28),end: new Date(y, m, 29),url: 'http://google.com/'}
- //        ]
- //    };
-
 	$scope.eventsF = function (start, end, timezone, callback) {
 		var s = new Date(start).getTime();
 		var e = new Date(end).getTime()
@@ -5964,7 +7716,7 @@ angular.module('schedulerCalendarControllerModule',[])
 						var d = date.getDate();
 						var m = date.getMonth()+1;
 					    var _today =y+"-"+m+"-"+d;
-					    var _todayB =y+"-"+m+"-0"+d
+					    var _todayB =y+"-"+m+"-0"+d;
 					if(i ==_today || i ==_todayB){
 						$scope.events.push({
 							start:i,
@@ -5980,16 +7732,16 @@ angular.module('schedulerCalendarControllerModule',[])
 					
 				}
 			}else{
-				alertify.alert(_resultData.error.message)
+				utilFactory.checkErrorCode(_resultData.error.statusCode)
 			}
 		})
 	};
-
+	
 	$scope.alertOnEventClick = function( date, jsEvent, view){			
 		$('#myModal').modal('toggle');
 
 		var _params = {
-			'date':utilFactory.getTimestamp(date.start._i),
+			'date':utilFactory.getTimestamp(date.start._i+" 00:00"),
 			'schedulerId':utilFactory.getAccountId(),
 			'secondCompanyId':utilFactory.getSecondCompanyId()
 		};
@@ -6003,11 +7755,10 @@ angular.module('schedulerCalendarControllerModule',[])
 					_resultData.value[i]['departureTime'] = utilFactory.getLocalTime(_resultData.value[i]['departureTime']);
 					_resultData.value[i]['routeType'] = _resultData.value[i]['routeType'] == 'PM'?'下午':'上午';
 
-					
 				}
 				$scope.pageConfigs.list = _resultData.value;
 			}else{
-				alertify.alert(_resultData.error.message)
+				utilFactory.checkErrorCode(_resultData.error.statusCode)
 			}
       	});
 		//$scope.pageConfigs.getList(_params);
@@ -6185,19 +7936,21 @@ angular.module('schedulerAddDriverControllerModule',[])
 			'schedulerId':$stateParams.schedulerId ,
 			'secondCompanyId':$stateParams.secondCompanyId,
 			'busCompany':[{'name':'数据加载中...','id':null}],
+			'noDataForOptionList':false
 			// 'shuttleCompanyId':$stateParams.shuttleCompanyId,
 			// 'licenseID':$stateParams.licenseID,
 			// 'licenseExpirationDate':$stateParams.licenseExpirationDate,
 			// 'identityCard':$stateParams.identityCard
 		};
-
+		console.log("$stateParams.secondCompanyId"+$stateParams.secondCompanyId);
 		// Get bus company list
 		schedulerHttpService.getBusCompany({'schedulerId': $scope.params.schedulerId,'secondCompanyId': $scope.params.secondCompanyId}).then(function(result){
+			
 			var	_resultData = result.data;
 
 			if(!_resultData.error){
 				$scope.params.busCompany.length = 0;
-				_resultData.value.list.length? $scope.params.busCompany = _resultData.value.list :$scope.params.busCompany.push({'name':'暂无数据','partyId':null});
+				_resultData.value.list.length? $scope.params.busCompany = _resultData.value.list :$scope.params.noDataForOptionList = true;
 				//$scope.params.busCompany.unshift({'name':'请选择运营单位','partyId':'?'})
 			} else{
 				alertify.aleret(_resultData.error.message)
@@ -6266,7 +8019,7 @@ angular.module('schedulerAddDriverControllerModule',[])
 				'name': $scope.params.name,
 				'phoneNumber': $scope.params.phoneNumber,
 				'schedulerId': $scope.params.schedulerId,
-				'shuttleCompanyId': $scope.params.busCompanyObj.partyId,
+				'shuttleCompanyId': $scope.params.busCompanyObj.id,
 				'shuttleCompanyName':$scope.params.busCompanyObj.name
 			}
 
@@ -6300,8 +8053,6 @@ angular.module('schedulerDriverControllerModule',[])
 	
 	// If data empty wil use empry page replace table.
 	$scope.dataIsEmpty = false;
-	console.log('xxxxx')
-	console.log(1,loadData)
 	if(!loadData.data.error &&(!loadData.data.value || !loadData.data.value.list.length)){
 		console.log('test test')
 		$scope.dataIsEmpty = true;
@@ -6312,7 +8063,7 @@ angular.module('schedulerDriverControllerModule',[])
 
 	$scope.selectAllStatus = false;
 	$scope.queryByKeyObj = {
-		'active':{'key':'name','value':'司机姓名'},
+		'active':{'key':'driverName','value':'司机姓名'},
 		'list':[{'key':'phoneNumber','value':'手机号'}]
 	}
 
@@ -6328,6 +8079,18 @@ angular.module('schedulerDriverControllerModule',[])
 		$('.dropdown-menu').css('display','block')
 	}
 
+	$scope.searchFn = function(){
+		var _searchParams = {
+			'pageSize':'20',
+			'pageNumber':'1',
+			'pageNo': '1',
+			'accountId':utilFactory.getAccountId(),
+			'secondCompanyId':utilFactory.getSecondCompanyId()
+		}
+		_searchParams[$scope.queryByKeyObj.active.key] = $scope.searchText;
+		$scope.pageConfigs.getList(_searchParams);
+		$scope.$broadcast('refreshPageList',_searchParams);
+	}
 	$scope.pageConfigs={
 		params:{
 			'pageSize':'20',
@@ -6357,7 +8120,9 @@ angular.module('schedulerDriverControllerModule',[])
 			radio:true,
 			operate:[{
 				name:'查看详情',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item){
 					var _params = {
 						'schedulerId': utilFactory.getAccountId(),
@@ -6378,7 +8143,9 @@ angular.module('schedulerDriverControllerModule',[])
 			},
 			{
 				name:'删除',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item){
 					var _params = {
 						'schedulerId': utilFactory.getAccountId(),
@@ -6467,6 +8234,7 @@ angular.module('schedulerDriverDetailControllerModule',[])
 			'shuttleCompanyName': $stateParams.shuttleCompanyName || '———',
 			'shuttleCompanyId': $stateParams.shuttleCompanyId,
 			'busCompany':[{'name':'数据加载中...','id':null}],
+			'noDataForOptionList':false
 		};
 
 
@@ -6475,7 +8243,7 @@ angular.module('schedulerDriverDetailControllerModule',[])
 			var	_resultData = result.data;
 			if(!_resultData.error){
 				$scope.params.busCompany.length = 0;
-				_resultData.value.list.length? $scope.params.busCompany = _resultData.value.list :$scope.params.busCompany.push({'name':'暂无数据','id':null});
+				_resultData.value.list.length? $scope.params.busCompany = _resultData.value.list :$scope.params.noDataForOptionList = true;
 				
 			} else{
 				alertify.aleret(_resultData.error.message)
@@ -6504,7 +8272,7 @@ angular.module('schedulerDriverDetailControllerModule',[])
 		$scope.params['name'] = $stateParams.name || '',
 		$scope.params['phoneNumber'] = $stateParams.phoneNumber || '',
 		$scope.params['shuttleCompanyName'] = $stateParams.shuttleCompanyName || ''
-		$scope.params.busCompanyObj = {'name':$scope.params.shuttleCompanyName,'partyId':$scope.params.shuttleCompanyId};
+		$scope.params.busCompanyObj = {'name':$scope.params.shuttleCompanyName,'id':$scope.params.shuttleCompanyId};
 
 		//scope.$apply();
 		//console.log(1,$scope.params)
@@ -6556,7 +8324,7 @@ angular.module('schedulerDriverDetailControllerModule',[])
 				'name': $scope.params.name,
 				'driverId': $scope.params.driverId,
 				'phoneNumber': $scope.params.phoneNumber,
-				'shuttleCompanyId':$scope.params.busCompanyObj.partyId,
+				'shuttleCompanyId':$scope.params.busCompanyObj.id,
 				'shuttleCompanyName': $scope.params.busCompanyObj.name,
 				'secondCompanyId': $scope.params.secondCompanyId,
 				'secondCompanyName': $scope.params.secondCompanyName
@@ -6619,15 +8387,15 @@ angular.module('schedulerAddRouteControllerModule',[])
 
 
 		$scope.breadcrumbText={'lv1':'线路管理','lv2':'新增线路'}
-		$scope.sortableOptions = {
-			placeholder: "dragItem",
-			connectWith: ".dragWrapper"
-		};
+		// $scope.sortableOptions = {
+		// 	placeholder: "dragItem",
+		// 	connectWith: ".dragWrapper"
+		// };
 
-		$scope.sortableOptions_2 = {
-			placeholder: "dragItem_2",
-			connectWith: ".dragWrapper_2"
-		};
+		// $scope.sortableOptions_2 = {
+		// 	placeholder: "dragItem_2",
+		// 	connectWith: ".dragWrapper_2"
+		// };
 
 	}else{
 		$state.go('admin.scheduler.route')
@@ -6668,8 +8436,10 @@ angular.module('schedulerAddRouteControllerModule',[])
 	$scope.stepOneSubmit = function(formValidateIsInvalid){
 		
 		// Submit empty form will provide error messages
-		if(formValidateIsInvalid || $scope.params.routeType == ''){
+		if($scope.params.routeType == ''){
 			$scope.params.routeTypeError = true;
+		}
+		if(formValidateIsInvalid || $scope.params.routeType == ''){
 
 			return 	utilFactory.setDirty($scope.formValidateOne);
 		}
@@ -6697,51 +8467,58 @@ angular.module('schedulerAddRouteControllerModule',[])
 	}
 
 	$scope.stepThreePre = function(){
-		$scope.stepTwo = true;
+		$scope.params.stationListForPM = null;
+		$scope.searchByStationNameForStepTwo()
 		$scope.stepThree = false;
+		$scope.stepTwo = true;
+		
 	}
 	$scope.close = function(){
 		$state.go('admin.scheduler.route')
 	}
 
-	$scope.stepTwoSubmit = function(formValidateTwo){
-
-		
-		var _stationList = $scope.params.stationList_2;
-		if(!formValidateTwo)return utilFactory.setDirty($scope.formValidateTwo)
+	$scope.stepTwoSubmit = function(formValidateTwo,obj){
+	
+		var _stationListArray = angular.copy($scope.params.stationList_2);
+		console.log('****** formValidateTwo *******')
+		console.log(1,$scope.formValidateTwo)
+		if(!formValidateTwo){
+			
+			utilFactory.setDirty($scope.formValidateTwo)
+			return
+		}
 		
 		// Logic for PM or AM only
 		if($scope.params.routeType !='All'){
 			// Get All selected sites and removed some unuse params.
 
-			if($scope.params.stationList_2.length<2) return alertify.alert('请添加至少两个站点',function(){})
+			if(_stationListArray.length<2) return alertify.alert('请添加至少两个站点',function(){})
 			
-			for(var i=0;i<_stationList.length;i++){
+			for(var i=0;i<_stationListArray.length;i++){
 				// filter unuse params
-				delete _stationList[i]['address'];
-				delete _stationList[i]['gps'];
-				delete _stationList[i]['stationName'];
-				delete _stationList[i]['status'];
+				delete _stationListArray[i]['address'];
+				delete _stationListArray[i]['gps'];
+				delete _stationListArray[i]['stationName'];
+				delete _stationListArray[i]['status'];
 
-				_stationList[i]['departureTime'] = _stationList[i]['departureTime']?_stationList[i]['departureTime']:'0';
-				_stationList[i]['stationId'] =  _stationList[i]['stationId'] == ''?_stationList[i]['stationId'] ='0':_stationList[i]['stationId']+'';
+				_stationListArray[i]['departureTime'] = _stationListArray[i]['departureTime']?_stationListArray[i]['departureTime']:'0';
+				_stationListArray[i]['stationId'] =  _stationListArray[i]['stationId'] == ''?_stationListArray[i]['stationId'] ='0':_stationListArray[i]['stationId']+'';
 				
 				// if routeType equals All, return AM as the default Route Type for last step.
-				_stationList[i]['routeType'] = _stationList[i]['stationType'] == 'All'?'AM':_stationList[i]['stationType'];
+				_stationListArray[i]['routeType'] = _stationListArray[i]['stationType'] == 'All'?'AM':_stationListArray[i]['stationType'];
 				
-				delete _stationList[i]['stationType'];
+				delete _stationListArray[i]['stationType'];
 			}
-			
 			var _params = {
 				'routeName': $scope.params.routeName,
 				'schedulerId': utilFactory.getAccountId(),
 				'secondCompanyId': utilFactory.getSecondCompanyId(),
-				'stationList': _stationList
+				'stationList': _stationListArray
 			}
-			
+			console.log(1,_stationListArray);
 			schedulerHttpService.addRoute(_params).then(function(result){
 				var _resultData = result.data;
-				if(!_resultData.error){
+				if(!_resultData.error){			
 					alertify.alert('新增成功！',function(){
 						$state.go('admin.scheduler.route')
 					}) 
@@ -6751,7 +8528,7 @@ angular.module('schedulerAddRouteControllerModule',[])
 			});
 		}else{
 
-			if($scope.params.stationList_2.length<2) return alertify.alert('至少两个站点可以组成一条线路',function(){})
+			if(_stationListArray.length<2) return alertify.alert('请添加至少两个站点',function(){})
 			// Logic For routeType All
 			schedulerHttpService.getSiteList({'pageSize':1000,'pageNumber':1,'accountId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId(),'stationType':'PM'}).then(function(result){
 				var _resultData = result.data;
@@ -6774,8 +8551,10 @@ angular.module('schedulerAddRouteControllerModule',[])
 
 		if(!formValidateThree) return utilFactory.setDirty($scope.formValidateThree)
 		var _stationListForAllArray = [];
-		if($scope.params.stationList_3.length<2) return alertify.alert('至少两个站点可以组成一条线路',function(){})
-		_stationListForAllArray = $scope.params.stationList_2.concat($scope.params.stationList_3)
+		if($scope.params.stationList_3.length<2) return alertify.alert('请添加至少两个站点',function(){})
+
+		// var _stationListArray = angular.copy($scope.params.stationList_2);
+		var _stationListForAllArray = angular.copy($scope.params.stationList_2.concat($scope.params.stationList_3));
 		for(var i=0;i<_stationListForAllArray.length;i++){
 			// filter unuse params
 			delete _stationListForAllArray[i]['address'];
@@ -6882,16 +8661,42 @@ angular.module('schedulerAddRouteControllerModule',[])
 	// 	}
 	// });
 
-	$scope.addSiteItemForStepTwo = function($event,id,stationId,stationType){
+	$scope.addSiteItemForStepTwo = function($event,id,stationId,routeType){
 		$event.stopPropagation()
-		//$("#addItemForStepTwo_"+id).remove();
+		var _stationList_2 = angular.copy($scope.params.stationList_2);
 		for(var i = $scope.params.stationList.length-1 ; i>=0;i--){
-			if($scope.params.stationList[i].stationId == stationId && $scope.params.stationList[i].stationType == stationType){
-				$scope.params.stationList_2.push($scope.params.stationList[i])
-				$scope.params.stationList.splice(i,1)
-				return false
+			if($scope.params.stationList[i].stationId == stationId && $scope.params.stationList[i]['stationType'] == routeType){
+				if(!_stationList_2.length){
+					$scope.params.stationList_2.push($scope.params.stationList[i])
+					$scope.params.stationList.splice(i,1)
+					return
+				}
+
+				for(var j=0;j<_stationList_2.length;j++){
+					if(_stationList_2.length){
+						if(stationId == _stationList_2[j].stationId){
+							alertify.alert('不能添加重复站点',function() {})
+							return							
+						}else if(j == _stationList_2.length-1) {
+							$scope.params.stationList_2.push($scope.params.stationList[i])
+							$scope.params.stationList.splice(i,1)
+							return
+						}
+
+					}
+				}
+				
 			}
 		}
+
+		// //$("#addItemForStepTwo_"+id).remove();
+		// for(var i = $scope.params.stationList.length-1 ; i>=0;i--){
+		// 	if($scope.params.stationList[i].stationId == stationId && $scope.params.stationList[i].stationType == stationType){
+		// 		$scope.params.stationList_2.push($scope.params.stationList[i])
+		// 		$scope.params.stationList.splice(i,1)
+		// 		return false
+		// 	}
+		// }
 	}
 
 	$scope.removeSiteItemForStepThree = function($event,id,stationId,stationType){
@@ -6907,16 +8712,44 @@ angular.module('schedulerAddRouteControllerModule',[])
 
 
 
-	$scope.addSiteItemForStepThree = function($event,id,stationId,stationType){
+	$scope.addSiteItemForStepThree = function($event,id,stationId,routeType){
+
 		$event.stopPropagation()
-		// console.log('addSiteItemForStepThree')
-		// $("#addItemForStepThree_"+id).remove();
+		var _stationList_3 = angular.copy($scope.params.stationList_3);
 		for(var i = $scope.params.stationListForPM.length-1 ; i>=0;i--){
-			if($scope.params.stationListForPM[i].stationId == stationId && $scope.params.stationListForPM[i].stationType == stationType){
-				$scope.params.stationList_3.push($scope.params.stationListForPM[i])
-				$scope.params.stationListForPM.splice(i,1)
+			if($scope.params.stationListForPM[i].stationId == stationId && $scope.params.stationListForPM[i]['stationType'] == routeType){
+				if(!_stationList_3.length){
+					$scope.params.stationList_3.push($scope.params.stationListForPM[i])
+					$scope.params.stationListForPM.splice(i,1)
+					return
+				}
+
+				for(var j=0;j<_stationList_3.length;j++){
+					if(_stationList_3.length){
+						if(stationId == _stationList_3[j].stationId){
+							alertify.alert('不能添加重复站点',function() {})
+							return							
+						}else if(j == _stationList_3.length-1) {
+							$scope.params.stationList_3.push($scope.params.stationListForPM[i])
+							$scope.params.stationListForPM.splice(i,1)
+							return
+						}
+
+					}
+				}
+				
 			}
 		}
+
+		// $event.stopPropagation()
+		// // console.log('addSiteItemForStepThree')
+		// // $("#addItemForStepThree_"+id).remove();
+		// for(var i = $scope.params.stationListForPM.length-1 ; i>=0;i--){
+		// 	if($scope.params.stationListForPM[i].stationId == stationId && $scope.params.stationListForPM[i].stationType == stationType){
+		// 		$scope.params.stationList_3.push($scope.params.stationListForPM[i])
+		// 		$scope.params.stationListForPM.splice(i,1)
+		// 	}
+		// }
 	}
 })
 angular.module('schedulerRouteControllerModule',[])
@@ -6936,6 +8769,10 @@ angular.module('schedulerRouteControllerModule',[])
 	}
 	$scope.downLoadTemplte = function(){ alertify.alert('正在建设中...')}
 	$scope.importSite = function(){ alertify.alert('正在建设中...')}
+
+	$scope.searchFn = function(searchText){
+		$scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1','routeName':$scope.searchText});
+	}
 
 	$scope.selectAllStatus = false;
 	$scope.pageConfigs={
@@ -6963,14 +8800,18 @@ angular.module('schedulerRouteControllerModule',[])
 			operate:[
 			{
 				name:'查看详情',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item){
 					$state.go('admin.scheduler.updateRoute',{'routeId':item.routeId,'schedulerId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId()})
 				}
 			},
 			{
 				name:'删除',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item){
 					console.log(1,item)
 					alertify.confirm('该线路可能有排班任务，如继续删除，排班任务也将被清空！',function(){
@@ -7041,6 +8882,7 @@ angular.module('schedulerUpdateRouteControllerModule',[])
 		  	'stationListBySearchForPM':[],
 		  	'stationListBySearchForAMOrPM_1':[],
 		  	'stationListBySearchForAMOrPM':[],
+		  	'stationListTemp':[]
 		}
 		$scope.active = false;
 		$scope.submitOnProgress = false;
@@ -7071,7 +8913,7 @@ angular.module('schedulerUpdateRouteControllerModule',[])
 				$scope.params.routeName = _resultData.value.routeName;
 				$scope.params.stationTypeIsAMList =_stationTypsIsAMArray;
 				$scope.params.stationTypeIsPMList =_stationTypsIsPMArray;
-				_currentAllSitesArray = $scope.params.stationTypeIsAMList.concat($scope.params.stationTypeIsPMList);
+				_currentAllSitesArray = angular.copy($scope.params.stationTypeIsAMList.concat($scope.params.stationTypeIsPMList));
 				// Set radio btn status
 				if(_isRouteTypeAM >0 && _isRouteTypePM >0){
 					$scope.params.routeType = 'All';
@@ -7110,6 +8952,12 @@ angular.module('schedulerUpdateRouteControllerModule',[])
 		$scope.hideSiteIsActive = false;
     }
 
+   	$scope.closeAMAndPMEdit = function () {
+   		$scope.setOneRouteOnlyFlag = false;
+		$scope.hideSiteIsActive = false;
+		$scope.selectRouteType($scope.params.currentRouteType)
+   	}
+
 	$scope.goToSiteList = function(routeType){
 		$scope.updateSiteIsActive = true;
 		$scope.hideSiteIsActive = true;
@@ -7123,13 +8971,14 @@ angular.module('schedulerUpdateRouteControllerModule',[])
 			var _resultData = result.data;
 			if(!_resultData.error){
 				$scope.params.stationListFromSiteLibrary = _resultData.value.list.length ? $scope.params.stationList = _resultData.value.list : $scope.params.stationList=[{'stationName':'暂无数据'}]; 
+				$scope.params.stationListTemp = _resultData.value.list;
 			}else{
 				utilFactory.checkErrorCode(_resultData.error.statusCode)
 			}
 		});
 
 		// Setting sites as default data for next page
-		$scope.params.stationSelectedForRoute = routeType == 'AM'?$scope.params.stationTypeIsAMList:$scope.params.stationTypeIsPMList;
+		$scope.params.stationSelectedForRoute = (routeType == 'AM')?$scope.params.stationTypeIsAMList:$scope.params.stationTypeIsPMList;
 	};
 
 	$scope.searchStationNameByRouteType = function(routeType){
@@ -7138,6 +8987,7 @@ angular.module('schedulerUpdateRouteControllerModule',[])
 			if(!_resultData.error){
 				$scope.params.stationListFromSiteLibrary = null;
 				$scope.params.stationListFromSiteLibrary = _resultData.value.list; 
+				$scope.params.stationListTemp = _resultData.value.list
 			}else{
 				utilFactory.checkErrorCode(_resultData.error.statusCode);
 			}
@@ -7148,14 +8998,14 @@ angular.module('schedulerUpdateRouteControllerModule',[])
 	$scope.submitRouteUpdateBaseInfo = function(formValidateOne){
 		if(!formValidateOne) return utilFactory.setDirty($scope.formValidateOne);
 		var totalSite = [];
-		totalSite.concat($scope.params.stationTypeIsAMList).concat($scope.params.stationTypeIsPMList)
+		var _totalSite = totalSite.concat($scope.params.stationTypeIsAMList).concat($scope.params.stationTypeIsPMList)
 		var _params = {
 			'routeName': $scope.params.routeName,
 			'schedulerId': utilFactory.getAccountId(),
 			'routeId': $scope.params.routeId,
 			'stationList': totalSite
 		}
-
+		console.log(1,_totalSite);
 		schedulerHttpService.updateRoute(_params).then(function(result){
 			var _resultData = result.data;
 			if(!_resultData.error){
@@ -7172,10 +9022,29 @@ angular.module('schedulerUpdateRouteControllerModule',[])
 
 	$scope.addSiteItemForRoute = function($event,id,stationId,routeType){
 		$event.stopPropagation()
+		var _stationSelectedForRoute = angular.copy($scope.params.stationSelectedForRoute);
 		for(var i = $scope.params.stationListFromSiteLibrary.length-1 ; i>=0;i--){
 			if($scope.params.stationListFromSiteLibrary[i].stationId == stationId && $scope.params.stationListFromSiteLibrary[i]['stationType'] == routeType){
-				$scope.params.stationSelectedForRoute.push($scope.params.stationListFromSiteLibrary[i])
-				$scope.params.stationListFromSiteLibrary.splice(i,1)
+				if(!_stationSelectedForRoute.length){
+					$scope.params.stationSelectedForRoute.push($scope.params.stationListFromSiteLibrary[i])
+					$scope.params.stationListFromSiteLibrary.splice(i,1)
+					return
+				}
+
+				for(var j=0;j<_stationSelectedForRoute.length;j++){
+					if(_stationSelectedForRoute.length){
+						if(stationId == _stationSelectedForRoute[j].stationId){
+							alertify.alert('不能添加重复站点',function() {})
+							return							
+						}else if(j == _stationSelectedForRoute.length-1) {
+							$scope.params.stationSelectedForRoute.push($scope.params.stationListFromSiteLibrary[i])
+							$scope.params.stationListFromSiteLibrary.splice(i,1)
+							return
+						}
+
+					}
+				}
+				
 			}
 		}
 	}
@@ -7183,28 +9052,59 @@ angular.module('schedulerUpdateRouteControllerModule',[])
 	$scope.removeSiteItemFromSelectedList = function($event,id,stationId,routeType,departureTime,routeStationId){
 
 		$event.stopPropagation()
-		for(var i = $scope.params.stationSelectedForRoute.length-1 ; i>=0;i--){
-			if($scope.params.stationSelectedForRoute[i].stationId == stationId && ($scope.params.stationSelectedForRoute[i].routeType == routeType)){
-				
-				$scope.params.removeSiteForUpdateOperateArray.push({
-						'departureTime':$scope.params.stationSelectedForRoute[i]['departureTime'],
-						'routeStationId':$scope.params.stationSelectedForRoute[i]['routeStationId'],
-						'routeType':$scope.params.stationSelectedForRoute[i]['routeType'],
-						'stationId':$scope.params.stationSelectedForRoute[i]['stationId'],
-						'status':2
-				});
-				$scope.params.stationListFromSiteLibrary.push($scope.params.stationSelectedForRoute[i])
-				$scope.params.stationSelectedForRoute.splice(i,1)		
+		// for(var i =0;i<$scope.params.stationListTemp.length ;i++){
+		// 	if($scope.params.stationListTemp[i].stationId == stationId && ($scope.params.stationListTemp[i].stationType == routeType)){
+		// 		console.log(1,$scope.params.stationListFromSiteLibrary.length)
+		// 		for(var i in $scope.params.stationListFromSiteLibrary.length){
+		// 			if($scope.params.stationListFromSiteLibrary[j]['stationId'] == stationId){
+		// 				$scope.params.stationSelectedForRoute.splice(i,1)
+		// 			}else{
+		// 				$scope.params.stationListFromSiteLibrary.push($scope.params.stationListFromSiteLibrary[j])
+		// 			}
+		// 		}
+		// 		// for(var j=0;j<$scope.params.stationListFromSiteLibrary.length;j++){
+		// 		// 	if($scope.params.stationListFromSiteLibrary[j]['stationId'] == stationId){
+		// 		// 		$scope.params.stationSelectedForRoute.splice(i,1)
+		// 		// 	}else{
+		// 		// 		$scope.params.stationListFromSiteLibrary.push($scope.params.stationListFromSiteLibrary[j])
+		// 		// 	}
+		// 		// }
+		// 		// $scope.params.removeSiteForUpdateOperateArray.push({
+		// 		// 		'departureTime':$scope.params.stationSelectedForRoute[i]['departureTime'],
+		// 		// 		'routeStationId':$scope.params.stationSelectedForRoute[i]['routeStationId'],
+		// 		// 		'routeType':$scope.params.stationSelectedForRoute[i]['routeType'],
+		// 		// 		'stationId':$scope.params.stationSelectedForRoute[i]['stationId'],
+		// 		// 		'status':'0'
+		// 		// });
+		// 	}else {
+		// 		$scope.params.stationSelectedForRoute.splice(i,1)
+		// 	}
+		// }
+
+
+		for(var j=0;j<$scope.params.stationSelectedForRoute.length;j++){
+			if($scope.params.stationSelectedForRoute[j]['stationId'] == stationId){
+				// 将当前stationId与搜索的站点结果对比，如果匹配成功，将从已选中列表移除
+				$scope.params.stationListFromSiteLibrary.push($scope.params.stationSelectedForRoute[j])
+				$scope.params.stationSelectedForRoute.splice(j,1)
+
 			}
 		}
+		// $scope.params.removeSiteForUpdateOperateArray.push({
+		// 		'departureTime':$scope.params.stationSelectedForRoute[i]['departureTime'],
+		// 		'routeStationId':$scope.params.stationSelectedForRoute[i]['routeStationId'],
+		// 		'routeType':$scope.params.stationSelectedForRoute[i]['routeType'],
+		// 		'stationId':$scope.params.stationSelectedForRoute[i]['stationId'],
+		// 		'status':'0'
+		// });
 	}
 
-	$scope.updateSiteForRouteConfirmBtn =  function(formValidate,routeType){
-
+	$scope.updateSiteForRouteConfirmBtn =  function(formValidate,routeType,obj){
+		var _stationListForAllArray = angular.copy($scope.params.stationSelectedForRoute)
+		console.log("****** updateSiteForRouteConfirmBtn *******")
+		console.log($scope.formValidate)
 		if(!formValidate) return utilFactory.setDirty($scope.formValidate);
-		var _stationListForAllArray = $scope.params.stationSelectedForRoute;
-
-		if($scope.params.stationSelectedForRoute.length<2) return alertify.alert('至少两个站点可以组成一条线路',function(){})
+		if(_stationListForAllArray.length<2) return alertify.alert('请添加至少两个站点',function(){})
 		for(var i=0;i<_stationListForAllArray.length;i++){
 			// filter unuse params
 			delete _stationListForAllArray[i]['address'];
@@ -7218,43 +9118,84 @@ angular.module('schedulerUpdateRouteControllerModule',[])
 			_stationListForAllArray[i]['stationId'] =  _stationListForAllArray[i]['stationId'] == ''?_stationListForAllArray[i]['stationId'] ='0':_stationListForAllArray[i]['stationId'];
 			_stationListForAllArray[i]['status'] = '1';
 			// if routeType equals All, return AM as the default Route Type for last step.
-			_stationListForAllArray[i]['routeType'] = _stationListForAllArray[i]['routeType'] ?_stationListForAllArray[i]['routeType']:routeType;
+			if(_stationListForAllArray[i]['routeType']){
+				delete _stationListForAllArray[i]['routeStationId'];
+				continue
+			}else{
+				_stationListForAllArray[i]['routeType'] = _stationListForAllArray[i]['routeType'] ?_stationListForAllArray[i]['routeType']:routeType;			
+			}
+			
 
 			delete _stationListForAllArray[i]['stationType'];
 		}
 
 		// Add another route site to current
-		routeType == 'AM'?_stationListForAllArray.concat($scope.params.stationTypeIsAMList):_stationListForAllArray.concat($scope.params.stationTypeIsPMList)
+		//routeType == 'AM'?_stationListForAllArray.concat(angular.copy($scope.params.stationTypeIsAMList)):_stationListForAllArray.concat(angular.copy($scope.params.stationTypeIsPMList))
 		var _params = {
 			'routeName': $scope.params.routeName,
 			'schedulerId': utilFactory.getAccountId(),
 			'routeId': $scope.params.routeId,
-			'stationList': _stationListForAllArray.concat($scope.params.removeSiteForUpdateOperateArray)
+			'stationList': _stationListForAllArray
 		}
 
+		//$scope.params.removeSiteForUpdateOperateArray
+
+		for(var i = 0;i<_currentAllSitesArray.length;i++ ){
+			delete _currentAllSitesArray[i]['stationAddress'];
+			delete _currentAllSitesArray[i]['stationGPS'];
+			delete _currentAllSitesArray[i]['stationName'];
+			_currentAllSitesArray[i]['status'] = '0'
+			_params.stationList.push(_currentAllSitesArray[i])
+		}
+		console.log(1,_params.stationList);
+		// var _deleteSiteParams = {
+		// 	'routeName': $scope.params.routeName,
+		// 	'schedulerId': utilFactory.getAccountId(),
+		// 	'routeId': $scope.params.routeId,
+		// 	'secondCompanyId': utilFactory.getSecondCompanyId(),
+		// 	'stationList': _currentAllSitesArray
+		// }
 		schedulerHttpService.updateRoute(_params).then(function(result){
 			var _resultData = result.data;
 			if(!_resultData.error){
-				alertify.alert('更新成功!',function(){
+				alertify.alert('更新成功！',function(){
 					$state.go('admin.scheduler.route')
 				}) 
 			}else{
 				utilFactory.checkErrorCode(_resultData.error.statusCode)
 			}
-		});	
+		});
+		// schedulerHttpService.updateRoute(_deleteSiteParams).then(function(result){
+		// 	var _resultData = result.data;
+		// 	if(!_resultData.error){
+		// 		schedulerHttpService.updateRoute(_params).then(function(result){
+		// 			var _resultData = result.data;
+		// 			if(!_resultData.error){
+		// 				alertify.alert('更新成功！',function(){
+		// 					$state.go('admin.scheduler.route')
+		// 				}) 
+		// 			}else{
+		// 				utilFactory.checkErrorCode(_resultData.error.statusCode)
+		// 			}
+		// 		});
+		// 	}else{
+		// 		utilFactory.checkErrorCode(_resultData.error.statusCode)
+		// 	}
+		// });
 	}
 
 
 
 	// swtich routetype logic
 	$scope.selectRouteType = function(selectedRouteType){
-		console.log(selectedRouteType)
 		if($scope.params.currentRouteType == selectedRouteType){
 			$scope.params.routeType = selectedRouteType;
+			$scope.setOneRouteOnlyFlag = false;
 		}else if(selectedRouteType == 'AM' || selectedRouteType == 'PM'){
 			$scope.setOneRouteOnlyFlag = true;
+			$scope.setRouteTypeForAll = false;
 			$scope.params.routeType = selectedRouteType;// Set title for current route type
-
+			$scope.params.stationListBySearchForAMOrPM_1 = $scope.params.routeType =='AM'?$scope.params.stationTypeIsAMList:$scope.params.stationTypeIsPMList;
 			// Get site list as default data for current routeType
 			var _routeType = $scope.params.routeType =='AM'?'AM':'PM';
 			schedulerHttpService.getSiteList({'pageSize':1000,'pageNumber':1,'accountId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId(),'stationType':_routeType}).then(function(result){
@@ -7273,6 +9214,7 @@ angular.module('schedulerUpdateRouteControllerModule',[])
 				var _resultData = result.data;
 				if(!_resultData.error){
 					$scope.params.stationListBySearchForAMOrPM = _resultData.value.list.length ? $scope.params.stationList = _resultData.value.list : $scope.params.stationList=[{'stationName':'暂无数据'}]; 
+					$scope.params.stationListBySearchForAMOrPM_1 = $scope.params.stationTypeIsAMList
 				}else{
 					utilFactory.checkErrorCode(_resultData.error.statusCode)
 				}
@@ -7283,21 +9225,48 @@ angular.module('schedulerUpdateRouteControllerModule',[])
 	$scope.addSiteItemForAMOrPMOnly = function($event,id,stationId,stationType){
 		$event.stopPropagation()
 		//$("#addItemForStepTwo_"+id).remove();
+		// for(var i = $scope.params.stationListBySearchForAMOrPM.length-1; i>=0;i--){
+		// 	if($scope.params.stationListBySearchForAMOrPM[i].stationId == stationId && $scope.params.stationListBySearchForAMOrPM[i].stationType == stationType){
+		// 		$scope.params.stationListBySearchForAMOrPM_1.push($scope.params.stationListBySearchForAMOrPM[i])
+		// 		$scope.params.stationListBySearchForAMOrPM.splice(i,1)
+		// 		return false
+		// 	}
+		// }
+
+		var stationListBySearchForAMOrPM_1 = angular.copy($scope.params.stationListBySearchForAMOrPM_1);
 		for(var i = $scope.params.stationListBySearchForAMOrPM.length-1 ; i>=0;i--){
-			if($scope.params.stationListBySearchForAMOrPM[i].stationId == stationId && $scope.params.stationListBySearchForAMOrPM[i].stationType == stationType){
-				$scope.params.stationListBySearchForAMOrPM_1.push($scope.params.stationListBySearchForAMOrPM[i])
-				$scope.params.stationListBySearchForAMOrPM.splice(i,1)
-				return false
+			if($scope.params.stationListBySearchForAMOrPM[i].stationId == stationId && $scope.params.stationListBySearchForAMOrPM[i]['stationType'] == stationType){
+				if(!stationListBySearchForAMOrPM_1.length){
+					$scope.params.stationListBySearchForAMOrPM_1.push($scope.params.stationListBySearchForAMOrPM[i])
+					$scope.params.stationListBySearchForAMOrPM.splice(i,1)
+					return
+				}
+
+				for(var j=0;j<stationListBySearchForAMOrPM_1.length;j++){
+					if(stationListBySearchForAMOrPM_1.length){
+						if(stationId == stationListBySearchForAMOrPM_1[j].stationId){
+							alertify.alert('不能添加重复站点',function() {})
+							return							
+						}else if(j == stationListBySearchForAMOrPM_1.length-1) {
+							$scope.params.stationListBySearchForAMOrPM_1.push($scope.params.stationListBySearchForAMOrPM[i])
+							$scope.params.stationListBySearchForAMOrPM.splice(i,1)
+							return
+						}
+
+					}
+				}
+				
 			}
 		}
 	}
 
 	$scope.removeSiteItemForAMOrPMOnly = function($event,id,stationId,stationType){
 		$event.stopPropagation()
-		for(var i = $scope.params.stationList_2.length-1 ; i>=0;i--){
-			if($scope.params.stationList_2[i].stationId == stationId && $scope.params.stationList_2[i].stationType == stationType){
-				$scope.params.stationList.push($scope.params.stationList_2[i])
-				$scope.params.stationList_2.splice(i,1)
+		//error
+		for(var i = $scope.params.stationListBySearchForAMOrPM_1.length-1; i>=0;i--){
+			if($scope.params.stationListBySearchForAMOrPM_1[i].stationId == stationId && $scope.params.stationListBySearchForAMOrPM_1[i].stationType == stationType){
+				//$scope.params.stationList.push($scope.params.stationListBySearchForAMOrPM_1[i])
+				$scope.params.stationListBySearchForAMOrPM_1.splice(i,1)
 			}
 		}
 
@@ -7315,14 +9284,33 @@ angular.module('schedulerUpdateRouteControllerModule',[])
 	}
 	$scope.addSiteItemForPM = function($event,id,stationId,stationType){
 		$event.stopPropagation()
-		//$("#addItemForStepTwo_"+id).remove();
+
+		var stationListForPM = angular.copy($scope.params.stationListForPM);
 		for(var i = $scope.params.stationListBySearchForPM.length-1 ; i>=0;i--){
-			if($scope.params.stationListBySearchForPM[i].stationId == stationId && $scope.params.stationListBySearchForPM[i].stationType == stationType){
-				$scope.params.stationListForPM.push($scope.params.stationListBySearchForPM[i])
-				$scope.params.stationListBySearchForPM.splice(i,1)
-				return false
+			if($scope.params.stationListBySearchForPM[i].stationId == stationId && $scope.params.stationListBySearchForPM[i]['stationType'] == stationType){
+				if(!stationListForPM.length){
+					$scope.params.stationListForPM.push($scope.params.stationListBySearchForPM[i])
+					$scope.params.stationListBySearchForPM.splice(i,1)
+					return
+				}
+
+				for(var j=0;j<stationListForPM.length;j++){
+					if(stationListForPM.length){
+						if(stationId == stationListForPM[j].stationId){
+							alertify.alert('不能添加重复站点',function() {})
+							return							
+						}else if(j == stationListForPM.length-1) {
+							$scope.params.stationListForPM.push($scope.params.stationListBySearchForPM[i])
+							$scope.params.stationListBySearchForPM.splice(i,1)
+							return
+						}
+
+					}
+				}
+				
 			}
 		}
+
 	}
 
 
@@ -7335,17 +9323,34 @@ angular.module('schedulerUpdateRouteControllerModule',[])
 			}
 		}
 	}
-	$scope.updateRouteByNewRouteTypeForAMOrPMOlny = function(formValidateTwo){
 
+
+	$scope.removeSiteItemForStepThree = function($event,id,stationId,stationType){
+		$event.stopPropagation()
+		// for(var i = $scope.params.stationListBySearchForPM.length-1 ; i>=0;i--){
+		// 	if($scope.params.stationListBySearchForPM[i].stationId == stationId && $scope.params.stationListBySearchForPM[i].stationType == stationType){
+		// 		$scope.params.stationListForPMstationListBySearchForPM.push($scope.params.stationListBySearchForPM[i])
+		// 		$scope.params.stationListBySearchForPM.splice(i,1)		
+		// 	}
+		// }
+
+		for(var i =0;i<$scope.params.stationListForPM.length;i++){
+			$scope.params.stationListBySearchForPM.push($scope.params.stationListForPM[i])
+			$scope.params.stationListForPM.splice(i,1)			
+		}
+	
+	}
+	$scope.updateRouteByNewRouteTypeForAMOrPMOlny = function(formValidateTwo){
+		//$scope.stationListArray =angular.copy($scope.params.stationListBySearchForAMOrPM_1); 
 		
-		var _stationList = $scope.params.stationListBySearchForAMOrPM_1;
+		var _stationList = angular.copy($scope.params.stationListBySearchForAMOrPM_1)
 		if(!formValidateTwo) return utilFactory.setDirty($scope.formValidateTwo)
 
 		// Logic for PM or AM only
 		if($scope.params.routeType !='All'){
 			// Get All selected sites and removed some unuse params.
 
-			if($scope.params.stationListBySearchForAMOrPM_1.length<2) return alertify.alert('至少两个站点可以组成一条线路',function(){})
+			if($scope.params.stationListBySearchForAMOrPM_1.length<2) return alertify.alert('请添加至少两个站点',function(){})
 			
 			for(var i=0;i<_stationList.length;i++){
 				// filter unuse params
@@ -7354,12 +9359,20 @@ angular.module('schedulerUpdateRouteControllerModule',[])
 				delete _stationList[i]['stationName'];
 				delete _stationList[i]['status'];
 
+
 				_stationList[i]['departureTime'] = _stationList[i]['departureTime']?_stationList[i]['departureTime']:'0';
 				_stationList[i]['stationId'] =  _stationList[i]['stationId'] == ''?_stationList[i]['stationId'] ='0':_stationList[i]['stationId']+'';
 				
 				// if routeType equals All, return AM as the default Route Type for last step.
 				_stationList[i]['status'] = '1';
-				_stationList[i]['routeType'] = _stationList[i]['stationType'] == 'All'?'AM':_stationList[i]['stationType'];
+
+				if(_stationList[i]['routeType']){
+					delete _stationList[i]['routeStationId'];
+					continue
+				}else{
+					_stationList[i]['routeType'] = _stationList[i]['stationType'] == 'All'?'AM':_stationList[i]['stationType'];				
+				}
+				
 				
 				delete _stationList[i]['stationType'];
 			}
@@ -7376,37 +9389,47 @@ angular.module('schedulerUpdateRouteControllerModule',[])
 				delete _currentAllSitesArray[i]['stationAddress'];
 				delete _currentAllSitesArray[i]['stationGPS'];
 				delete _currentAllSitesArray[i]['stationName'];
-				_currentAllSitesArray[i]['status'] = '2'
+				_currentAllSitesArray[i]['status'] = '0'
+				_params.stationList.push(_currentAllSitesArray[i])
 			}
 
-			var _deleteSiteParams = {
-				'routeName': $scope.params.routeName,
-				'schedulerId': utilFactory.getAccountId(),
-				'routeId': $scope.params.routeId,
-				'secondCompanyId': utilFactory.getSecondCompanyId(),
-				'stationList': _currentAllSitesArray
-			}
-
-			schedulerHttpService.updateRoute(_deleteSiteParams).then(function(result){
+			// var _deleteSiteParams = {
+			// 	'routeName': $scope.params.routeName,
+			// 	'schedulerId': utilFactory.getAccountId(),
+			// 	'routeId': $scope.params.routeId,
+			// 	'secondCompanyId': utilFactory.getSecondCompanyId(),
+			// 	'stationList': _currentAllSitesArray
+			// }
+			schedulerHttpService.updateRoute(_params).then(function(result){
 				var _resultData = result.data;
 				if(!_resultData.error){
-					schedulerHttpService.updateRoute(_params).then(function(result){
-						var _resultData = result.data;
-						if(!_resultData.error){
-							alertify.alert('更新成功！',function(){
-								$state.go('admin.scheduler.route')
-							}) 
-						}else{
-							utilFactory.checkErrorCode(_resultData.error.statusCode)
-						}
-					});
+					alertify.alert('更新成功！',function(){
+						$state.go('admin.scheduler.route')
+					}) 
 				}else{
 					utilFactory.checkErrorCode(_resultData.error.statusCode)
 				}
 			});
+			// schedulerHttpService.updateRoute(_deleteSiteParams).then(function(result){
+			// 	var _resultData = result.data;
+			// 	if(!_resultData.error){
+			// 		schedulerHttpService.updateRoute(_params).then(function(result){
+			// 			var _resultData = result.data;
+			// 			if(!_resultData.error){
+			// 				alertify.alert('更新成功！',function(){
+			// 					$state.go('admin.scheduler.route')
+			// 				}) 
+			// 			}else{
+			// 				utilFactory.checkErrorCode(_resultData.error.statusCode)
+			// 			}
+			// 		});
+			// 	}else{
+			// 		utilFactory.checkErrorCode(_resultData.error.statusCode)
+			// 	}
+			// });
 		}else{
 
-			if($scope.params.stationListBySearchForAMOrPM_1.length<2) return alertify.alert('至少两个站点可以组成一条线路',function(){})
+			if($scope.params.stationListBySearchForAMOrPM_1.length<2) return alertify.alert('请添加至少两个站点',function(){})
 			// Logic For routeType All
 			schedulerHttpService.getSiteList({'pageSize':1000,'pageNumber':1,'accountId':utilFactory.getAccountId(),'secondCompanyId':utilFactory.getSecondCompanyId(),'stationType':'PM'}).then(function(result){
 				var _resultData = result.data;
@@ -7419,6 +9442,8 @@ angular.module('schedulerUpdateRouteControllerModule',[])
 				}
 			});
 
+			$scope.params.stationListForPM = angular.copy($scope.params.stationTypeIsPMList);
+
 			$scope.setOneRouteOnlyFlag = false;
 			$scope.setRouteTypeForAll = true;
 		}
@@ -7429,22 +9454,31 @@ angular.module('schedulerUpdateRouteControllerModule',[])
 
 		if(!formValidateThree) return utilFactory.setDirty($scope.formValidateThree)
 		var _stationListForAllArray = [];
-		if($scope.params.stationListForPM.length<2) return alertify.alert('至少两个站点可以组成一条线路',function(){})
-		_stationListForAllArray = $scope.params.stationListForPM.concat($scope.params.stationListBySearchForAMOrPM_1)
+		if($scope.params.stationListForPM.length<2) return alertify.alert('请添加至少两个站点',function(){})
+		_stationListForAllArray = angular.copy($scope.params.stationListForPM.concat($scope.params.stationListBySearchForAMOrPM_1))
 		for(var i=0;i<_stationListForAllArray.length;i++){
 			// filter unuse params
 			delete _stationListForAllArray[i]['address'];
 			delete _stationListForAllArray[i]['gps'];
 			delete _stationListForAllArray[i]['stationName'];
 			delete _stationListForAllArray[i]['status'];
+			delete _stationListForAllArray[i]['stationAddress'];
+			delete _stationListForAllArray[i]['stationGPS'];
 
 			_stationListForAllArray[i]['departureTime'] = _stationListForAllArray[i]['departureTime']?_stationListForAllArray[i]['departureTime']:'0';
-			_stationListForAllArray[i]['stationId'] =  _stationListForAllArray[i]['stationId'] == ''?_stationListForAllArray[i]['stationId'] ='0':_stationListForAllArray[i]['stationId']+'';
+			_stationListForAllArray[i]['stationId'] =  _stationListForAllArray[i]['stationId'] == ''?_stationListForAllArray[i]['stationId'] ='0':_stationListForAllArray[i]['stationId'];
 			_stationListForAllArray[i]['status'] = '1';
 			// if routeType equals All, return AM as the default Route Type for last step.
-			_stationListForAllArray[i]['routeType'] = _stationListForAllArray[i]['stationType'] == 'All'?'PM':_stationListForAllArray[i]['stationType'];
+			if(_stationListForAllArray[i]['routeType']){
+				delete _stationListForAllArray[i]['routeStationId'];
+				continue
+			}else{
+				_stationListForAllArray[i]['routeType'] = _stationListForAllArray[i]['stationType'] == 'All'?'PM':_stationListForAllArray[i]['stationType'];				
+			}
+
 
 			delete _stationListForAllArray[i]['stationType'];
+			
 		}
 		var _params = {
 			'routeName': $scope.params.routeName,
@@ -7457,38 +9491,58 @@ angular.module('schedulerUpdateRouteControllerModule',[])
 			delete _currentAllSitesArray[i]['stationAddress'];
 			delete _currentAllSitesArray[i]['stationGPS'];
 			delete _currentAllSitesArray[i]['stationName'];
-			_currentAllSitesArray[i]['status'] = '2'
+			_currentAllSitesArray[i]['status'] = '0'
+			_params.stationList.push(_currentAllSitesArray[i])
 		}
 
-		var _deleteSiteParams = {
-			'routeName': $scope.params.routeName,
-			'schedulerId': utilFactory.getAccountId(),
-			'routeId': $scope.params.routeId,
-			'secondCompanyId': utilFactory.getSecondCompanyId(),
-			'stationList': _currentAllSitesArray
-		}
-
-		schedulerHttpService.updateRoute(_deleteSiteParams).then(function(result){
+		// var _deleteSiteParams = {
+		// 	'routeName': $scope.params.routeName,
+		// 	'schedulerId': utilFactory.getAccountId(),
+		// 	'routeId': $scope.params.routeId,
+		// 	'secondCompanyId': utilFactory.getSecondCompanyId(),
+		// 	'stationList': _currentAllSitesArray
+		// }
+		schedulerHttpService.updateRoute(_params).then(function(result){
 			var _resultData = result.data;
 			if(!_resultData.error){
-				schedulerHttpService.updateRoute(_params).then(function(result){
-					var _resultData = result.data;
-					if(!_resultData.error){
-						alertify.alert('更新成功！',function(){
-							$state.go('admin.scheduler.route')
-						}) 
-					}else{
-						utilFactory.checkErrorCode(_resultData.error.statusCode)
-					}
-				});
+				alertify.alert('更新成功！',function(){
+					$state.go('admin.scheduler.route')
+				}) 
 			}else{
 				utilFactory.checkErrorCode(_resultData.error.statusCode)
 			}
 		});
+		// schedulerHttpService.updateRoute(_deleteSiteParams).then(function(result){
+		// 	var _resultData = result.data;
+		// 	if(!_resultData.error){
+		// 		schedulerHttpService.updateRoute(_params).then(function(result){
+		// 			var _resultData = result.data;
+		// 			if(!_resultData.error){
+		// 				alertify.alert('更新成功！',function(){
+		// 					$state.go('admin.scheduler.route')
+		// 				}) 
+		// 			}else{
+		// 				utilFactory.checkErrorCode(_resultData.error.statusCode)
+		// 			}
+		// 		});
+		// 	}else{
+		// 		utilFactory.checkErrorCode(_resultData.error.statusCode)
+		// 	}
+		// });
 	}
 
 
+	$scope.stepThreePre = function () {
+		$scope.selectRouteType('All');
+		$scope.setOneRouteOnlyFlag = true;
+		$scope.setRouteTypeForAll = false;
+		$scope.hideSiteIsActive = true;
+	}
 
+	$scope.pre = function () {
+		$scope.hideSiteIsActive = false;
+		$scope.setOneRouteOnlyFlag = false;
+	}
 
 	$scope.sortableOptions = {
 		placeholder: "dragItem",
@@ -7499,6 +9553,7 @@ angular.module('schedulerUpdateRouteControllerModule',[])
 		placeholder: "dragItem_2",
 		connectWith: ".dragWrapper_2"
 	};
+
 })
 angular.module('schedulerHttpServiceModule',[])
 .factory('schedulerHttpService',function($http,USER_ACCOUNT,ROLE_CODE,APISERVICEPATH){
@@ -7518,9 +9573,9 @@ angular.module('schedulerHttpServiceModule',[])
 			'apiPath':driverAccount+'driver/'+paramsObj.accountId+'/secondCompanyId/'+paramsObj.secondCompanyId,
 			paramsList:{
 				'pageNumber':paramsObj.pageNumber,
-				'pageSize':paramsObj.pageSize
-				// 'schedulerId':paramsObj.accountId,
-				// 'secondCompanyId':paramsObj.secondCompanyId
+				'pageSize':paramsObj.pageSize,
+				'driverName':paramsObj.driverName,
+				'phoneNumber': paramsObj.phoneNumber
 			}
 		};
 		
@@ -7653,7 +9708,15 @@ angular.module('schedulerHttpServiceModule',[])
 		};
 		return  $http({ method: 'PUT',url:paramsData.apiPath,headers:{'Content-type':'application/json'},data:paramsData.paramsList});
 	}
-
+	schedulerHttp.getGPSForUpdateSite = function(paramsObj){
+		
+		// var gaodeUrl = 'http://yuntuapi.amap.com/datasearch/id?';
+		var paramsData = {
+			'apiPath':'http://yuntuapi.amap.com/datasearch/id?'+'tableid=59b79ca97bbf190cbdb6bdfe'+'&_id='+paramsObj.id+'&key=d13793346f8cba3be2dae68a401d4248'
+		}
+		
+		return  $http({ method: 'GET',url:paramsData.apiPath,headers:{}});
+	}
 	schedulerHttp.deleteSiteByID = function(paramsObj){
 		var paramsData = {
 			'apiPath':stationService+'station/'+paramsObj.stationId,
@@ -7841,11 +9904,11 @@ angular.module('schedulerHttpServiceModule',[])
 
 	// Add Rote
 	schedulerHttp.addRoute = function(paramsObj){
-
+		//var _paramsObj = paramsObj;
 		for(var i=0;i<paramsObj.stationList.length;i++){
-			console.log()
-			paramsObj.stationList[i].departureTime = paramsObj.stationList[i].departureTime *60*1000;
+			paramsObj.stationList[i].departureTime =  paramsObj.stationList[i].departureTime*60*1000;
 		}
+
 
 		var paramsData = {
 			'apiPath':routeService+'route',
@@ -7956,6 +10019,7 @@ angular.module('schedulerHttpServiceModule',[])
 				'beginDate': paramsObj.beginDate,
 				'departureTime': paramsObj.departureTime,
 				'driverId': paramsObj.driverId ||'1',
+				'driverName': paramsObj.driverName,
 				'routeId': paramsObj.routeId ||'1',
 				'endDate': paramsObj.endDate,
 				'includingSaturday': paramsObj.includeSaturday,
@@ -7984,6 +10048,89 @@ angular.module('schedulerHttpServiceModule',[])
 
 		return  $http({ method: 'DELETE',url:paramsData.apiPath,params:paramsData.paramsList});
 	};
+
+	// specical bus
+	schedulerHttp.addBookingAssignment = function(paramsObj){
+		var paramsData = {
+			'apiPath':stationService+'bookingAssignment',
+			paramsList:{
+				'beginDate': paramsObj.beginDate,
+				'departureTime': paramsObj.departureTime,
+				'endDate': paramsObj.endDate,
+				'includingSaturday': paramsObj.includingSaturday,
+				'includingSunday': paramsObj.includingSunday,
+				'bookingStartStation': paramsObj.bookingStartStation,
+				'bookingEndStation': paramsObj.bookingEndStation,
+				'schedulerId': paramsObj.schedulerId,
+				'bookingRoute': paramsObj.bookingRoute,
+				'secondCompanyId': paramsObj.secondCompanyId
+			}
+		};
+		return	$http({ method: 'POST',url:paramsData.apiPath,headers:{'Content-type':'application/json'},data:paramsData.paramsList});
+	};
+
+	schedulerHttp.bookingAssignment = function(paramsObj){
+		var paramsData = {
+			'apiPath':stationService+'bookingAssignment/'+'count/'+'secondCompany/'+paramsObj.secondCompanyId+'/'+paramsObj.beginTime+'/'+paramsObj.endTime,
+			paramsList:{
+				'beginTime':paramsObj.beginDate,
+				'endTime':paramsObj.endDate,
+				'secondCompanyId':paramsObj.secondCompanyId
+			}
+		};
+		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
+	};
+	schedulerHttp.getSpecialBusList = function(paramsObj){
+		var paramsData = {
+			'apiPath':stationService+'bookingAssignment/'+'secondCompany/'+paramsObj.secondCompanyId+'/'+paramsObj.dateTime,
+			paramsList:{
+				// 'pageSize':paramsObj.pageSize,
+				// 'pageNumber':paramsObj.pageNumber,
+				// 'dateTime':paramsObj.dateTime,
+				// 'schedulerId':paramsObj.accountId,
+				// 'secondCompanyId':paramsObj.secondCompanyId
+			}
+		};
+
+		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
+	};
+	schedulerHttp.updateBookingAssignment = function(paramsObj){
+		var paramsData = {
+			'apiPath':stationService+'bookingAssignment/',
+			'paramsList':{
+				"beginDate": paramsObj.beginDate,
+				"bookingEndStation": paramsObj.bookingEndStation,
+				"bookingRoute": paramsObj.bookingRoute,
+				"bookingStartStation": paramsObj.bookingStartStation,
+				"id": paramsObj.id,
+				"schedulerId": paramsObj.schedulerId
+			}
+		};
+
+		return  $http({ method: 'PUT',url:paramsData.apiPath,data:paramsData.paramsList,headers:{'Content-type':'application/json'},});
+	};
+	schedulerHttp.deleteSpecialBusList = function(paramsObj){
+		var paramsData = {
+			'apiPath':stationService+'bookingAssignment/'+paramsObj.assignmentId+'/'+'scheduler/'+paramsObj.schedulerId,
+			paramsList:{
+				// 'assignmentId':paramsObj.assignmentId,
+	   //          'schedulerId':paramsObj.schedulerId
+			}
+		};
+		return  $http({ method: 'DELETE',url:paramsData.apiPath,params:paramsData.paramsList});
+	};
+	schedulerHttp.getPassengerList = function(paramsObj){
+		var paramsData = {
+			'apiPath':stationService+'bookingOrders/'+'scheduler/'+paramsObj.schedulerId+'/'+'assignment/'+paramsObj.assignmentId,
+			paramsList:{
+				'pageSize':paramsObj.pageSize,
+				'pageNumber':paramsObj.pageNumber
+			}
+		};
+
+		return  $http({ method: 'GET',url:paramsData.apiPath,params:paramsData.paramsList});
+	};
+
 	return schedulerHttp;
 });
 
@@ -8009,6 +10156,15 @@ angular.module('schedulerAddSiteControllerModule',[])
 		var poiPicker = new PoiPicker({city:'021',input: 'pickerInput',});
 		poiPickerReady(poiPicker,SimpleInfoWindow);
 	});
+    AMapUI.loadUI(['control/BasicControl'], function(BasicControl) {
+
+        var zoomCtrl1 = new BasicControl.Zoom({
+                theme: 'light'
+            })
+
+        map.addControl(zoomCtrl1);
+
+    });
 
 	function poiPickerReady(poiPicker,SimpleInfoWindow) {
 		window.poiPicker = poiPicker;
@@ -8143,13 +10299,13 @@ angular.module('schedulerAddSiteControllerModule',[])
 			};
 			
 			var _gps = info.location.split(",");
-			map = null
-			var map = new AMap.Map('container', { zoom: 10, center: [_gps[0],_gps[1]] });
+			//map = null
+			//var map = new AMap.Map('container', { zoom: 10, center: [_gps[0],_gps[1]] });
 			marker.setMap(map);
             infoWindow.setMap(map);
             marker.setPosition(poi.location);
             infoWindow.setPosition(poi.location);
-
+            map.setCenter(poi.location)
             infoWindow.open(map, marker.getPosition()); // show popup by default
             $(document).ready(function(){
 				setTimeout(function(){
@@ -8175,7 +10331,13 @@ angular.module('schedulerAddSiteControllerModule',[])
 			});
 		});
 
-		poiPicker.onCityReady(function() {});
+		poiPicker.onCityReady(function() {
+			$(document).ready(function(){
+				setTimeout(function(){
+				$('.addSiteForm-wrapper').css('display','block');
+				},200)
+			})
+		});
 		AMap.event.addListener(marker, 'dragging', function() {//拖拽时移除弹出窗体
 			//infoWindow.close();
 			//console.log(marker.getPosition()+"marker.getPosition()")
@@ -8199,7 +10361,7 @@ angular.module('schedulerAddSiteControllerModule',[])
 	$(document).ready(function(){
 		setTimeout(function(){
 			$('.addSiteForm-wrapper').css('display','block');
-		},400)
+		},200)
 	})
 
 });
@@ -8271,7 +10433,9 @@ angular.module('schedulerSiteControllerModule',[])
 			radio:true,
 			operate:[{
 				name:'查看详情',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item){
 					var _params = {
 						'address': item.address,
@@ -8288,7 +10452,9 @@ angular.module('schedulerSiteControllerModule',[])
 			},
 			{
 				name:'删除',
-				ngIf:function(){},
+				ngIf:function(){
+					return true
+				},
 				fun:function(item){
 					var _params = {
 						'stationId':item.stationId,
@@ -8378,41 +10544,98 @@ angular.module('schedulerSiteControllerModule',[])
 				PostInit: function(up, files) {
 					document.getElementById('filelist').innerHTML = '';
 					document.getElementById('uploadfiles').onclick = function() {
-						uploader.start();
-						return false;
+						if(up.files.length == 0) {
+							alertify.alert('请先选择要上传的文件',function(){
+								return
+							})
+						}else {
+							up.files[0].status = 1;
+							up.start();
+						}
 					};
 				},
 
 				FilesAdded: function(up, files) {
 					if(up.files.length>1){
-						uploader.removeFile(up.files[1].id)
+						alertify.alert('只能上传一个文件', function(){
+							up.removeFile(up.files[1].id)
+						})
+						
 						return 
+					} else{
+						plupload.each(up.files, function(file) {
+							document.getElementById('filelist').innerHTML += '<div id="' + file.id + '">' + file.name + ' (' + plupload.formatSize(file.size) + ') <span class="fa fa-close" data-id="'+file.id+'" id="removeFile"></span><b></b></div>';
+						});				
 					}
-					plupload.each(files, function(file) {
-						document.getElementById('filelist').innerHTML += '<div id="' + file.id + '">' + file.name + ' (' + plupload.formatSize(file.size) + ') <span class="fa fa-close" data-id="'+file.id+'" id="removeFile"></span><b></b></div>';
-					});
+
 				},
 
 				UploadProgress: function(up, file) {
 					document.getElementById(file.id).getElementsByTagName('b')[0].innerHTML = '<div class="progress" style="margin-top:9px;-webkit-box-shadow:none;box-shadow:none;">'
-										+'<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="'+file.percent+'" aria-valuemin="0" aria-valuemax="100" style="width:'+file.percent+'%">'
-									    +	'<span class="sr-only">40% Complete (success)</span>'
-									  	+'</div>'
-										+'</div>';
+						+'<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="'+file.percent+'" aria-valuemin="0" aria-valuemax="100" style="width:'+file.percent+'%">'
+					    +	'<span class="sr-only">40% Complete (success)</span>'
+					  	+'</div>'
+						+'</div>';
 				},
 				FileUploaded:function(uploader,file,response){
+					
+					console.log(1, uploader)
 					var _resultResponse = JSON.parse(response.response);
 					if(!_resultResponse.error){
-						    $('#importSite').modal('toggle');
+						$('#importSite').modal('toggle');
 						alertify.alert('上传成功',function(){
 							$state.go('admin.scheduler.site',{},{reload:true})
 						})
-					}else{
-						if(_resultResponse.error.statusCode == '0600100101'){
-							alertify.alert('字段格式不正确，请修改后重新上传',function(){
+					} else{
+						if(_resultResponse.error.statusCode === '0800100601'){
+							var a = JSON.parse(_resultResponse.error.message);
+							
+							var _gps = {
+								'lineNumber':'',
+								'name':'GPS位置',
+								'message':''
+							}
+							var _station_type = {
+								'lineNumber':'',
+								'name':'站点属性',
+								'message':''
+							}
+							var _station_name = {
+								'lineNumber':'',
+								'name':'站点名称',
+								'message':''
+							}
+							
+							for(var j=0; j<a.length; j++) {
+								var curEle = a[j];
+								if(a[j]['gps']){
+									var _lineNumber = a[j]['gps']; 
+									_gps.lineNumber = _lineNumber.substring(0,_lineNumber.length-1);
+								}
+								if(a[j]['station_type']){
+									var _lineNumber = a[j]['station_type']; 
+									_station_type.lineNumber = _lineNumber.substring(0,_lineNumber.length-1);
+								}
+								if(a[j]['station_name']){
+									var _lineNumber = a[j]['station_name']; 
+									_station_name.lineNumber = _lineNumber.substring(0,_lineNumber.length-1);
+								}																					
+							}
+							if((_station_name.lineNumber.length) ||(_gps.lineNumber.length) ||(_station_type.lineNumber.length)){
+								_station_name.message = _station_name.name + '第'+_station_name.lineNumber+'行格式错误';
+								_gps.message = _gps.name + '第'+_gps.lineNumber+'行格式错误';
+								_station_type.message = _station_type.name + '第'+_station_type.lineNumber+'行格式错误';
 
-							})
-						}else{
+								var _station_nameError = _station_name.lineNumber.length?_station_name.message+'<br>':'';
+								var _gpsError = _gps.lineNumber.length?_gps.message+'<br>':'';
+								var _station_typeError = _station_type.lineNumber.length?_station_type.message:'';
+
+								alertify.alert(_station_nameError+_gpsError+_station_typeError,function(){
+
+									return
+								});
+							}		
+						} else{
 							utilFactory.checkErrorCode(_resultResponse.error.statusCode)
 						}
 					}
@@ -8425,6 +10648,10 @@ angular.module('schedulerSiteControllerModule',[])
 			document.getElementById('filelist').innerHTML = '';
 		})
 		uploader.init();
+		    //最后给"开始上传"按钮注册事件
+
+
+
 		$scope.importSite = function(){
 			$('#importSite').modal('toggle');
 			if(uploader.files.length>0){
@@ -8442,7 +10669,9 @@ angular.module('schedulerUpdateSiteControllerModule',[])
 	var _secondCompanyId = $stateParams.secondCompanyId || utilFactory.getSecondCompanyId();
 	var _accountId = $stateParams.accountId || utilFactory.getAccountId();
 	var _secondCompanyId = $stateParams.secondCompanyId || utilFactory.getSecondCompanyId();
-	
+	var map ='';
+	var gps = '';
+	var marker='';
 	$scope.goBack = function(){
 		$state.go('admin.scheduler.site')
 	}
@@ -8459,16 +10688,23 @@ angular.module('schedulerUpdateSiteControllerModule',[])
 			'lv1':'站点管理',
 			'lv2':'编辑站点'
 		}
+		schedulerHttpService.getGPSForUpdateSite({'id':$scope.gps}).then(function(data){
+			if(data.data.info === "OK"){
+				gps = data.data.datas[0]._location.split(',')
+				console.log(gps)
+				map = new AMap.Map('container', { zoom: 10,center:[gps[0],gps[1]]});
+				AMapUI.loadUI(['misc/PoiPicker','overlay/SimpleInfoWindow'], function(PoiPicker,SimpleInfoWindow) {
+					var poiPicker = new PoiPicker({ city:'021', input: 'pickerInput',});
+					poiPickerReady(poiPicker,SimpleInfoWindow);
+				});
+			}
+		},function(){
+
+		});
 	}else{
 		$state.go('admin.scheduler.site')
 	}
 
-	var map = new AMap.Map('container', { zoom: 10,center: [121.339766,31.196099] });
-	var marker='';
-	AMapUI.loadUI(['misc/PoiPicker','overlay/SimpleInfoWindow'], function(PoiPicker,SimpleInfoWindow) {
-		var poiPicker = new PoiPicker({ city:'021', input: 'pickerInput',});
-		poiPickerReady(poiPicker,SimpleInfoWindow);
-	});
 
 	function poiPickerReady(poiPicker,SimpleInfoWindow) {
 		window.poiPicker = poiPicker;
@@ -8601,31 +10837,39 @@ angular.module('schedulerUpdateSiteControllerModule',[])
 			};
 			
 			var _gps = info.location.split(",");
-			map = null
-			var map = new AMap.Map('container', { zoom: 10, center: [_gps[0],_gps[1]] });
+			//map = null
+			//var map = new AMap.Map('container', { zoom: 10, center: [_gps[0],_gps[1]] });
 			marker.setMap(map);
             infoWindow.setMap(map);
             marker.setPosition(poi.location);
             infoWindow.setPosition(poi.location);
-
+            map.setCenter(poi.location)
+            console.log('xxx')
             infoWindow.open(map, marker.getPosition()); // show popup by default
             $(document).ready(function(){
 				setTimeout(function(){
 					$('.addSiteForm-wrapper').css('display','block');
 				},400)
 			})
-		});
-		// poiPicker.onCityReady(function() {});
+			AMap.event.addListener(marker, 'dragging', function() {//拖拽时移除弹出窗体
+				//infoWindow.close();
+				//console.log(marker.getPosition()+"marker.getPosition()")
+				infoWindow.open(map, marker.getPosition());
+				$(document).ready(function(){
+					$('.addSiteForm-wrapper').css('display','block');
+				})
+			});
 
-		// AMap.event.addListener(marker, 'click', function() {//点击时，显示弹出窗体
-		// 	$('.addSiteForm-wrapper').css('display','block');
-		// 	infoWindow.open(map, marker.getPosition());
-		// 	$(document).ready(function(){
-		// 		setTimeout(function(){
-		// 			$("#stationType").val($scope.stationType);
-		// 		},200)
-		// 	})
-		// });
+			AMap.event.addListener(marker, 'dragend', function() {//拖拽时移除弹出窗体
+				//infoWindow.close();
+				// console.log(marker.getPosition()+"marker.getPosition()")
+				infoWindow.open(map, marker.getPosition());
+				$(document).ready(function(){
+					$('.addSiteForm-wrapper').css('display','block');
+				})
+			});
+		});
+
 		$(document).ready(function(){
 			setTimeout(function(){
 				console.log('$scope.stationType:'+$scope.stationType)
@@ -8633,6 +10877,14 @@ angular.module('schedulerUpdateSiteControllerModule',[])
 				$("#stationType").val($scope.stationType);
 			},200)
 		})
+
+		poiPicker.onCityReady(function() {
+			$(document).ready(function(){
+				setTimeout(function(){
+				$('.addSiteForm-wrapper').css('display','block');
+				},200)
+			})
+		});
 		AMap.event.addListener(marker, 'dragging', function() {
 			//infoWindow.close();
 			infoWindow.open(map, marker.getPosition());
@@ -8658,3 +10910,638 @@ angular.module('schedulerUpdateSiteControllerModule',[])
 	})
 
 })
+angular.module('schedulerSpecialBusControllerModule',[])
+.controller('schedulerSpecialBusController',function(schedulerHttpService,utilFactory,$scope,$state,$compile,$stateParams){
+
+  ///////////////// ADD Schedule /////////////////////
+	$scope.addSchedule = function(){
+		$state.go('admin.scheduler.addSpecialSchedule')
+	}
+
+	/////////////////	INIT CONFIG ////////////////////
+	$scope.active = true;
+	$scope.submitOnProgress = false;
+	$scope.selectAllStatus = false;
+	$scope.breadcrumbText={'lv1':'排班管理'};
+	$scope.events = [];
+	$scope.calEventsExt = [];
+
+	var date = new Date();
+	var d = date.getDate();
+	var m = date.getMonth();
+	var y = date.getFullYear();
+
+	$scope.eventSource = {
+		url: "http://www.google.com/calendar/feeds/usa__en%40holiday.calendar.google.com/public/basic",
+		className: 'gcal-event',// an option!
+		currentTimezone: 'America/Chicago' // an option!
+	};
+
+	$scope.eventsF = function (start, end, timezone, callback) {
+		var s = new Date(start).getTime();
+		var e = new Date(end).getTime()
+		var m = new Date(start).getMonth();
+
+		$scope.beginDate = s;
+		$scope.endDate =e;
+		var events = [];
+		callback(events);
+		schedulerHttpService.bookingAssignment({'secondCompanyId':utilFactory.getSecondCompanyId(),'beginTime':s,'endTime':e}).then(function(result){
+			var _resultData = '';
+			if(result){
+				 _resultData = result.data;
+			}
+			if(!_resultData.error){
+				for(var i in _resultData.value.assignmentCountMap){
+						var date = new Date();
+						var y =date.getFullYear();
+						var d = date.getDate();
+						var m = date.getMonth()+1;
+					    var _today =y+"-"+m+"-"+d;
+					    var _todayB =y+"-"+m+"-0"+d
+					if(i ==_today || i ==_todayB){
+						$scope.events.push({
+							start:i,
+							title:'班次:'+' '+_resultData.value.assignmentCountMap[i],
+							className:['todayTextColor']
+						})
+					}else{
+						$scope.events.push({
+							start:i,
+							title:'班次:'+' '+_resultData.value.assignmentCountMap[i]
+						})
+					}
+					
+				}
+			}else{
+				utilFactory.checkErrorCode(_resultData.error.statusCode)
+			}
+		})
+	};
+	$scope.alertOnEventClick = function(date, jsEvent, view){	
+
+		var _params = {
+			'date':utilFactory.getTimestamp(date.start._i+" 00:00"),
+			'schedulerId':utilFactory.getAccountId(),
+			'secondCompanyId':utilFactory.getSecondCompanyId()
+		};
+		$scope.eventDay = date.start._i.replace(/-/g,'/');	
+		// console.log($scope.eventDay);
+		$state.go('admin.scheduler.specialBusList',{'eventDay':$scope.eventDay});
+		// var d = new Date();
+		// var clickDay = utilFactory.getTimestamp(date.start._i+" 00:00");
+		// var currentDay = utilFactory.getTimestamp(d)+24*60*60*1000;
+		// if (clickDay < currentDay) {
+		// 	$state.go('admin.scheduler.specialBusList',{'eventDay':$scope.eventDay});
+		// } else {
+		// 	$state.go('admin.scheduler.specialBusEdit',{'eventDay':$scope.eventDay});	
+		// }
+	}
+
+	/* add and removes an event source of choice */
+	$scope.addRemoveEventSource = function(sources,source) {
+		var canAdd = 0;
+		angular.forEach(sources,function(value, key){
+			if(sources[key] === source){
+				sources.splice(key,1);
+				canAdd = 1;
+			}
+		});
+		
+		if(canAdd === 0){
+			sources.push(source);
+		}
+	};
+
+	/* remove event */
+	$scope.remove = function(index) {
+		$scope.events.splice(index,1);
+	};
+
+	/* Change View */
+	$scope.changeView = function(view,calendar) {
+		uiCalendarConfig.calendars[calendar].fullCalendar('changeView',view);
+	};
+
+	/* Change View */
+	$scope.renderCalender = function(calendar) {
+		if(uiCalendarConfig.calendars[calendar]){
+			uiCalendarConfig.calendars[calendar].fullCalendar('render');
+		}
+	};
+
+	/* Render Tooltip */
+	$scope.eventRender = function( event, element, view ) { 
+		element.attr({'tooltip': event.title,'tooltip-append-to-body': true});
+		$compile(element)($scope);
+	};
+
+	/* config object */
+	$scope.uiConfig = {
+		calendar:{
+			height: 500,
+			editable: true,
+			header:{
+				left: 'title',
+				center: '',
+				right: '今天 prev,next'
+			},
+			views: {
+				month: {
+					titleFormat: 'YYYY年MM月'
+				}
+			},
+			monthNames:['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'], 
+			monthNamesShort:['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+			dayNames:['星期日','星期一','星期二','星期三','星期四','星期五','星期六'],
+			dayNamesShort:['星期日','星期一','星期二','星期三','星期四','星期五','星期六'],
+			eventClick: $scope.alertOnEventClick,
+			eventDrop: $scope.alertOnDrop,
+			eventResize: $scope.alertOnResize,
+			eventRender: $scope.eventRender
+		}
+	};
+
+	/* event sources array*/
+	$scope.eventSources = [$scope.calEventsExt,$scope.events, $scope.eventsF];
+	$scope.eventSources2 = [ $scope.eventsF, $scope.events];
+
+});
+angular.module('schedulerSpecialBusEditControllerModule',[])
+.controller('schedulerSpecialBusEditController',function(schedulerHttpService,TOKEN_ERROR,utilFactory,$scope,$state,$compile,$stateParams){
+	$scope.breadcrumbText={
+		'lv1':'专车排班',
+		'lv2':'排班详情'
+	}
+
+	$scope.addSchedule = function(){
+		$state.go('admin.scheduler.addOneDaySchedule');
+	}
+
+	$('.datepicker').datepicker({ 
+		language: "zh-CN"
+	});
+
+	// $scope.eventDay = $stateParams.eventDay;
+
+	$scope.pageConfigsModal={
+
+		// var result = $scope.tableConfig.stableFlag.operate;
+		// for(var i =0;i<result.length;i++) {
+		// 	$scope.tableConfig.stableFlag.operate[i].fun();
+		// 	console.log("1234567890")
+		// }
+		params:{
+			'pageSize':'20',
+			'pageNumber':'1',
+			'schedulerId':utilFactory.getAccountId(),
+			'assignmentId': $stateParams.assignmentId
+		},
+		list:null,
+		ngIf:false,
+		getList:function(params){
+			return schedulerHttpService.getPassengerList(params);
+		},
+		loadData:function(){
+		},
+		dataSet:function(result){
+			// if(result.value !=null){
+			// 	var _dataArray = result.value
+			// 	for(var i=0;i<_dataArray.length;i++){
+			// 		_dataArray[i]['departureTime'] = utilFactory.getLocalTime(_dataArray[i]['departureTime']);
+			// 	}
+			// }
+		}
+  	}
+
+	$scope.tableConfigModal={
+		stableFlag:{
+			arrow:true,
+			index:true,
+			checkbox:false,
+			radio:true
+		},
+		checkbox:{
+			checkArray:[]
+		},
+		defaultValue:'——',
+		operateIfFlag:false,
+		setHeadOptional:{
+			cancelSelectNum:5,
+			selectOptions:[
+				{
+					'parentKey':'',
+					'selfKey':{'key':'curElementsNum','value':'编号'},
+					'checkFlag':true
+				},
+				{
+					'parentKey':'',
+					'selfKey':{'key':'bookingAssignmentId','value':'预约编号'},
+					'checkFlag':true
+				},
+				{
+					'parentKey':'',
+					'selfKey':{'key':'passengerName','value':'姓名'},
+					'checkFlag':true
+				},
+				{
+					'parentKey':'',
+					'selfKey':{'key':'phoneNumber','value':'手机号'},
+					'checkFlag':true
+				},
+				{
+					'parentKey':'',
+					'selfKey':{'key':'beginTime','value':'创建时间'},
+					'checkFlag':true
+				}
+			]
+		}
+	}
+
+});
+angular.module('schedulerSpecialBusListControllerModule',[])
+.controller('schedulerSpecialBusListController',function(schedulerHttpService,TOKEN_ERROR,utilFactory,$scope,$state,$stateParams,ERRORCODE_CONSTANT){
+	$scope.breadcrumbText={
+		'lv1':'专车排班',
+		'lv2':'排班详情'
+	}
+
+	$("#currentDay").val($stateParams.eventDay);
+	$scope.params = {
+		'currentDay':$("#currentDay").val()
+	}
+
+	var dateTime = utilFactory.getTimestamp($scope.params.currentDay);
+	var d = new Date();
+	var clickDay = utilFactory.getTimestamp($scope.params.currentDay+" 00:00");
+	var compareDay = utilFactory.getTimestamp(d)+24*60*60*1000;
+
+	$scope.clickDate = $stateParams.eventDay.replace(/\//g,'.');
+
+	// Config datepikcer 
+	$.fn.datepicker.dates['zh-CN'] = {
+		days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
+		daysShort: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
+		daysMin:  ["日", "一", "二", "三", "四", "五", "六"],
+		months: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+		monthsShort: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+		today: "今日",
+		clear: "清除",
+		format: "yyyy/mm/dd",
+		titleFormat: "yyyy/mm",
+		weekStart: 1
+	};
+	$('.datepicker').datepicker({ 
+		language: "zh-CN",
+	});
+
+	if(clickDay < compareDay) {
+		$scope.display = true
+	} else {
+		$scope.display = false
+	}
+
+	$scope.selectAllStatus = false;
+
+
+
+	// get specialBusList table
+	$scope.pageConfigs={
+		params:{
+			'pageSize':'20',
+			'pageNumber':'1',
+			'accountId':utilFactory.getAccountId(),
+			'secondCompanyId':utilFactory.getSecondCompanyId(),
+			'dateTime':utilFactory.getTimestamp($scope.params.currentDay)
+		},
+		list:null,
+		getList:function(params){
+			return schedulerHttpService.getSpecialBusList(params)
+		},
+		loadData:function(){
+		},
+		dataSet:function(result){
+			var _data = result.value.list;
+			for(var i =0;i<_data.length;i++){
+				_data[i]['bookingRoute'] = _data[i]['bookingRoute'] + '(' +_data[i]['bookingStartStation'] +' - '+ _data[i]['bookingEndStation']+')'
+				_data[i]['beginTime'] = utilFactory.getCurrentTime((_data[i]['beginTime']));
+				_data[i]['bookingCount'] = _data[i]['bookingCount'] ? _data[i]['bookingCount'] : '0';
+
+			}
+		},
+		extendParams:function(){}
+		
+	}
+
+	$scope.tableConfig={
+		stableFlag:{
+			arrow:true,
+			index:true,
+			checkbox:false,
+			radio:true,
+			operate:[{
+				name:'查看预约人',
+				ngIf:function(item){
+					if (clickDay < compareDay) {
+						return true
+					} else {
+						return false
+					}
+				},
+				fun:function(item,event){
+				
+					// $state.go('admin.scheduler.specialBusEdit',{'assignmentId': item.id});
+					$scope.checkParams = {
+						'pageSize':'20',
+						'pageNumber':'1',
+						'schedulerId':utilFactory.getAccountId(),
+						'assignmentId': item.id
+					}
+					$scope.routeName = item.bookingRoute.split("(")[0];
+					$scope.departureTime = item.beginTime;
+					$('#myModal').modal('toggle');
+					schedulerHttpService.getPassengerList($scope.checkParams).then(function(result){
+						var _resultData = result.data;
+						if(!_resultData.error){
+							var _data = _resultData.value.list
+							for(var i=0;i<_data.length;i++){
+								_data[i]['passengerId'] = i+1;
+								_data[i]['createTime'] = utilFactory.getLocalTime((_data[i]['createTime']));
+							}
+							$scope.pageConfigsModal.list = _resultData.value.list;
+						}else{
+							utilFactory.checkErrorCode(_resultData.error.statusCode)
+						}
+			      	});
+					$scope.pageConfigsModal={
+
+						params:{
+							'pageSize':'20',
+							'pageNumber':'1',
+							'schedulerId':utilFactory.getAccountId(),
+							'assignmentId': $scope.checkParams.assignmentId
+						},
+						list:null,
+						getList:function(params){
+							return schedulerHttpService.getPassengerList(params);
+						},
+						loadData:function(){
+						},
+						dataSet:function(result){
+						}
+				  	}
+				}
+			},
+			{
+				name:'编辑',
+				ngIf:function(){
+					if (clickDay < compareDay) {
+						return false;
+					} else {
+						return true;
+					}
+				},
+				fun:function(item,event){
+					$scope.updateParams = {
+						"bookingEndStation": item.bookingEndStation,
+						"bookingRoute": item.bookingRoute,
+						"bookingStartStation": item.bookingStartStation,
+						"id": item.id
+					}
+					$("#departureTime").val(item.beginTime);
+					$('#updateModal').modal('toggle');
+				}
+			},
+			{
+				name:'删除',
+				ngIf:function(){
+					if (clickDay < compareDay) {
+						return false;
+					} else {
+						return true;
+					}
+				},
+				fun:function(item){
+					var deleteParams = {
+						'schedulerId': utilFactory.getAccountId(),
+						'assignmentId': item.id
+					}
+					alertify.confirm('确认要删除该排班吗',function(){
+						schedulerHttpService.deleteSpecialBusList(deleteParams).then(function(result){
+							var _resultData = result.data;
+							if(!_resultData.error) {
+								alertify.alert('删除成功！',function(){
+									$state.go('admin.scheduler.specialBusList',{},{reload:true})
+									var params = {
+										'pageSize':'20',
+										'pageNumber':'1',
+										'accountId':utilFactory.getAccountId(),
+										'secondCompanyId':utilFactory.getSecondCompanyId(),
+										'dateTime':utilFactory.getTimestamp($("#currentDay").val())
+									}
+									// $scope.pageConfigs.getList(params);
+
+									// $state.reload();
+									// $scope.$broadcast('refreshPageList',{
+									// 	pageSize:'20',
+									// 	pageNo:'1',
+									// 	secondCompanyId:utilFactory.getSecondCompanyId(),
+									// 	dateTime:utilFactory.getTimestamp($("#currentDay").val())
+									// });
+
+								})
+								
+							}else{
+								utilFactory.checkErrorCode(_resultData.error.statusCode,_resultData.error.statusText)
+							}
+						})
+					},function(){}).set({labels:{cancel: '取消',ok:'坚持删除'}, padding: true});
+				}
+			}
+			]
+		},
+		checkbox:{
+			checkArray:[]
+		},
+		defaultValue:'——',
+		defaultEmptyText:'还未添加过任何排班',
+		radioSelect:function(){},
+		operateIfFlag:true,
+		setHeadOptional:{
+			cancelSelectNum:5,
+	    	selectOptions:[
+				{
+					'parentKey':'',
+					'selfKey':{'key':'bookingRoute','value':'线路信息'},
+					'checkFlag':true
+				},
+				{
+					'parentKey':'',
+					'selfKey':{'key':'beginTime','value':'发车时间'},
+					'checkFlag':true
+				},
+				{
+					'parentKey':'',
+					'selfKey':{'key':'bookingCount','value':'预约人数'},
+					'checkFlag':true
+				}
+	    	]
+	    },
+		changeEnable:function(item){}
+	}
+
+
+	$scope.addSchedule = function(){
+		$state.go('admin.scheduler.addOneDaySchedule',{'eventDay':$scope.params.currentDay,'dateTime':dateTime});
+	}	
+
+	$('.clockpicker').clockpicker({
+		placement: 'top',
+		align: 'left',
+		autoclose: true
+	});
+	// var _startTime = $("#departureTime").val();
+
+	$scope.close = function(){ $('#updateModal').modal('toggle');}
+
+
+ //    get passenger list
+	$scope.tableConfigModal={
+		stableFlag:{
+			arrow:true,
+			index:true,
+			checkbox:false,
+			radio:true
+		},
+		checkbox:{
+			checkArray:[]
+		},
+		defaultValue:'——',
+		operateIfFlag:false,
+		setHeadOptional:{
+			cancelSelectNum:5,
+			selectOptions:[
+				{
+					'parentKey':'',
+					'selfKey':{'key':'curElementsNum','value':'编号'},
+					'checkFlag':true
+				},
+				{
+					'parentKey':'',
+					'selfKey':{'key':'bookingAssignmentId','value':'预约编号'},
+					'checkFlag':true
+				},
+				{
+					'parentKey':'',
+					'selfKey':{'key':'passengerName','value':'姓名'},
+					'checkFlag':true
+				},
+				{
+					'parentKey':'',
+					'selfKey':{'key':'phoneNumber','value':'手机号'},
+					'checkFlag':true
+				},
+				{
+					'parentKey':'',
+					'selfKey':{'key':'createTime','value':'创建时间'},
+					'checkFlag':true
+				}
+			]
+		}
+	}
+
+	$scope.$watch('params.currentDay',function(newValue, oldValue){ 
+		if (newValue === oldValue) { 
+			return
+		} else {
+			var params = {
+				'pageSize':'20',
+				'pageNumber':'1',
+				'accountId':utilFactory.getAccountId(),
+				'secondCompanyId':utilFactory.getSecondCompanyId(),
+				'dateTime':utilFactory.getTimestamp(newValue)
+			}
+
+			var _result = $scope.tableConfig.stableFlag.operate;
+			for(var i =0;i<_result.length;i++) {
+				clickDay = utilFactory.getTimestamp(newValue);
+				$scope.tableConfig.stableFlag.operate[i].ngIf();
+			}
+			// $scope.pageConfigs.list = null
+			$scope.pageConfigs.getList(params);
+			
+			if(clickDay < compareDay) {
+				$scope.display = true;
+			} else {
+				$scope.display = false;
+			}
+
+			$scope.$broadcast('refreshPageList',{
+				pageSize:'20',
+				pageNo:'1',
+				secondCompanyId:utilFactory.getSecondCompanyId(),
+				dateTime:utilFactory.getTimestamp(newValue)
+			});
+		}  		
+	});
+	$scope.$watch('$viewContentLoaded',function(event){ 
+  		$scope.$broadcast('refreshPageList',{pageSize:'20',pageNo:'1'});
+	});
+
+	$scope.updateBookingAssignment = function(updateFormValidateIsInvalid){
+
+		// if(updateFormValidateIsInvalid){ 
+		// 	return utilFactory.setDirty($scope.updateFormValidate)
+		// }
+		$("#departureTime").val();
+
+		var _startTime = $("#departureTime").val();
+		$scope._startTime = $("#departureTime").val();
+		var _formateDepartureTime = utilFactory.getTimestamp($scope.params.currentDay + ' '+_startTime);
+		var _bookingRoute = $scope.updateParams.bookingRoute.split("(");
+		var _params = {
+			"beginDate": _formateDepartureTime,
+			"bookingEndStation": $scope.updateParams.bookingEndStation,
+			"bookingRoute": _bookingRoute[0],
+			"bookingStartStation": $scope.updateParams.bookingStartStation,
+			"id": $scope.updateParams.id,
+			'schedulerId': utilFactory.getAccountId()
+		}
+	
+		$scope.submitOnProgress = true;
+		$('#updateModal').modal('toggle');
+		schedulerHttpService.updateBookingAssignment(_params).then(function(result){
+			var _resultData = result.data;
+			if(!_resultData.error){
+				alertify.alert('更新成功！',function(){
+					var params = {
+						'pageSize':'20',
+						'pageNumber':'1',
+						'accountId':utilFactory.getAccountId(),
+						'secondCompanyId':utilFactory.getSecondCompanyId(),
+						'dateTime':utilFactory.getTimestamp($("#currentDay").val())
+					}
+					$scope.pageConfigs.getList(params);
+
+					$scope.$broadcast('refreshPageList',{
+						pageSize:'20',
+						pageNo:'1',
+						secondCompanyId:utilFactory.getSecondCompanyId(),
+						dateTime:utilFactory.getTimestamp($("#currentDay").val())
+					});
+
+				})
+			}else{
+
+				if(_resultData.error.statusCode == ERRORCODE_CONSTANT.ERROR_CODE_08005004004.code) {
+					alertify.alert('编辑预约排班须至少提前两天',function(){})
+				} else {
+					utilFactory.checkErrorCode(_resultData.error.statusCode,_resultData.error.statusText);
+				}
+			}
+			$scope.submitOnProgress = false;
+		},function(){
+			$scope.submitOnProgress = false;
+		})
+	};	
+});

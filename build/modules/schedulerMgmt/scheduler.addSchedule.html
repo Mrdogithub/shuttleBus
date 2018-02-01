@@ -7,7 +7,7 @@
 
 		<div class="info-wrapper" ng-show = "stepOne">
 			<div class="title">
-				<h1>基础信息:</h1>
+				<h1>时间信息:</h1>
 			</div>
 			
 			<div class="content">
@@ -16,14 +16,15 @@
 
 					<div class="content-inline">
 						<div class="content-inline-item" style="width: 100%;"  ng-class="{'has-error':formValidateOne.beginDate.$dirty && formValidateOne.beginDate.$invalid,'has-success':formValidateOne.beginDate.$dirty && !formValidateOne.beginDate.$invalid}">
-							<label for="beginDate" class="control-label" >开始时间:</label>
+							<label for="beginDate" class="control-label" >开始日期:</label>
 							<div class="input-group date datepicker" data-provide="datepicker">
     							<input type="text" 
     								   class="form-control"
     							 	   name="beginDate" 
 								       id="beginDate" 
 								       ng-disabled="!active"
-								       required=""
+									   required=""
+									   style="padding-left: 10px;"
 								       style="border-right: none;" 
 								       ng-class="{'edit':active,'preview':!active}" 
 								       ng-model="params.beginDate">
@@ -43,12 +44,13 @@
 
 					<div class="content-inline">
 						<div class="content-inline-item" style="width: 100%;" ng-class="{'has-error':formValidateOne.endDate.$dirty && formValidateOne.endDate.$invalid,'has-success':formValidateOne.endDate.$dirty && !formValidateOne.endDate.$invalid}">
-							<label for="endDate" class="control-label">结束时间:</label>
+							<label for="endDate" class="control-label">结束日期:</label>
 							<div class="input-group date datepicker" data-provide="datepicker">
     							<input type="text" 
     								   class="form-control"
     							 	   name="endDate" 
-								       id="endDate" 
+									   id="endDate"
+									   style="padding-left: 10px;"
 								       ng-disabled="!active"
 								       required=""
 								       style="border-right: none;" 
@@ -76,8 +78,8 @@
 											name="routeType" 
 											required="" 
 											class="form-control">
-										<option value="AM">AM</option>
-										<option value="PM">PM</option>
+										<option value="AM">上午</option>
+										<option value="PM">下午</option>
 									</select>
 								</div>
 								<sup class="requireMark" style="margin-left: 5px;">*</sup>
@@ -92,7 +94,7 @@
 
 					<div class="content-inline">
 						<div class="content-inline-item" style="width: 100%;" ng-class="{'has-error':formValidateOne.shuttleCompanyId.$dirty && formValidateOne.shuttleCompanyId.$invalid,'has-success':formValidateOne.shuttleCompanyId.$dirty && !formValidateOne.shuttleCompanyId.$invalid}">
-							<label class="control-label">周末排班:</label>
+							<label class="control-label">周末安排:</label>
 								<span class="first-operate">
 									<input type="checkbox" id="item" ng-model="params.includeSaturday" />
 									<label for="item" class="check-box" style="width: 15px;margin-bottom: 0px;vertical-align: sub;"></label>
@@ -143,9 +145,9 @@
 							<sup class="requireMark">*</sup>
 							<div class="error"  
 								 ng-show="formValidateTwo.routeTemplateName.$dirty && formValidateTwo.routeTemplateName.$invalid">
-						        <small class="control-label" 
+						        <small class="control-label" style="padding-right: 26px;" 
 						           	   ng-show="formValidateTwo.routeTemplateName.$error.required">
-						            请选择线路名称
+						            请选择线路
 						        </small>
 						    </div>
 						</div>
@@ -155,16 +157,16 @@
 						<div class="content-inline-item" style="width: 100%;" ng-class="{'has-error':formValidateTwo.licensePlate.$dirty && formValidateTwo.licensePlate.$invalid,'has-success':formValidateTwo.licensePlate.$dirty && !formValidateTwo.licensePlate.$invalid}">
 							<label class=" control-label" for="licensePlate" >牌照信息:</label>
 							<div class="input-group">
-								<select ng-options="item.licensePlate for item in params.vehicles track by item.vehicleId" ng-model="params.vehicleObj" required="" name="licensePlate">
+								<select ng-options="item as item.licensePlate for item in params.vehicles track by item.vehicleId" ng-model="params.vehicleObj" required="" name="licensePlate">
 								<option value="">请选择车辆</option> 
 								</select>
 							</div>
 							<sup class="requireMark">*</sup>
 							<div class="error"  
 								 ng-show="formValidateTwo.licensePlate.$dirty && formValidateTwo.licensePlate.$invalid">
-						        <small class="control-label" 
+						        <small class="control-label" style="padding-right: 26px;" 
 						           	   ng-show="formValidateTwo.licensePlate.$error.required">
-						            请选择牌照信息
+						            请选择车辆
 						        </small>
 						    </div>
 						</div>
@@ -175,15 +177,15 @@
 							<label class=" control-label" for="driverName" >司机姓名:</label>
 							<div class="input-group">
 								<select ng-options="item.driverName for item in params.drivers track by item.driverId" ng-model="params.driverObj" name="driverName" required="">
-								<option value="">请选择司机</option> 
+									<option value="">请选择司机</option> 
 								</select>
 							</div>
 							<sup class="requireMark">*</sup>
 							<div class="error"  
 								 ng-show="formValidateTwo.driverName.$dirty && formValidateTwo.driverName.$invalid">
-						        <small class="control-label" 
+						        <small class="control-label" style="padding-right: 26px;"
 						           	   ng-show="formValidateTwo.driverName.$error.required">
-						            请选择司机姓名
+						            请选择司机
 						        </small>
 						    </div>
 						</div>
@@ -193,7 +195,7 @@
 						<div class="content-inline-item" style="width: 100%;"  ng-class="{'has-error':formValidateOne.departureTime.$dirty && formValidateOne.departureTime.$invalid,'has-success':formValidateOne.departureTime.$dirty && !formValidateOne.departureTime.$invalid}">
 							<label for="departureTime" class="control-label" >发车时间:</label>
 							<div class="input-group clockpicker" >
-								<input type="text" id="departureTime" readonly="" class="form-control" value="18:00" required="" name="departureTime">
+								<input type="text" id="departureTime" readonly="" class="form-control" value="" required="" name="departureTime" style="padding-left: 10px;">
 								<div class="input-group-addon">
 									<img style="margin-left: -6px;margin-top: 4px;" src="data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAAAXNSR0IArs4c6QAAAX5JREFUKBWNkrFLw0AUxt+7tKGDi6BWFFcVXHTQzXZybSuS/hOOIkKLLQYrODg6uPgHNEhrFzehFbq4uAjqrGCri4hLYnK+LzFYFcQbcpf3/e7uve8d08AYLdTmSftbRDrDRCOa6JmIO8TG/lOzfBWjohFZVt1ouzdlrfWGIjpkRRfaMG/Zd2d0QMsB0TozH2TN2ZrjFH1hiLCBtF4zjeRir1UtDU0NnweK1GOzeoZ/xKGHnPAKKeGGpJG0HhqlOxzyev+yQq53jDUG4tDBgVeoASnFGwBpTQkmbWAdD+jgPnkpWmqIxb/miNMZFbokRf+E5baUpBMaFWuhOeKqgq1wKRYwM6e68nlL5+3ueGF3KdZCN4WXNLkDW2MBc6+x2e83t7Na8VEQBK2JnL2AeMRxh8OGBu9t2DpoBiCMOatuXjtFd3J1b9r1vUtSiWyY81jerqAPg7ZHW6IvNni+50jKJ/3Tip1AGJ2WxhFOSud2fr0IiX+9COG/ufPft/cBa//EKBAR2dMAAAAASUVORK5CYII=">
 	    						</div>

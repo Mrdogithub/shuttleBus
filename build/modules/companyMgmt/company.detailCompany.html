@@ -21,7 +21,8 @@
 								   ng-disabled="!active_one" 
 								   ng-class="{'edit':active_one,'preview':!active_one}" 
 								   ng-model="params.companyName"
-								   ng-maxlength="30"/><sup class="requireMark" ng-if="active_one">*</sup>
+								   ng-maxlength="30"
+								   style="box-shadow: none;"/><sup class="requireMark" ng-if="active_one">*</sup>
 							<div class="error"  ng-show="formValidate.companyName.$dirty && formValidate.companyName.$invalid">
 						        <small class="control-label" ng-show="formValidate.companyName.$error.required">请输入公司名称</small>
 						        <small class="control-label" ng-show="formValidate.companyName.$error.maxlength">公司名称过长，请重新输入</small>
@@ -36,14 +37,15 @@
 						<div class="content-inline-item" ng-class="{'has-error':formValidate.adminName.$dirty && formValidate.adminName.$invalid,'has-success':formValidate.adminName.$dirty && !formValidate.adminName.$invalid}">
 							<label class="control-label largeSpace">管理员姓名:</label>
 							<input type="text" 
-								   class= "form-control"  
+								   class= "form-control" 
 								   name="adminName" 
 								   id="adminName" 
-								   ng-disabled="!active"
+								   ng-disabled="!active_one"
 								   required=""
 								   ng-maxlength='30'
-								   ng-class="{'edit':active,'preview':!active}" 
-								   ng-model="params.adminName"><sup class="requireMark" ng-if="active">*</sup>
+								   ng-class="{'edit':active_one,'preview':!active_one}" 
+								   ng-model="params.adminName"
+								   style="box-shadow: none;"/><sup class="requireMark" ng-if="active_one">*</sup>
 							<div class="error"  ng-show="formValidate.adminName.$dirty && formValidate.adminName.$invalid">
 						        <small class="control-label" ng-show="formValidate.adminName.$error.required">请输入管理员姓名</small>
 						        <small class="control-label" ng-show="formValidate.adminName.$error.maxlength">管理员姓名过长，请重新输入</small>
@@ -60,9 +62,10 @@
 								   maxlength="11" 
 								   ng-pattern ="/^[1][0,1,2,3,4,5,6,7,8,9][0-9]{9}$/" 
 								   name="phoneNumber" 
-								   ng-disabled="!active" 
-								   ng-class="{'edit':active,'preview':!active}" 
-								   ng-model="params.phoneNumber"><sup class="requireMark" ng-if="active">*</sup>
+								   ng-disabled="!active_one" 
+								   ng-class="{'edit':active_one,'preview':!active_one}" 
+								   ng-model="params.phoneNumber"
+								   style="box-shadow: none;"/><sup class="requireMark" ng-if="active_one">*</sup>
 							<div class="error"  ng-show="formValidate.phoneNumber.$dirty && formValidate.phoneNumber.$invalid">
 								<small class="control-label" ng-show="formValidate.phoneNumber.$error.required"> 请输入管理员手机</small>
 						        <small class="control-label" ng-show="formValidate.phoneNumber.$error.maxlength">请输入正确的手机号</small>
@@ -70,10 +73,10 @@
 						       <small class="control-label" ng-show="formValidate.phoneNumber.$error.pattern ">请输入正确的手机号</small>
 						    </div>
 						</div>
-						<div class="content-inline-item ">
-							<a ng-click="editCompany(false)" class="operate-btn-inline" ng-if="!active">编辑</a>
+						<!-- <div class="content-inline-item ">
+							<a ng-click="editCompanyName(false)" class="operate-btn-inline" ng-if="!active_one">编辑</a>
 							<a ng-click="!submitOnProgress&& updateCompany()" class="operate-btn-inline " ng-if="active">完成</a>
-						</div>
+						</div> -->
 					</div>
 
 				</form>					
